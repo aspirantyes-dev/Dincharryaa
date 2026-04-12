@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dincharryaa | Ultra HD Prime v2</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, updateDoc, where, getDocs, addDoc, serverTimestamp, arrayUnion, arrayRemove } 
+        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
+        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDP6rz3z9UahkhQm-wS7CO-QsGNT2QMUbQ",
+            authDomain: "dincharryaa.firebaseapp.com",
+            projectId: "dincharryaa",
+            storageBucket: "dincharryaa.firebasestorage.app",
+            messagingSenderId: "967791343919",
+            appId: "1:967791343919:web:f795208c273df031c849da",
+            measurementId: "G-T67T0VNSGC"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        window.db = getFirestore(app);
+        window.auth = getAuth(app);
+        window.fb = { doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, updateDoc, where, getDocs, addDoc, serverTimestamp, arrayUnion, arrayRemove, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut };
+
+        window.playSFX = (type) => {
+            const sounds = {
+                click: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3',
+                success: 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3',
+                modal: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'
+            };
+            const audio = new Audio(sounds[type]);
+            audio.volume = 0.3;
+            audio.play().catch(() => {});
+        };
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@800&display=swap');
+        
+        :root { 
+            --bg: #050507; 
+            --gold: #e2b871; 
+            --gold-dim: rgba(226, 184, 113, 0.1);
+            --gold-glow: rgba(226, 184, 113, 0.4);
+            --green: #2ecc71; 
+            --purple: #a855f7; 
+            --text-main: #ffffff;
+            --text-muted: #73778a;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        /* Premium Cinematic Background with Noise */
+        body { 
+            background-color: var(--bg); 
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(30, 30, 40, 0.5) 0%, transparent 60%),
+                url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; justify-content: center; overflow-x: hidden; 
+        }
+        
+        #root { width: 100%; max-width: 500px; transition: max-width 0.3s ease; position: relative; }
+        .container { width: 92%; margin: 0 auto; padding: 30px 0 140px 0; display: flex; flex-direction: column; }
+        
+        /* Advanced 3D Glass Cards */
+        .glass { 
+            width: 100%; 
+            background: linear-gradient(145deg, rgba(35, 35, 45, 0.4) 0%, rgba(15, 15, 20, 0.6) 100%);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            border-radius: 28px; 
+            padding: 24px; 
+            margin-bottom: 18px; 
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+        }
+        
+        .brand-header { width: 100%; text-align: center; margin: 15px 0 40px 0; }
+        .brand-header h1 { 
+            font-family: 'Playfair Display', serif; 
+            font-size: clamp(38px, 12vw, 50px); 
+            font-weight: 600;
+            line-height: 1.1; 
+            letter-spacing: 1px; 
+            color: var(--text-main);
+            text-shadow: 0 0 35px rgba(255,255,255,0.3);
+            margin-bottom: 8px;
+        }
+        .brand-header p { font-size: 9px; color: var(--gold); letter-spacing: 6px; font-weight: 800; text-transform: uppercase; }
+        
+        /* Floating Navigation Bar */
+        .nav { 
+            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); 
+            width: 90%; max-width: 440px; 
+            background: rgba(10, 10, 15, 0.7); 
+            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+            border-top: 1px solid rgba(255,255,255,0.1); 
+            border-left: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+            border-radius: 35px;
+            display: flex; justify-content: space-around; padding: 16px 10px; z-index: 1000; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.9);
+        }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); cursor: pointer; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0.5; }
+        .nav-btn.active { color: var(--gold); opacity: 1; transform: translateY(-4px) scale(1.05); filter: drop-shadow(0 0 12px var(--gold-glow)); }
+        .nav-btn span:first-child { font-size: 22px; margin-bottom: 5px; transition: 0.3s; }
+        .nav-label { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
+
+        .btn-prime { background: var(--text-main); color: var(--bg); border: none; padding: 18px; border-radius: 18px; width: 100%; font-weight: 800; cursor: pointer; font-size: 13px; transition: 0.3s; letter-spacing: 1.5px; text-transform: uppercase; box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+        .btn-prime:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(255,255,255,0.15); }
+        .btn-gold { background: linear-gradient(135deg, var(--gold) 0%, #c29b57 100%); color: #000; box-shadow: 0 10px 25px var(--gold-glow); }
+        .btn-gold:hover { box-shadow: 0 15px 35px var(--gold-glow); }
+        
+        input, textarea, select { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 18px; border-radius: 18px; width: 100%; margin-bottom: 12px; font-size: 15px; outline: none; transition: 0.3s; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
+        input:focus, textarea:focus, select:focus { border-color: var(--gold); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 0 15px var(--gold-glow); }
+        
+        /* Liquid Progress Bar */
+        .xp-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.8); border-radius: 10px; margin: 15px 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .xp-fill { height: 100%; background: linear-gradient(90deg, #b8860b, var(--gold), #fff); box-shadow: 0 0 20px var(--gold); transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 30px; }
+        .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 22px 10px; border-radius: 22px; text-align: center; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); }
+        .stat-card:hover { background: rgba(255,255,255,0.05); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .stat-val { font-family: 'Playfair Display'; font-size: 28px; display: block; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.5px;}
+        .stat-lbl { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
+
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 20px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; cursor: pointer; }
+        .setting-item:hover { background: rgba(255,255,255,0.06); transform: translateX(6px); border-color: rgba(255,255,255,0.15); }
+        .setting-label { display: flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 600; }
+        .setting-val { color: var(--text-muted); font-size: 13px; font-weight: 700; }
+
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; width: 100%; }
+        .day-label { font-size: 9px; font-weight: 800; color: var(--text-muted); text-align: center; margin-bottom: 8px; }
+        .day-node { aspect-ratio: 1; background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); font-weight: 700; transition: 0.3s;}
+        .day-node.active { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold); box-shadow: 0 0 15px var(--gold-glow), inset 0 0 10px rgba(226,184,113,0.2); }
+        .day-node.dim { opacity: 0; border: none; }
+        
+        .filter-chip { padding: 10px 20px; background: rgba(0,0,0,0.6); border-radius: 25px; font-size: 10px; font-weight: 800; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); transition: 0.3s;}
+        .filter-chip.active { background: var(--gold-dim); color: var(--gold); border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
+
+        /* Butter-Smooth Animations */
+        .animate { animation: slideFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideFade { from { opacity: 0; transform: scale(0.95) translateY(15px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        
+        .rank-pulse { animation: pulse 4s infinite cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 0 35px var(--gold-glow)); }
+        @keyframes pulse { 0%, 100% { opacity: 0.85; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 50px var(--gold));} }
+        
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+        
+        const BADGES = [
+            { name: "Iron", min: 0, icon: "🌑", color: "#94a3b8" },
+            { name: "Bronze", min: 500, icon: "🥉", color: "#cd7f32" },
+            { name: "Silver", min: 1500, icon: "🥈", color: "#e2e8f0" },
+            { name: "Gold", min: 4000, icon: "👑", color: "#e2b871" },
+            { name: "Immortal", min: 10000, icon: "🧿", color: "#a855f7" }
+        ];
+
+        function App() {
+            const [user, setUser] = useState(null);
+            const [data, setData] = useState(null);
+            const [tab, setTab] = useState("grind");
+            const [confirm, setConfirm] = useState(null);
+            const [viewVault, setViewVault] = useState(false);
+            const [inspectedUser, setInspectedUser] = useState(null);
+            const [posts, setPosts] = useState([]);
+            const [leaderboard, setLeaderboard] = useState([]);
+            const [squad, setSquad] = useState(null);
+            const [thought, setThought] = useState("");
+            const [viewMode, setViewMode] = useState("month");
+
+            const play = (type) => window.playSFX(type);
+
+            useEffect(() => {
+                const unsub = window.fb.onAuthStateChanged(window.auth, (u) => {
+                    if (u) {
+                        setUser(u);
+                        window.fb.onSnapshot(window.fb.doc(window.db, "users", u.uid), (snap) => {
+                            if (snap.exists()) setData(snap.data());
+                        });
+                    } else setUser(null);
+                });
+                return () => unsub();
+            }, []);
+
+            useEffect(() => {
+                if (data?.squadId) {
+                    return window.fb.onSnapshot(window.fb.doc(window.db, "squads", data.squadId), s => setSquad(s.data()));
+                }
+            }, [data?.squadId]);
+
+            useEffect(() => {
+                if (tab === "ranking") {
+                    const q = window.fb.query(window.fb.collection(window.db, "users"), window.fb.orderBy("pts", "desc"), window.fb.limit(25));
+                    return window.fb.onSnapshot(q, s => setLeaderboard(s.docs.map(d => d.data())));
+                }
+                if (tab === "social") {
+                    const q = window.fb.query(window.fb.collection(window.db, "feed"), window.fb.orderBy("time", "desc"), window.fb.limit(30));
+                    return window.fb.onSnapshot(q, s => setPosts(s.docs.map(d => d.data())));
+                }
+            }, [tab]);
+
+            // Analytics - Safely accessing points
+            const getRankObj = (pts) => [...BADGES].reverse().find(b => (pts || 0) >= b.min) || BADGES[0];
+            const getRankData = (pts) => {
+                const p = pts || 0;
+                let currentIdx = 0;
+                for (let i = 0; i < BADGES.length; i++) {
+                    if (p >= BADGES[i].min) currentIdx = i;
+                }
+                const nextBadge = BADGES[currentIdx + 1];
+                const prevBadge = BADGES[currentIdx];
+                const req = nextBadge ? nextBadge.min : prevBadge.min;
+                const name = nextBadge ? nextBadge.name : 'Max';
+                let progress = 100;
+                if (nextBadge) {
+                    const range = nextBadge.min - prevBadge.min;
+                    const gained = p - prevBadge.min;
+                    progress = Math.min(100, Math.max(0, (gained / range) * 100));
+                }
+                return { currentBadge: prevBadge, nextReq: req, nextName: name, progress };
+            };
+
+            const isLocked = () => data?.lockDate && (Date.now() - new Date(data.lockDate).getTime() < 7 * 86400000);
+            const level = Math.floor((data?.pts || 0) / 100) + 1;
+
+            // BULLETPROOF STREAK CALCULATION
+            const currentStreak = useMemo(() => {
+                const history = data?.history || [];
+                if (history.length === 0) return 0;
+                let s = 0;
+                let checkDate = new Date();
+                const todayStr = checkDate.toISOString().slice(0, 10);
+                checkDate.setDate(checkDate.getDate() - 1);
+                const yestStr = checkDate.toISOString().slice(0, 10);
+                
+                if (!history.includes(todayStr) && !history.includes(yestStr)) return 0;
+                
+                checkDate = new Date();
+                if (!history.includes(todayStr)) checkDate.setDate(checkDate.getDate() - 1); 
+
+                for(let i=0; i<365; i++) {
+                    const ds = checkDate.toISOString().slice(0, 10);
+                    if (history.includes(ds)) s++;
+                    else break;
+                    checkDate.setDate(checkDate.getDate() - 1);
+                }
+                return s;
+            }, [data?.history]);
+
+            // BULLETPROOF CALENDAR RENDERER
+            const renderCalendar = (historyArr = [], mode) => {
+                const safeHistory = historyArr || [];
+                const now = new Date();
+                const nodes = [];
+                const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+                if (mode === "month") {
+                    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+                    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                    
+                    daysOfWeek.forEach(d => nodes.push(<div key={d+Math.random()} className="day-label">{d}</div>));
+                    for (let i = 0; i < firstDay; i++) nodes.push(<div key={`empty-${i}`} className="day-node dim" />);
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                        const isDone = safeHistory.includes(dateStr);
+                        nodes.push(<div key={d} className={`day-node ${isDone ? 'active' : ''}`}>{d}</div>);
+                    }
+                } else {
+                    const daysToScroll = mode === "3m" ? 90 : mode === "6m" ? 180 : mode === "1y" ? 365 : 
+                                         Math.ceil((Date.now() - new Date(data?.joinDate || Date.now()).getTime()) / 86400000) + 1;
+                    for (let i = daysToScroll - 1; i >= 0; i--) {
+                        const target = new Date(); target.setDate(now.getDate() - i);
+                        const ds = target.toISOString().slice(0, 10);
+                        nodes.push(<div key={ds} className={`day-node ${safeHistory.includes(ds) ? 'active' : ''}`} />);
+                    }
+                }
+                return nodes;
+            };
+
+            const handleAction = async () => {
+                play('success');
+                const today = new Date().toISOString().slice(0, 10);
+                let update = { pts: (data?.pts || 0) + 10 };
+                
+                const safeLists = data?.lists || [];
+                if (confirm.type === "personal") {
+                    update.lists = safeLists.map(l => l.id === confirm.lid ? {...l, tasks: l.tasks.map(t => t.id === confirm.tid ? {...t, done: true} : t)} : l);
+                } else {
+                    update.sqLastDone = today;
+                }
+
+                let hist = data?.history || []; 
+                if (!hist.includes(today)) hist.push(today);
+                update.history = hist;
+
+                await window.fb.updateDoc(window.fb.doc(window.db, "users", user.uid), update);
+                await window.fb.addDoc(window.fb.collection(window.db, "feed"), { name: data?.name || 'Agent', dcId: data?.dcId || 'ID', text: `Protocol Cleared: ${confirm.text}`, time: window.fb.serverTimestamp() });
+                setConfirm(null);
+                confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 }, colors: ['#e2b871', '#ffffff', '#a855f7'] });
+            };
+
+            // Loading screen while user exists but data hasn't arrived (prevents the flash)
+            if (user && !data) return (
+                <div className="container animate" style={{justifyContent:'center', minHeight:'100vh', alignItems:'center'}}>
+                    <div className="rank-pulse" style={{fontSize: 50}}>⚡</div>
+                    <p style={{marginTop: 20, color:'var(--gold)', letterSpacing: 4, fontSize: 10, fontWeight: 800}}>SYNCING DATA...</p>
+                </div>
+            );
+
+            if (!user) return (
+                <div className="container animate" style={{justifyContent:'center', minHeight:'100vh', paddingBottom: 20}}>
+                    <div className="brand-header">
+                        <h1>Dincharryaa</h1>
+                        <p>ULTRA HD • PRIME</p>
+                    </div>
+                    <div className="glass" style={{maxWidth: 420, margin: '0 auto'}}>
+                        <form onSubmit={async (e) => {
+                            e.preventDefault(); play('click');
+                            const em = e.target.email.value; const pw = e.target.password.value; const nm = e.target.username?.value;
+                            try {
+                                if(nm) {
+                                    const res = await window.fb.createUserWithEmailAndPassword(window.auth, em, pw);
+                                    await window.fb.setDoc(window.fb.doc(window.db, "users", res.user.uid), { 
+                                        name: nm, dcId: "DC-"+Math.floor(1000+Math.random()*9000), pts: 0, lists: [], history: [], lockDate: null, joinDate: new Date().toISOString(), squadId: null
+                                    });
+                                } else await window.fb.signInWithEmailAndPassword(window.auth, em, pw);
+                            } catch(err) { alert(err.message); }
+                        }}>
+                            {!data && <input name="username" placeholder="Full Name" required />}
+                            <input name="email" type="email" placeholder="Access ID (Email)" required />
+                            <input name="password" type="password" placeholder="Passcode" required />
+                            <button className="btn-prime btn-gold" type="submit" style={{marginTop: 15, padding: 22, fontSize: 14}}>{data ? 'ENTER VAULT' : 'INITIALIZE LINK'}</button>
+                        </form>
+                    </div>
+                </div>
+            );
+
+            const safeData = data || {};
+            const rankData = getRankData(safeData.pts || 0);
+            const safeLists = safeData.lists || [];
+            const safeHistory = safeData.history || [];
+
+            return (
+                <div className="container">
+                    <div className="brand-header">
+                        <h1>Dincharryaa</h1>
+                        <p>DAILY PRODUCTIVITY • PRIME</p>
+                    </div>
+
+                    {/* GRIND TAB */}
+                    {tab === "grind" && <div className="animate" style={{width:'100%'}}>
+                        <div className="glass" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'22px'}}>
+                            <div style={{display:'flex', alignItems:'center', gap: 18}}>
+                                <div style={{width: 60, height: 60, borderRadius: 18, background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.1)', display:'flex', alignItems:'center', justifyContent:'center', fontSize: 28, fontFamily:'Playfair Display', color:'var(--gold)', boxShadow: 'inset 0 0 20px rgba(226,184,113,0.1)'}}>
+                                    {(safeData.name || 'A').charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <h3 style={{fontSize: 22, fontWeight: 700, letterSpacing: 0.5}}>{safeData.name || 'Agent'}</h3>
+                                    <div style={{display:'flex', alignItems:'center', gap: 8, fontSize: 10, fontWeight: 800, marginTop: 6, color:'var(--gold)', letterSpacing: 1.5, textTransform:'uppercase'}}>
+                                        <div style={{width: 6, height: 6, borderRadius: '50%', background:'var(--gold)', boxShadow:'0 0 10px var(--gold)'}}></div>
+                                        {rankData.currentBadge.name} RANK
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{background:'rgba(0,0,0,0.5)', border:'1px solid rgba(255,255,255,0.05)', padding: '12px 18px', borderRadius: 25, fontSize: 11, fontWeight: 800, color: 'var(--text-main)', boxShadow: '0 5px 15px rgba(0,0,0,0.5)'}}>
+                                🔥 {currentStreak} <span style={{color:'var(--text-muted)'}}>STREAK</span>
+                            </div>
+                        </div>
+
+                        <div className="glass" style={{padding: '28px 24px'}}>
+                            <div style={{display:'flex', justifyContent:'space-between', marginBottom: 15}}>
+                                <span className="text-muted" style={{fontSize: 10, fontWeight: 800, letterSpacing: 2}}>EXPERIENCE POINTS</span>
+                                <span className="text-gold" style={{fontWeight: 800, fontSize: 15, letterSpacing: 1}}>{safeData.pts || 0} XP</span>
+                            </div>
+                            <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginBottom: 20}}>
+                                <h2 style={{fontSize: 32, fontWeight: 800, letterSpacing: -0.5}}>Level {level} <span style={{color:'var(--text-muted)', fontWeight: 500}}>— {rankData.currentBadge.name}</span></h2>
+                            </div>
+                            <div className="xp-bar">
+                                <div className="xp-fill" style={{width: `${rankData.progress}%`}}></div>
+                            </div>
+                            <p style={{fontSize: 11, textAlign:'right', color:'var(--text-muted)', fontWeight:700}}>
+                                {rankData.nextName !== 'Max' ? `${rankData.nextReq - (safeData.pts || 0)} XP to ${rankData.nextName}` : 'Max Level Reached'}
+                            </p>
+                        </div>
+
+                        <div className="stat-grid">
+                            <div className="stat-card">
+                                <span className="stat-val" style={{color: '#ff6b6b'}}>🔥 {currentStreak}</span>
+                                <span className="stat-lbl">Day Streak</span>
+                            </div>
+                            <div className="stat-card">
+                                <span className="stat-val" style={{color: 'var(--gold)'}}>⚡ {safeData.pts || 0}</span>
+                                <span className="stat-lbl">Total XP</span>
+                            </div>
+                            <div className="stat-card">
+                                <span className="stat-val" style={{color: '#4db8ff'}}>🎯 {safeHistory.length > 0 ? 1 : 0}</span>
+                                <span className="stat-lbl">First Win</span>
+                            </div>
+                        </div>
+
+                        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 20, padding: '0 8px'}}>
+                            <h3 className="text-muted" style={{fontSize: 11, fontWeight: 800, letterSpacing: 2}}>TODAY'S MISSIONS</h3>
+                            <button style={{background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'var(--gold)', padding:'8px 18px', borderRadius: 20, fontSize: 10, fontWeight: 800, cursor:'pointer', transition:'0.3s'}} onClick={() => { play('click'); alert('Add function to be implemented'); }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.1)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.05)'}>+ Add</button>
+                        </div>
+
+                        {squad && squad.mission && (
+                            <div className="glass" style={{border: '1px solid var(--gold)', cursor: 'pointer', background: 'linear-gradient(to right, rgba(226, 184, 113, 0.08), rgba(0,0,0,0.6))'}} onClick={() => { if(safeData.sqLastDone !== new Date().toISOString().slice(0,10)) { play('modal'); setConfirm({type:'squad', text: squad.mission}); } }}>
+                                <p style={{fontSize: 10, color: 'var(--gold)', fontWeight: 800, marginBottom: 15, letterSpacing: 1.5}}>SQUAD OBJECTIVE</p>
+                                <div style={{display:'flex', alignItems:'center', gap: 18, opacity: safeData.sqLastDone === new Date().toISOString().slice(0,10) ? 0.3 : 1}}>
+                                    <div style={{minWidth: 24, height: 24, border: '2px solid rgba(255,255,255,0.2)', borderRadius: 8, background: safeData.sqLastDone === new Date().toISOString().slice(0,10) ? 'var(--gold)' : 'transparent'}} />
+                                    <h3 style={{fontSize: 18, fontWeight: 600}}>{squad.mission}</h3>
+                                </div>
+                            </div>
+                        )}
+
+                        {safeLists.length === 0 ? (
+                            <div className="glass" style={{textAlign:'center', padding: '40px 20px', border: '1px dashed rgba(255,255,255,0.1)'}}>
+                                <p className="text-muted" style={{fontSize: 13, fontWeight:600}}>No personal protocols active.</p>
+                                <p className="text-muted" style={{fontSize: 11, marginTop: 8}}>Head to LOCK to establish a 7-day focus.</p>
+                            </div>
+                        ) : (
+                            safeLists.map(l => (
+                                <div key={l.id} className="glass">
+                                    <p className="text-muted" style={{fontSize: 10, fontWeight: 800, marginBottom: 18, textTransform: 'uppercase', letterSpacing: 1.5}}>{l.name}</p>
+                                    {l.tasks.map(t => (
+                                        <div key={t.id} onClick={() => { if(!t.done) { play('modal'); setConfirm({type:'personal', lid: l.id, tid: t.id, text: t.text}); } }} style={{display:'flex', alignItems:'center', gap: 18, padding: '16px 0', cursor: 'pointer', opacity: t.done ? 0.3 : 1, transition: '0.3s', borderBottom: '1px solid rgba(255,255,255,0.03)'}}>
+                                            <div style={{minWidth: 24, height: 24, border: '2px solid rgba(255,255,255,0.15)', borderRadius: 8, background: t.done ? 'var(--gold)' : 'rgba(0,0,0,0.5)', transition: '0.2s', boxShadow: t.done ? '0 0 10px var(--gold-glow)' : 'none'}} />
+                                            <span style={{fontSize: 16, fontWeight: 500, textDecoration: t.done ? 'line-through' : 'none', color: t.done ? 'var(--text-muted)' : 'var(--text-main)'}}>{t.text}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))
+                        )}
+                    </div>}
+
+                    {/* LOCK TAB */}
+                    {tab === "lock" && <div className="animate" style={{width:'100%'}}>
+                        {isLocked() ? <div className="glass" style={{textAlign:'center', padding: '70px 20px'}}>
+                            <div style={{fontSize: 50, marginBottom: 20}}>🔒</div>
+                            <h2 style={{fontFamily:'Playfair Display', color:'var(--gold)', fontSize: 36}}>LOCKED</h2>
+                            <p style={{color:'var(--text-muted)', marginTop: 12, fontSize: 12, fontWeight: 700, letterSpacing: 2}}>PROTOCOL IN PROGRESS</p>
+                        </div> : 
+                        <div className="glass">
+                            <h2 style={{fontFamily:'Playfair Display', marginBottom: 30, fontSize: 34, color:'var(--gold)'}}>7-Day Focus</h2>
+                            <input id="m_name" placeholder="Protocol Designation" style={{padding: 20}}/>
+                            <textarea id="m_tasks" rows="6" placeholder="Define 7-Day Objectives (one per line)..." style={{lineHeight: 1.6, resize:'none', padding: 20}} />
+                            <button className="btn-prime btn-gold" style={{padding: 22, fontSize: 14}} onClick={async () => {
+                                play('click');
+                                const tks = document.getElementById('m_tasks').value.split('\n').filter(x => x.trim());
+                                if(tks.length) {
+                                    await window.fb.updateDoc(window.fb.doc(window.db, "users", user.uid), { lists: [{id: Date.now(), name: document.getElementById('m_name').value, tasks: tks.map(x => ({id: Math.random(), text: x, done: false}))}], lockDate: new Date().toISOString() });
+                                    setTab("grind");
+                                }
+                            }}>INITIATE PROTOCOL</button>
+                        </div>}
+                    </div>}
+
+                    {/* SQUAD TAB */}
+                    {tab === "squad" && <div className="animate" style={{width:'100%'}}>
+                        {!safeData.squadId ? (
+                            <div className="glass">
+                                <h2 style={{fontFamily:'Playfair Display', fontSize: 34, color:'var(--gold)'}}>Squad Command</h2>
+                                <p style={{fontSize: 12, color:'var(--text-muted)', marginTop: 8, marginBottom: 30, fontWeight: 500}}>Form or join an elite accountability unit.</p>
+                                
+                                <input id="sq_name" placeholder="Unit Designation" style={{padding: 20}}/>
+                                <select id="sq_limit" style={{padding: 20}}>
+                                    {[5,10,20,50,100].map(n => <option key={n} value={n}>{n} Member Cap</option>)}
+                                </select>
+                                <button className="btn-prime btn-gold" style={{padding: 22, fontSize: 14}} onClick={async () => {
+                                    play('click');
+                                    const id = "SQ-" + Math.floor(1000+Math.random()*9000);
+                                    await window.fb.setDoc(window.fb.doc(window.db, "squads", id), { name: document.getElementById('sq_name').value, limit: parseInt(document.getElementById('sq_limit').value), owner: user.uid, members: [user.uid], requests: [], mission: null });
+                                    await window.fb.updateDoc(window.fb.doc(window.db, "users", user.uid), { squadId: id });
+                                }}>CREATE SQUAD</button>
+                                
+                                <div style={{display:'flex', alignItems:'center', margin:'40px 0'}}>
+                                    <div style={{flex: 1, height: 1, background:'rgba(255,255,255,0.05)'}}></div>
+                                    <span style={{margin: '0 20px', color:'var(--text-muted)', fontSize: 11, fontWeight: 800}}>OR</span>
+                                    <div style={{flex: 1, height: 1, background:'rgba(255,255,255,0.05)'}}></div>
+                                </div>
+                                
+                                <input id="sq_join" placeholder="Enter Invite Code" style={{padding: 20}}/>
+                                <button className="btn-prime" style={{padding: 22, fontSize: 14, background:'rgba(255,255,255,0.1)'}} onClick={async () => {
+                                    play('click');
+                                    const sid = document.getElementById('sq_join').value;
+                                    await window.fb.updateDoc(window.fb.doc(window.db, "squads", sid), { requests: window.fb.arrayUnion({uid: user.uid, name: safeData.name}) });
+                                    alert("Entry request broadcasted.");
+                                }}>JOIN SQUAD</button>
+                            </div>
+                        ) : (
+                            <div className="glass">
+                                <h2 style={{fontFamily:'Playfair Display', fontSize: 34, color:'var(--gold)'}}>{squad?.name}</h2>
+                                <p style={{fontSize: 11, color: 'var(--text-muted)', marginBottom: 30, fontWeight: 800, letterSpacing: 1.5}}>ID: {safeData.squadId} &nbsp;•&nbsp; {squad?.members?.length}/{squad?.limit} ROSTER</p>
+                                
+                                {squad?.owner === user.uid && (
+                                    <div style={{borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 30}}>
+                                        <h4 style={{fontSize: 11, color:'var(--text-muted)', marginBottom: 15, letterSpacing: 1.5, fontWeight:800}}>COMMANDER CONTROLS</h4>
+                                        <input id="sq_m" placeholder="Assign Global Objective" style={{padding: 20}}/>
+                                        <button className="btn-prime btn-gold" style={{padding: 18}} onClick={async () => {
+                                            play('success');
+                                            await window.fb.updateDoc(window.fb.doc(window.db, "squads", safeData.squadId), { mission: document.getElementById('sq_m').value });
+                                            alert("Squad Mission Updated.");
+                                        }}>ISSUE DIRECTIVE</button>
+                                        
+                                        {squad?.requests?.length > 0 && <h4 style={{marginTop: 40, fontSize: 11, color:'var(--text-muted)', letterSpacing: 1.5, fontWeight:800}}>PENDING ADMISSIONS</h4>}
+                                        {squad?.requests?.map(r => (
+                                            <div key={r.uid} style={{padding: '20px 0', borderBottom: '1px solid rgba(255,255,255,0.05)', display:'flex', justifyContent:'space-between', alignItems: 'center'}}>
+                                                <span style={{fontWeight: 600, fontSize: 16}}>{r.name}</span>
+                                                <button style={{padding: '10px 20px', background: 'var(--gold-dim)', color: 'var(--gold)', border: '1px solid var(--gold)', borderRadius: '14px', cursor: 'pointer', fontWeight: 800, fontSize: 11}} onClick={async () => {
+                                                    play('success');
+                                                    await window.fb.updateDoc(window.fb.doc(window.db, "squads", safeData.squadId), { members: window.fb.arrayUnion(r.uid), requests: window.fb.arrayRemove(r) });
+                                                    await window.fb.updateDoc(window.fb.doc(window.db, "users", r.uid), { squadId: safeData.squadId });
+                                                }}>APPROVE</button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>}
+
+                    {/* SOCIAL TAB */}
+                    {tab === "social" && <div className="animate" style={{width:'100%'}}>
+                        <div className="glass" style={{padding: 28}}>
+                            <textarea value={thought} onChange={e => setThought(e.target.value)} rows="3" placeholder="Broadcast to the network..." style={{marginBottom: 15, resize:'none', padding:20}} />
+                            <button className="btn-prime btn-gold" style={{padding: 18}} onClick={async () => {
+                                if(!thought.trim()) return;
+                                play('success');
+                                await window.fb.addDoc(window.fb.collection(window.db, "feed"), { name: safeData.name || 'Agent', dcId: safeData.dcId || 'ID', text: thought, time: window.fb.serverTimestamp() });
+                                setThought("");
+                            }}>TRANSMIT</button>
+                        </div>
+                        {posts.map((p, i) => (
+                            <div key={i} className="glass" style={{padding: '28px', marginBottom: 18}}>
+                                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 15}}>
+                                    <div style={{display:'flex', alignItems:'center', gap: 14}}>
+                                        <div style={{width:36, height:36, borderRadius:12, background:'rgba(0,0,0,0.6)', border:'1px solid rgba(255,255,255,0.1)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, color:'var(--gold)', fontFamily:'Playfair Display'}}>{(p.name||'A').charAt(0)}</div>
+                                        <b style={{fontSize: 16, fontWeight: 700}}>{p.name}</b>
+                                    </div>
+                                    <span style={{fontSize: 10, color:'var(--text-muted)', fontWeight: 800, letterSpacing:1.5}}>{p.dcId}</span>
+                                </div>
+                                <p style={{fontSize: 16, color: '#e2e8f0', lineHeight: 1.7, fontWeight: 400}}>{p.text}</p>
+                            </div>
+                        ))}
+                    </div>}
+
+                    {/* RANKING TAB */}
+                    {tab === "ranking" && <div className="animate" style={{width:'100%'}}>
+                        <div className="glass" style={{padding: 0, overflow: 'hidden'}}>
+                            <div style={{padding: '28px', borderBottom: '1px solid rgba(255,255,255,0.05)', background:'rgba(0,0,0,0.4)'}}>
+                                <h3 style={{fontFamily:'Playfair Display', fontSize: 28, color:'var(--gold)'}}>Global Network</h3>
+                                <p style={{fontSize: 11, color:'var(--text-muted)', letterSpacing: 1.5, marginTop:6, fontWeight: 700}}>Top 25 Operatives</p>
+                            </div>
+                            {leaderboard.map((u, i) => (
+                                <div key={i} onClick={() => { play('modal'); setInspectedUser(u); }} style={{padding: '22px 28px', borderBottom: '1px solid rgba(255,255,255,0.03)', display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer', transition: 'background 0.3s'}} onMouseOver={e => e.currentTarget.style.background='rgba(255,255,255,0.03)'} onMouseOut={e => e.currentTarget.style.background='transparent'}>
+                                    <div style={{display:'flex', alignItems:'center', gap: 18}}>
+                                        <span style={{color: i < 3 ? 'var(--gold)' : 'var(--text-muted)', fontWeight: 800, width: 24, fontSize: 14}}>{i+1}.</span>
+                                        <span style={{fontSize: 24}}>{getRankObj(u.pts).icon}</span>
+                                        <span style={{fontWeight: 700, fontSize: 16}}>{u.name}</span>
+                                    </div>
+                                    <b style={{color: 'var(--purple)', fontSize: 15, letterSpacing: 1}}>{u.pts} <span style={{fontSize: 10, color:'var(--text-muted)'}}>XP</span></b>
+                                </div>
+                            ))}
+                        </div>
+                    </div>}
+
+                    {/* PROFILE (ME) TAB */}
+                    {tab === "profile" && <div className="animate" style={{width:'100%'}}>
+                        <div className="glass" style={{textAlign:'center', paddingBottom: 45}}>
+                            <div className="rank-pulse" style={{fontSize: 80, marginBottom: 20}}>{rankData.currentBadge.icon}</div>
+                            <h2 style={{fontFamily:'Playfair Display', fontSize: 36, marginBottom: 8}}>{safeData.name || 'Agent'}</h2>
+                            <p style={{fontSize: 11, color: 'var(--text-muted)', fontWeight: 800, letterSpacing: 2.5, marginBottom: 30}}>{safeData.dcId || 'ID'}</p>
+                            
+                            <button className="btn-prime btn-gold" style={{padding: '16px 32px', fontSize: 12, width: 'auto', margin: '0 auto'}} onClick={() => { play('modal'); setViewVault(true); }}>ACCESS BADGE VAULT</button>
+                        </div>
+
+                        <div className="glass" style={{padding: '30px 24px'}}>
+                            <p style={{fontSize: 11, fontWeight: 800, marginBottom: 22, letterSpacing: 2, color:'var(--text-muted)', textAlign:'center'}}>CALENDAR LOG</p>
+                            <div style={{display:'flex', justifyContent:'center', gap: 10, marginBottom: 25, flexWrap:'wrap'}}>
+                                {['month', '3m', '6m', '1y'].map(m => (
+                                    <div key={m} className={`filter-chip ${viewMode === m ? 'active' : ''}`} onClick={() => { play('click'); setViewMode(m); }}>{m.toUpperCase()}</div>
+                                ))}
+                            </div>
+                            <div className="cal-grid" style={{maxHeight: 250, overflowY: 'auto', paddingRight: 5}}>
+                                {renderCalendar(safeHistory, viewMode)}
+                            </div>
+                        </div>
+
+                        <div style={{marginBottom: 30}}>
+                            <p style={{fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', marginBottom: 18, letterSpacing: 2.5, marginLeft: 8}}>SYSTEM SETTINGS</p>
+                            <div className="setting-item" onClick={() => play('click')}>
+                                <div className="setting-label"><span>🔔</span> Notifications</div>
+                                <span className="setting-val">On ›</span>
+                            </div>
+                            <div className="setting-item" onClick={() => play('click')}>
+                                <div className="setting-label"><span>🎨</span> Theme</div>
+                                <span className="setting-val" style={{color:'var(--gold)'}}>Ultra HD v2 ›</span>
+                            </div>
+                            <div className="setting-item" onClick={() => play('click')}>
+                                <div className="setting-label"><span>📳</span> Haptics/Audio</div>
+                                <span className="setting-val">Enabled ›</span>
+                            </div>
+                            <div className="setting-item" onClick={() => play('click')}>
+                                <div className="setting-label"><span>🌐</span> Language</div>
+                                <span className="setting-val">English ›</span>
+                            </div>
+                        </div>
+
+                        <button onClick={() => { play('click'); window.fb.signOut(window.auth); }} className="setting-item" style={{width:'100%', color:'#ff4444', justifyContent:'center', border:'1px solid rgba(255,68,68,0.2)', background:'rgba(255,0,0,0.05)', padding: 22, fontWeight: 800}}>
+                            DISCONNECT SESSION
+                        </button>
+                    </div>}
+
+                    {/* MAIN NAVIGATION */}
+                    <nav className="nav">
+                        <div onClick={() => { play('click'); setTab("grind"); }} className={`nav-btn ${tab === "grind" ? 'active' : ''}`}><span>🎯</span><span className="nav-label">Grind</span></div>
+                        <div onClick={() => { play('click'); setTab("lock"); }} className={`nav-btn ${tab === "lock" ? 'active' : ''}`}><span>🔒</span><span className="nav-label">Lock</span></div>
+                        <div onClick={() => { play('click'); setTab("squad"); }} className={`nav-btn ${tab === "squad" ? 'active' : ''}`}><span>🛡️</span><span className="nav-label">Squad</span></div>
+                        <div onClick={() => { play('click'); setTab("social"); }} className={`nav-btn ${tab === "social" ? 'active' : ''}`}><span>🔘</span><span className="nav-label">Feed</span></div>
+                        <div onClick={() => { play('click'); setTab("ranking"); }} className={`nav-btn ${tab === "ranking" ? 'active' : ''}`}><span>🏆</span><span className="nav-label">Rank</span></div>
+                        <div onClick={() => { play('click'); setTab("profile"); }} className={`nav-btn ${tab === "profile" ? 'active' : ''}`}><span>💠</span><span className="nav-label">Me</span></div>
+                    </nav>
+
+                    {/* MODALS */}
+                    {viewVault && <div className="modal animate">
+                        <div className="glass" style={{maxWidth: 440, padding: 35}}>
+                            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 35}}>
+                                <h3 style={{fontFamily:'Playfair Display', fontSize: 30, color:'var(--gold)'}}>Badge Vault</h3>
+                                <button style={{background:'none', border:'none', color:'var(--text-muted)', fontSize:28, cursor:'pointer', padding:10}} onClick={() => { play('click'); setViewVault(false); }}>×</button>
+                            </div>
+                            
+                            {BADGES.map(b => (
+                                <div key={b.name} style={{display:'flex', gap: 20, padding: '20px', background: 'rgba(0,0,0,0.5)', borderRadius: 22, marginBottom: 15, border: '1px solid rgba(255,255,255,0.05)', opacity: (safeData?.pts||0) >= b.min ? 1 : 0.4, transition:'0.3s'}}>
+                                    <span style={{fontSize: 36}}>{b.icon}</span>
+                                    <div style={{flex: 1, display:'flex', flexDirection:'column', justifyContent:'center'}}>
+                                        <b style={{fontSize: 16, color: b.color, letterSpacing: 0.5}}>{b.name}</b>
+                                        <p style={{fontSize: 11, color:'var(--text-muted)', fontWeight: 800, marginTop: 5}}>{b.min} XP REQ</p>
+                                    </div>
+                                    <div style={{display:'flex', alignItems:'center', fontSize: 12, fontWeight: 800, color: (safeData?.pts||0) >= b.min ? 'var(--green)' : 'var(--text-muted)'}}>
+                                        {(safeData?.pts||0) >= b.min ? 'UNLOCKED' : `${b.min - (safeData?.pts||0)} LEFT`}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>}
+
+                    {inspectedUser && <div className="modal animate">
+                        <div className="glass" style={{maxWidth: 420, textAlign:'center', padding:'45px 30px'}}>
+                            <div style={{fontSize: 70, marginBottom: 25}}>{getRankObj(inspectedUser.pts).icon}</div>
+                            <h3 style={{fontFamily: 'Playfair Display', fontSize: 34, color: 'var(--gold)'}}>{inspectedUser.name}</h3>
+                            <p style={{color: 'var(--purple)', fontSize: 15, fontWeight: 800, marginTop: 10, letterSpacing: 1.5}}>{inspectedUser.pts} XP</p>
+                            <div style={{height: 1, background: 'rgba(255,255,255,0.05)', margin: '30px 0'}}></div>
+                            <p style={{fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', marginBottom: 20, letterSpacing: 2}}>RECENT ACTIVITY</p>
+                            <div className="cal-grid" style={{justifyContent:'center'}}>
+                                {renderCalendar(inspectedUser.history, 'month')}
+                            </div>
+                            <button className="btn-prime" style={{marginTop: 35, padding: 20, background:'rgba(0,0,0,0.6)', color:'var(--text-muted)', border:'1px solid rgba(255,255,255,0.1)'}} onClick={() => { play('click'); setInspectedUser(null); }}>CLOSE TERMINAL</button>
+                        </div>
+                    </div>}
+
+                    {confirm && <div className="modal animate">
+                        <div className="glass" style={{maxWidth: 400, textAlign:'center', padding: '40px 30px'}}>
+                            <div style={{fontSize: 45, marginBottom: 25}}>⚡</div>
+                            <h3 style={{lineHeight: 1.5, fontSize: 22, fontWeight: 600}}>{confirm.text}</h3>
+                            <p style={{fontSize: 12, color:'var(--text-muted)', marginTop: 15, fontWeight:500}}>Confirm completion to broadcast to network.</p>
+                            
+                            <div style={{display:'flex', gap: 15, marginTop: 40}}>
+                                <button className="btn-prime" style={{background:'rgba(0,0,0,0.6)', border:'1px solid rgba(255,255,255,0.1)', color:'var(--text-muted)'}} onClick={() => { play('click'); setConfirm(null); }}>CANCEL</button>
+                                <button className="btn-prime btn-gold" onClick={handleAction}>CONFIRM</button>
+                            </div>
+                        </div>
+                    </div>}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
