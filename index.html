@@ -1,775 +1,2159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dincharryaa | Ultra HD Prime v2</title>
-    
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, updateDoc, where, getDocs, addDoc, serverTimestamp, arrayUnion, arrayRemove } 
-        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
-        from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Dincharryaa — Daily Ops Terminal</title>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDP6rz3z9UahkhQm-wS7CO-QsGNT2QMUbQ",
-            authDomain: "dincharryaa.firebaseapp.com",
-            projectId: "dincharryaa",
-            storageBucket: "dincharryaa.firebasestorage.app",
-            messagingSenderId: "967791343919",
-            appId: "1:967791343919:web:f795208c273df031c849da",
-            measurementId: "G-T67T0VNSGC"
-        };
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 
-        const app = initializeApp(firebaseConfig);
-        window.db = getFirestore(app);
-        window.auth = getAuth(app);
-        window.fb = { doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, updateDoc, where, getDocs, addDoc, serverTimestamp, arrayUnion, arrayRemove, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut };
+<style>
+  /* ─── RESET & THEME ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        window.playSFX = (type) => {
-            const sounds = {
-                click: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3',
-                success: 'https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3',
-                modal: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'
-            };
-            const audio = new Audio(sounds[type]);
-            audio.volume = 0.3;
-            audio.play().catch(() => {});
-        };
-    </script>
+  :root {
+    --bg:       #0A0A0B;
+    --bg2:      #111113;
+    --bg3:      #18181B;
+    --bg4:      #1F1F23;
+    --gold:     #C8A96E;
+    --gold2:    #E2C98A;
+    --gold-dim: rgba(200,169,110,.08);
+    --gold-glow:rgba(200,169,110,.18);
+    --muted:    #52525B;
+    --muted2:   #3F3F46;
+    --text:     #FAFAFA;
+    --text2:    #A1A1AA;
+    --border:   rgba(255,255,255,.05);
+    --border2:  rgba(255,255,255,.09);
+    --red:      #F87171;
+    --yellow:   #FBBF24;
+    --blue:     #60A5FA;
+    --green:    #34D399;
+    --r:        16px;
+    --r2:       12px;
+    --r3:       8px;
+    --shadow:   0 4px 24px rgba(0,0,0,.6);
+    --transition: .25s cubic-bezier(.4,0,.2,1);
+  }
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@800&display=swap');
-        
-        :root { 
-            --bg: #050507; 
-            --gold: #e2b871; 
-            --gold-dim: rgba(226, 184, 113, 0.1);
-            --gold-glow: rgba(226, 184, 113, 0.4);
-            --green: #2ecc71; 
-            --purple: #a855f7; 
-            --text-main: #ffffff;
-            --text-muted: #73778a;
-        }
-        
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        /* Premium Cinematic Background with Noise */
-        body { 
-            background-color: var(--bg); 
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(30, 30, 40, 0.5) 0%, transparent 60%),
-                url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
-            color: var(--text-main); 
-            min-height: 100vh; 
-            display: flex; justify-content: center; overflow-x: hidden; 
-        }
-        
-        #root { width: 100%; max-width: 500px; transition: max-width 0.3s ease; position: relative; }
-        .container { width: 92%; margin: 0 auto; padding: 30px 0 140px 0; display: flex; flex-direction: column; }
-        
-        /* Advanced 3D Glass Cards */
-        .glass { 
-            width: 100%; 
-            background: linear-gradient(145deg, rgba(35, 35, 45, 0.4) 0%, rgba(15, 15, 20, 0.6) 100%);
-            border-top: 1px solid rgba(255, 255, 255, 0.12);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            border-right: 1px solid rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-            border-radius: 28px; 
-            padding: 24px; 
-            margin-bottom: 18px; 
-            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-        }
-        
-        /* Premium Logo Styling */
-        .brand-logo {
-            width: 70px; height: 70px; margin: 0 auto 15px;
-            background: linear-gradient(135deg, var(--gold) 0%, #c29b57 100%);
-            border-radius: 20px; display: flex; align-items: center; justify-content: center;
-            font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 700; color: #000;
-            box-shadow: 0 0 30px var(--gold-glow), inset 0 0 15px rgba(255,255,255,0.4);
-            position: relative; overflow: hidden;
-        }
-        .brand-logo::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
-            transform: translateX(-100%); animation: shine 3s infinite;
-        }
-        @keyframes shine { 100% { transform: translateX(100%); } }
+  html { scroll-behavior: smooth; }
 
-        .brand-header { width: 100%; text-align: center; margin: 15px 0 40px 0; }
-        .brand-header h1 { 
-            font-family: 'Playfair Display', serif; 
-            font-size: clamp(38px, 12vw, 50px); 
-            font-weight: 600;
-            line-height: 1.1; 
-            letter-spacing: 1px; 
-            color: var(--text-main);
-            text-shadow: 0 0 35px rgba(255,255,255,0.3);
-            margin-bottom: 8px;
-        }
-        .brand-header p { font-size: 9px; color: var(--gold); letter-spacing: 6px; font-weight: 800; text-transform: uppercase; }
-        
-        /* Floating Navigation Bar */
-        .nav { 
-            position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); 
-            width: 90%; max-width: 440px; 
-            background: rgba(10, 10, 15, 0.7); 
-            backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
-            border-top: 1px solid rgba(255,255,255,0.1); 
-            border-left: 1px solid rgba(255,255,255,0.05);
-            border-right: 1px solid rgba(255,255,255,0.02);
-            border-bottom: 1px solid rgba(255,255,255,0.02);
-            border-radius: 35px;
-            display: flex; justify-content: space-around; padding: 16px 10px; z-index: 1000; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.9);
-        }
-        .nav-btn { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); cursor: pointer; transition: 0.5s cubic-bezier(0.16, 1, 0.3, 1); opacity: 0.5; }
-        .nav-btn.active { color: var(--gold); opacity: 1; transform: translateY(-4px) scale(1.05); filter: drop-shadow(0 0 12px var(--gold-glow)); }
-        .nav-btn span:first-child { font-size: 22px; margin-bottom: 5px; transition: 0.3s; }
-        .nav-label { font-size: 8px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+  }
 
-        .btn-prime { background: var(--text-main); color: var(--bg); border: none; padding: 18px; border-radius: 18px; width: 100%; font-weight: 800; cursor: pointer; font-size: 13px; transition: 0.3s; letter-spacing: 1.5px; text-transform: uppercase; box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
-        .btn-prime:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(255,255,255,0.15); }
-        .btn-gold { background: linear-gradient(135deg, var(--gold) 0%, #c29b57 100%); color: #000; box-shadow: 0 10px 25px var(--gold-glow); }
-        .btn-gold:hover { box-shadow: 0 15px 35px var(--gold-glow); }
-        
-        input, textarea, select { background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 18px; border-radius: 18px; width: 100%; margin-bottom: 12px; font-size: 15px; outline: none; transition: 0.3s; box-shadow: inset 0 2px 10px rgba(0,0,0,0.5); }
-        input:focus, textarea:focus, select:focus { border-color: var(--gold); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 0 15px var(--gold-glow); }
-        
-        /* Liquid Progress Bar */
-        .xp-bar { width: 100%; height: 8px; background: rgba(0,0,0,0.8); border-radius: 10px; margin: 15px 0; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
-        .xp-fill { height: 100%; background: linear-gradient(90deg, #b8860b, var(--gold), #fff); box-shadow: 0 0 20px var(--gold); transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1); }
+  /* grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .7;
+  }
 
-        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 30px; }
-        .stat-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 22px 10px; border-radius: 22px; text-align: center; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); }
-        .stat-card:hover { background: rgba(255,255,255,0.05); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        .stat-val { font-family: 'Playfair Display'; font-size: 28px; display: block; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.5px;}
-        .stat-lbl { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; }
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 3px; height: 3px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--muted2); border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
 
-        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 20px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; cursor: pointer; }
-        .setting-item:hover { background: rgba(255,255,255,0.06); transform: translateX(6px); border-color: rgba(255,255,255,0.15); }
-        .setting-label { display: flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 600; }
-        .setting-val { color: var(--text-muted); font-size: 13px; font-weight: 700; }
+  /* ─── LAYOUT ─── */
+  #app { max-width: 900px; margin: 0 auto; padding: 0 16px 120px; }
 
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; width: 100%; }
-        .day-label { font-size: 9px; font-weight: 800; color: var(--text-muted); text-align: center; margin-bottom: 8px; }
-        .day-node { aspect-ratio: 1; background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--text-muted); font-weight: 700; transition: 0.3s;}
-        .day-node.active { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold); box-shadow: 0 0 15px var(--gold-glow), inset 0 0 10px rgba(226,184,113,0.2); }
-        .day-node.dim { opacity: 0; border: none; }
-        
-        .filter-chip { padding: 10px 20px; background: rgba(0,0,0,0.6); border-radius: 25px; font-size: 10px; font-weight: 800; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); color: var(--text-muted); transition: 0.3s;}
-        .filter-chip.active { background: var(--gold-dim); color: var(--gold); border-color: var(--gold); box-shadow: 0 0 15px var(--gold-glow); }
+  /* ─── GLASS CARD ─── */
+  .card {
+    background: rgba(17,17,19,.7);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    backdrop-filter: blur(20px);
+    transition: border-color var(--transition);
+    overflow: hidden;
+  }
+  .card:hover { border-color: rgba(200,169,110,.12); }
+  .card-pad { padding: 24px; }
+  .card-pad-lg { padding: 32px; }
 
-        /* Butter-Smooth Animations */
-        .animate { animation: slideFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes slideFade { from { opacity: 0; transform: scale(0.95) translateY(15px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        
-        .rank-pulse { animation: pulse 4s infinite cubic-bezier(0.4, 0, 0.2, 1); filter: drop-shadow(0 0 35px var(--gold-glow)); }
-        @keyframes pulse { 0%, 100% { opacity: 0.85; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.05); filter: drop-shadow(0 0 50px var(--gold));} }
-        
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); }
-    </style>
+  /* ─── TYPOGRAPHY ─── */
+  .serif { font-family: 'Instrument Serif', serif; }
+  .mono  { font-family: 'DM Mono', monospace; }
+
+  .label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--text2);
+  }
+  .label-gold { color: var(--gold); }
+
+  /* ─── BUTTONS ─── */
+  button { cursor: pointer; border: none; background: none; color: inherit; font-family: inherit; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 24px; border-radius: var(--r2); font-family: inherit; font-size: 11px;
+    font-weight: 700; letter-spacing: .12em; text-transform: uppercase; transition: all var(--transition);
+    cursor: pointer;
+  }
+  .btn:active { transform: scale(.97); }
+
+  .btn-gold {
+    background: var(--gold); color: #0A0A0B;
+    box-shadow: 0 0 20px var(--gold-glow);
+  }
+  .btn-gold:hover { filter: brightness(1.08); box-shadow: 0 0 30px var(--gold-glow); }
+
+  .btn-ghost {
+    background: var(--bg3); border: 1px solid var(--border2); color: var(--text2);
+  }
+  .btn-ghost:hover { border-color: rgba(200,169,110,.25); color: var(--gold); }
+
+  .btn-danger {
+    background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.15); color: var(--red);
+  }
+  .btn-danger:hover { background: rgba(248,113,113,.14); }
+
+  /* ─── INPUTS ─── */
+  input, textarea, select {
+    font-family: inherit; font-size: 13px; width: 100%;
+    background: var(--bg3); border: 1px solid var(--border2); color: var(--text);
+    border-radius: var(--r2); padding: 12px 16px; outline: none;
+    transition: border-color var(--transition), background var(--transition);
+    resize: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: rgba(200,169,110,.35);
+    background: var(--bg4);
+  }
+  input::placeholder, textarea::placeholder { color: var(--muted); }
+  select option { background: var(--bg3); }
+
+  /* ─── DIVIDER ─── */
+  .divider { height: 1px; background: var(--border); margin: 0; }
+
+  /* ─── BADGES ─── */
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 8px; border-radius: 99px; font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .badge-high   { background: rgba(248,113,113,.1);  border: 1px solid rgba(248,113,113,.2); color: var(--red); }
+  .badge-medium { background: rgba(251,191,36,.1);   border: 1px solid rgba(251,191,36,.2);  color: var(--yellow); }
+  .badge-low    { background: rgba(96,165,250,.1);   border: 1px solid rgba(96,165,250,.2);  color: var(--blue); }
+  .badge-done   { background: rgba(52,211,153,.08);  border: 1px solid rgba(52,211,153,.2);  color: var(--green); }
+
+  /* ─── PRIORITY DOT ─── */
+  .p-dot { width: 6px; height: 6px; border-radius: 99px; flex-shrink: 0; }
+  .p-dot-high   { background: var(--red); box-shadow: 0 0 6px var(--red); }
+  .p-dot-medium { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
+  .p-dot-low    { background: var(--blue); box-shadow: 0 0 6px var(--blue); }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-track { height: 3px; background: var(--bg3); border-radius: 99px; overflow: hidden; }
+  .progress-fill  { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold2)); border-radius: 99px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+
+  /* ─── FADE ANIMATIONS ─── */
+  @keyframes fadeUp   { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+  @keyframes scaleIn  { from { opacity:0; transform:scale(.95); } to { opacity:1; transform:scale(1); } }
+  @keyframes pulse    { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+  @keyframes shimmer  { 0%{transform:translateX(-100%);} 100%{transform:translateX(200%);} }
+  @keyframes float    { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);} }
+  @keyframes glow-pulse { 0%,100%{box-shadow:0 0 20px var(--gold-glow);} 50%{box-shadow:0 0 40px rgba(200,169,110,.35);} }
+  @keyframes spin     { to{transform:rotate(360deg);} }
+
+  .anim-fade-up  { animation: fadeUp .5s cubic-bezier(.4,0,.2,1) both; }
+  .anim-fade-in  { animation: fadeIn .4s ease both; }
+  .anim-scale-in { animation: scaleIn .35s cubic-bezier(.4,0,.2,1) both; }
+
+  /* delay helpers */
+  .d1 { animation-delay: .05s; } .d2 { animation-delay: .1s; } .d3 { animation-delay: .15s; }
+  .d4 { animation-delay: .2s; }  .d5 { animation-delay: .25s; } .d6 { animation-delay: .3s; }
+
+  /* ─── MODAL OVERLAY ─── */
+  .overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(10,10,11,.85); backdrop-filter: blur(16px);
+    display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .overlay.open { display: flex; animation: fadeIn .2s ease; }
+  .overlay-content {
+    width: 100%; max-width: 520px; max-height: 88vh; overflow-y: auto;
+    animation: scaleIn .3s cubic-bezier(.4,0,.2,1);
+  }
+
+  /* ─── AUTH SCREEN ─── */
+  #auth-screen {
+    min-height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 24px;
+  }
+
+  .auth-logo {
+    width: 72px; height: 72px; background: var(--gold);
+    border-radius: 22px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 0 40px var(--gold-glow), 0 0 80px rgba(200,169,110,.08);
+    animation: glow-pulse 3s ease infinite, float 6s ease infinite;
+  }
+
+  .auth-logo svg { width: 36px; height: 36px; color: #0A0A0B; }
+
+  .auth-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(42px, 8vw, 64px);
+    font-weight: 400; letter-spacing: -.02em;
+    color: var(--text); line-height: 1; margin-bottom: 8px;
+    text-align: center;
+  }
+  .auth-tagline {
+    font-size: 10px; font-weight: 600; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 40px;
+    text-align: center;
+  }
+  .auth-card { width: 100%; max-width: 380px; }
+  .auth-tabs {
+    display: flex; gap: 4px; background: var(--bg3); padding: 4px;
+    border-radius: var(--r2); border: 1px solid var(--border); margin-bottom: 24px;
+  }
+  .auth-tab {
+    flex: 1; padding: 10px; border-radius: 8px; font-size: 10px;
+    font-weight: 700; letter-spacing: .1em; text-transform: uppercase; transition: all var(--transition);
+    color: var(--text2); text-align: center; cursor: pointer;
+  }
+  .auth-tab.active { background: var(--bg4); color: var(--gold); border: 1px solid rgba(200,169,110,.15); }
+
+  .form-group { margin-bottom: 12px; }
+  .form-label { display: block; font-size: 9px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .auth-error { color: var(--red); font-size: 11px; margin-top: 10px; text-align: center; }
+
+  /* ─── BRAND HEADER ─── */
+  .brand-header { text-align: center; padding: 36px 0 28px; }
+  .brand-logo {
+    width: 56px; height: 56px; background: var(--gold);
+    border-radius: 16px; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; box-shadow: 0 0 30px var(--gold-glow);
+    animation: glow-pulse 4s ease infinite;
+  }
+  .brand-logo svg { width: 28px; height: 28px; color: #0A0A0B; }
+  .brand-title {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(32px, 6vw, 48px);
+    font-weight: 400; letter-spacing: -.02em; margin-bottom: 6px;
+  }
+  .brand-divider { width: 32px; height: 1px; background: var(--gold); margin: 12px auto; opacity: .4; }
+  .brand-quote { font-size: 11px; color: var(--text2); font-style: italic; max-width: 220px; margin: 0 auto; line-height: 1.6; }
+
+  /* ─── STAT GRID ─── */
+  .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-card {
+    padding: 20px 16px; border-radius: var(--r);
+    background: rgba(17,17,19,.7); border: 1px solid var(--border);
+    transition: all var(--transition); position: relative; overflow: hidden;
+  }
+  .stat-card::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(200,169,110,.03), transparent);
+    pointer-events: none;
+  }
+  .stat-card:hover { border-color: rgba(200,169,110,.15); transform: translateY(-2px); }
+  .stat-icon {
+    width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; margin-bottom: 14px; background: var(--gold-dim);
+  }
+  .stat-icon svg { width: 14px; height: 14px; }
+  .stat-value { font-family: 'Instrument Serif', serif; font-size: 36px; line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 8px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--text2); }
+
+  /* ─── SECTION TITLE ─── */
+  .section-title {
+    font-family: 'Instrument Serif', serif; font-size: 22px; font-weight: 400;
+    letter-spacing: -.01em; color: var(--text); margin-bottom: 16px;
+  }
+
+  /* ─── TASK LIST ─── */
+  .task-toolbar {
+    display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;
+  }
+  .toolbar-select {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r3);
+    padding: 7px 12px; font-size: 9px; font-weight: 700; letter-spacing: .12em; cursor: pointer;
+    transition: border-color var(--transition);
+  }
+  .toolbar-select:hover { border-color: rgba(200,169,110,.2); }
+  .toolbar-select svg { width: 11px; height: 11px; color: var(--gold); flex-shrink: 0; }
+  .toolbar-select select { background: transparent; border: none; color: var(--text2); font-size: 9px;
+    font-weight: 700; letter-spacing: .12em; text-transform: uppercase; cursor: pointer; padding: 0; width: auto; }
+
+  .task-bucket { margin-bottom: 12px; }
+  .task-bucket-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0; margin-bottom: 4px;
+  }
+  .task-bucket-name { font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  .task-bucket-count {
+    font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted);
+    background: var(--bg3); border: 1px solid var(--border); padding: 2px 7px; border-radius: 99px;
+  }
+
+  .task-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 0; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: all var(--transition); position: relative; group: true;
+  }
+  .task-row:last-child { border-bottom: none; }
+  .task-row:hover .task-text { color: var(--gold); }
+  .task-row:hover .task-arrow { opacity: 1; }
+
+  .task-check {
+    width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--muted2);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    transition: all var(--transition); cursor: pointer;
+  }
+  .task-check:hover { border-color: var(--gold); background: var(--gold-dim); }
+  .task-check.done { background: var(--gold); border-color: var(--gold); }
+  .task-check.done svg { display: block; }
+  .task-check svg { display: none; width: 11px; height: 11px; color: #0A0A0B; }
+
+  .task-text { flex: 1; font-size: 13px; font-weight: 400; transition: color var(--transition); }
+  .task-text.done { text-decoration: line-through; color: var(--muted); }
+  .task-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+  .task-arrow { width: 14px; height: 14px; color: var(--gold); opacity: 0; flex-shrink: 0; transition: opacity var(--transition); }
+
+  .add-task-row {
+    display: flex; gap: 8px; padding-top: 12px; margin-top: 4px;
+    border-top: 1px dashed var(--border);
+  }
+  .add-task-input { flex: 1; background: transparent; border: none; font-size: 12px; color: var(--text2); padding: 4px 0; }
+  .add-task-input:focus { color: var(--text); outline: none; }
+  .add-task-btn {
+    width: 28px; height: 28px; border-radius: 8px; background: var(--gold-dim);
+    border: 1px solid rgba(200,169,110,.15); display: flex; align-items: center; justify-content: center;
+    color: var(--gold); flex-shrink: 0; transition: all var(--transition);
+  }
+  .add-task-btn:hover { background: var(--gold); color: #0A0A0B; }
+  .add-task-btn svg { width: 13px; height: 13px; }
+
+  /* ─── NEW LIST BUTTON ─── */
+  .new-list-card {
+    border: 1px dashed var(--border2); border-radius: var(--r); padding: 20px;
+    text-align: center; cursor: pointer; transition: all var(--transition); color: var(--muted);
+    font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .new-list-card:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+  /* ─── PERFORMANCE ─── */
+  .perf-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 20px; }
+  .perf-tab {
+    flex-shrink: 0; padding: 10px 16px; border-radius: var(--r2);
+    border: 1px solid var(--border); font-size: 10px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; transition: all var(--transition);
+    color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 8px;
+  }
+  .perf-tab.active { background: var(--gold-dim); border-color: rgba(200,169,110,.3); color: var(--gold); }
+  .perf-tab:hover:not(.active) { border-color: var(--border2); color: var(--text); }
+
+  /* SVG Chart */
+  .chart-wrap { width: 100%; height: 180px; margin: 4px 0; position: relative; overflow: hidden; }
+  .chart-wrap svg { width: 100%; height: 100%; }
+
+  .score-log-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .score-log-item:last-child { border-bottom: none; }
+  .score-value { font-family: 'Instrument Serif', serif; font-size: 28px; color: var(--gold); line-height: 1; }
+
+  /* ─── SOCIAL ─── */
+  .post-card { padding: 20px; border-bottom: 1px solid var(--border); }
+  .post-card:last-child { border-bottom: none; }
+  .post-avatar {
+    width: 36px; height: 36px; border-radius: 10px; background: var(--bg3);
+    border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center;
+    font-family: 'Instrument Serif', serif; font-size: 16px; color: var(--gold); flex-shrink: 0;
+  }
+
+  /* ─── RANKING ─── */
+  .rank-row {
+    display: flex; align-items: center; gap: 14px; padding: 16px 20px;
+    border-bottom: 1px solid var(--border); cursor: pointer; transition: all var(--transition);
+  }
+  .rank-row:last-child { border-bottom: none; }
+  .rank-row:hover { background: var(--bg3); }
+  .rank-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); width: 22px; flex-shrink: 0; }
+  .rank-emoji { font-size: 22px; flex-shrink: 0; }
+  .rank-name { font-size: 13px; font-weight: 600; }
+  .rank-pts { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text2); }
+  .rank-chevron { width: 14px; height: 14px; color: var(--muted); margin-left: auto; flex-shrink: 0; }
+
+  .rank-badge-pill {
+    padding: 2px 8px; border-radius: 99px; font-size: 8px; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; border: 1px solid rgba(200,169,110,.2);
+    color: var(--gold); background: var(--gold-dim);
+  }
+
+  /* ─── PROFILE ─── */
+  .profile-avatar {
+    width: 80px; height: 80px; border-radius: 24px; background: linear-gradient(135deg, var(--gold-dim), var(--bg3));
+    border: 1px solid rgba(200,169,110,.2); display: flex; align-items: center; justify-content: center;
+    font-size: 40px; margin: 0 auto 16px;
+    animation: float 6s ease infinite;
+  }
+
+  /* Calendar */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-cell {
+    aspect-ratio: 1; border-radius: 4px; background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 600; color: var(--muted);
+    transition: all var(--transition);
+  }
+  .cal-cell.done { background: var(--gold-dim); border: 1px solid rgba(200,169,110,.25); color: var(--gold); }
+  .cal-cell.today { border: 1px solid var(--gold) !important; }
+
+  /* Mini heatmap */
+  .heatmap { display: flex; flex-wrap: wrap; gap: 3px; }
+  .heatmap-cell { width: 9px; height: 9px; border-radius: 2px; background: var(--bg3); flex-shrink: 0; }
+  .heatmap-cell.done { background: var(--gold); opacity: .8; }
+
+  /* ─── BOTTOM NAV ─── */
+  .bottom-nav {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    width: calc(100% - 32px); max-width: 480px;
+    background: rgba(17,17,19,.92); border: 1px solid rgba(255,255,255,.08);
+    border-radius: 20px; backdrop-filter: blur(20px);
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 10px 8px 10px; z-index: 900;
+    box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 6px 12px; border-radius: 12px; cursor: pointer;
+    transition: all var(--transition); flex: 1;
+  }
+  .nav-item.active { background: var(--gold-dim); }
+  .nav-item svg { width: 20px; height: 20px; transition: all var(--transition); }
+  .nav-item span { font-size: 7px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .nav-item:not(.active) { color: var(--muted); }
+  .nav-item.active svg { color: var(--gold); }
+  .nav-item.active span { color: var(--gold); }
+  .nav-item:not(.active):hover { color: var(--text2); }
+
+  /* ─── INSPECT PANEL ─── */
+  .inspect-panel {
+    position: fixed; inset: 0; z-index: 998;
+    background: rgba(10,10,11,.92); backdrop-filter: blur(20px);
+    display: none; flex-direction: column;
+  }
+  .inspect-panel.open { display: flex; animation: fadeIn .2s ease; }
+  .inspect-inner {
+    flex: 1; overflow-y: auto; padding: 20px;
+    max-width: 640px; margin: 0 auto; width: 100%;
+    animation: fadeUp .3s ease;
+  }
+  .inspect-header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(10,10,11,.95); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+    max-width: 640px; margin: 0 auto; width: 100%;
+  }
+  .inspect-close {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text2); transition: all var(--transition);
+  }
+  .inspect-close:hover { border-color: var(--gold); color: var(--gold); }
+  .inspect-close svg { width: 16px; height: 16px; }
+  .inspect-section { margin-bottom: 28px; }
+  .inspect-section-label { font-size: 8px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .inspect-section-label svg { width: 11px; height: 11px; }
+
+  /* Subtask */
+  .subtask-row {
+    display: flex; align-items: center; gap: 10px; padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .subtask-row:last-child { border-bottom: none; }
+  .subtask-check { width: 18px; height: 18px; border-radius: 50%; border: 1.5px solid var(--muted2); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all var(--transition); }
+  .subtask-check.done { background: var(--green); border-color: var(--green); }
+  .subtask-check svg { width: 9px; height: 9px; color: #0A0A0B; display: none; }
+  .subtask-check.done svg { display: block; }
+  .subtask-text { flex: 1; font-size: 12px; background: transparent; border: none; color: var(--text); }
+  .subtask-text.done { text-decoration: line-through; color: var(--muted); }
+  .subtask-del { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+    color: var(--muted); opacity: 0; transition: all var(--transition); }
+  .subtask-row:hover .subtask-del { opacity: 1; }
+  .subtask-del:hover { color: var(--red); }
+  .subtask-del svg { width: 12px; height: 12px; }
+
+  /* Priority selector */
+  .pri-btns { display: flex; gap: 8px; }
+  .pri-btn {
+    flex: 1; padding: 9px; border-radius: var(--r3); font-size: 9px; font-weight: 700;
+    letter-spacing: .12em; text-transform: uppercase; border: 1px solid var(--border2);
+    background: var(--bg3); color: var(--text2); transition: all var(--transition); cursor: pointer;
+  }
+  .pri-btn.active-high   { background: rgba(248,113,113,.1); border-color: rgba(248,113,113,.3); color: var(--red); }
+  .pri-btn.active-medium { background: rgba(251,191,36,.1);  border-color: rgba(251,191,36,.3);  color: var(--yellow); }
+  .pri-btn.active-low    { background: rgba(96,165,250,.1);  border-color: rgba(96,165,250,.3);  color: var(--blue); }
+
+  /* ─── RANK CARD ─── */
+  .rank-progress-card {
+    padding: 24px; display: flex; flex-direction: column; gap: 12px;
+  }
+
+  /* ─── VAULT ─── */
+  .vault-badge-row {
+    display: flex; align-items: center; gap: 16px; padding: 16px;
+    border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3);
+    transition: all var(--transition);
+  }
+  .vault-badge-row.unlocked { border-color: rgba(200,169,110,.15); }
+  .vault-badge-row.locked   { opacity: .3; filter: grayscale(1); }
+  .vault-badge-emoji { font-size: 32px; }
+  .vault-badge-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .vault-badge-info p  { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+
+  /* ─── STRATEGY TAB ─── */
+  .strategy-empty {
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    padding: 48px 20px; text-align: center;
+  }
+  .strategy-empty-icon {
+    width: 64px; height: 64px; border-radius: 20px; background: var(--gold-dim);
+    border: 1px solid rgba(200,169,110,.15); display: flex; align-items: center; justify-content: center;
+  }
+  .strategy-empty-icon svg { width: 28px; height: 28px; color: var(--gold); }
+
+  /* ─── CONFETTI ─── */
+  #confetti-canvas { position:fixed; inset:0; pointer-events:none; z-index:9998; }
+
+  /* ─── CONFIRM MODAL ─── */
+  .confirm-box {
+    text-align: center; padding: 40px 24px;
+  }
+  .confirm-icon {
+    width: 60px; height: 60px; border-radius: 18px; background: var(--gold-dim);
+    border: 1px solid rgba(200,169,110,.2); display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; animation: glow-pulse 2s ease infinite;
+  }
+  .confirm-icon svg { width: 28px; height: 28px; color: var(--gold); }
+  .confirm-title { font-family: 'Instrument Serif', serif; font-size: 22px; margin-bottom: 8px; }
+  .confirm-sub { font-size: 11px; color: var(--text2); margin-bottom: 28px; line-height: 1.6; }
+
+  /* ─── LOADING ─── */
+  #loading-screen {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999; flex-direction: column; gap: 16px;
+  }
+  .loader-ring {
+    width: 40px; height: 40px; border: 2px solid var(--border);
+    border-top-color: var(--gold); border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  .loader-text { font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+
+  /* ─── UTILITY ─── */
+  .flex    { display: flex; } .flex-1  { flex: 1; }
+  .items-center { align-items: center; }
+  .justify-between { justify-content: space-between; }
+  .gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .gap-16 { gap: 16px; }
+  .mt-8 { margin-top: 8px; } .mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; } .mt-20 { margin-top: 20px; }
+  .mb-8 { margin-bottom: 8px; } .mb-12 { margin-bottom: 12px; } .mb-16 { margin-bottom: 16px; } .mb-20 { margin-bottom: 20px; }
+  .text-gold { color: var(--gold); } .text-muted { color: var(--text2); }
+  .text-red { color: var(--red); } .text-green { color: var(--green); }
+  .fw-600 { font-weight: 600; } .fw-700 { font-weight: 700; }
+  .sr-only { font-size: 12px; }
+  .w-full { width: 100%; }
+  .hidden { display: none !important; }
+
+  /* ─── TOAST NOTIFICATIONS ─── */
+  #toast-container { position:fixed; bottom:96px; left:50%; transform:translateX(-50%); z-index:10000; display:flex; flex-direction:column-reverse; gap:8px; align-items:center; pointer-events:none; }
+  .toast { padding:11px 20px; border-radius:14px; font-size:11px; font-weight:700; letter-spacing:.08em; backdrop-filter:blur(24px); animation:toastIn .3s cubic-bezier(.4,0,.2,1) forwards; pointer-events:none; white-space:nowrap; max-width:90vw; text-align:center; }
+  .toast.out { animation:toastOut .3s ease forwards; }
+  .toast-success { background:rgba(52,211,153,.15); border:1px solid rgba(52,211,153,.35); color:#34D399; }
+  .toast-error   { background:rgba(248,113,113,.15); border:1px solid rgba(248,113,113,.35); color:#F87171; }
+  .toast-info    { background:rgba(200,169,110,.15); border:1px solid rgba(200,169,110,.35); color:#C8A96E; }
+  .toast-rank    { background:rgba(168,85,247,.15);  border:1px solid rgba(168,85,247,.35);  color:#a855f7; font-size:13px; padding:14px 24px; }
+  @keyframes toastIn  { from{opacity:0;transform:translateY(12px) scale(.95);} to{opacity:1;transform:translateY(0) scale(1);} }
+  @keyframes toastOut { from{opacity:1;transform:translateY(0);} to{opacity:0;transform:translateY(-8px);} }
+
+  /* ─── XP POPUP ─── */
+  .xp-popup { position:fixed; z-index:9999; font-family:'Instrument Serif',serif; font-weight:400; pointer-events:none; animation:xpFloat 1.6s cubic-bezier(.4,0,.2,1) forwards; }
+  @keyframes xpFloat { 0%{opacity:0;transform:translateY(0) scale(.7);} 15%{opacity:1;transform:translateY(-24px) scale(1.15);} 75%{opacity:1;transform:translateY(-80px) scale(1);} 100%{opacity:0;transform:translateY(-110px) scale(.9);} }
+
+  /* ─── OVERDUE TASKS ─── */
+  .task-row.overdue .task-text { color:var(--red) !important; }
+  .badge-overdue { background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.25); color:var(--red); }
+
+  /* ─── AUTH BUTTON LOADING ─── */
+  .btn-loading { opacity:.65; pointer-events:none !important; cursor:not-allowed !important; }
+  .auth-spinner { width:14px; height:14px; border:2px solid rgba(10,10,11,.2); border-top-color:#0A0A0B; border-radius:50%; animation:spin .65s linear infinite; display:inline-block; vertical-align:middle; margin-right:6px; }
+
+  /* ─── PASSWORD TOGGLE ─── */
+  .pw-wrap { position:relative; }
+  .pw-wrap input { padding-right:44px; }
+  .pw-toggle { position:absolute; right:14px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--muted); cursor:pointer; padding:4px; transition:color var(--transition); }
+  .pw-toggle:hover { color:var(--gold); }
+  .pw-toggle svg { width:16px; height:16px; display:block; }
+
+  /* ─── POST CHARACTER COUNTER ─── */
+  .char-counter { font-size:9px; color:var(--muted); text-align:right; margin-top:4px; font-family:'DM Mono',monospace; transition:color var(--transition); }
+  .char-warn { color:var(--yellow) !important; }
+  .char-over { color:var(--red) !important; }
+
+  /* ─── STREAK BONUS BADGE ─── */
+  .streak-bonus-badge { display:inline-flex; align-items:center; gap:4px; font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); background:var(--gold-dim); border:1px solid rgba(200,169,110,.2); padding:2px 7px; border-radius:99px; margin-left:6px; vertical-align:middle; }
+
+  /* ─── LIST PROGRESS BAR ─── */
+  .list-mini-progress { height:3px; background:var(--bg3); border-radius:99px; margin-top:10px; overflow:hidden; }
+  .list-mini-fill { height:100%; background:linear-gradient(90deg, var(--gold), var(--gold2)); border-radius:99px; transition:width .7s cubic-bezier(.4,0,.2,1); }
+
+  /* ─── GRIND NAV BADGE ─── */
+  .nav-badge { position:absolute; top:-2px; right:-4px; width:14px; height:14px; background:var(--gold); color:#0A0A0B; font-size:7px; font-weight:800; border-radius:99px; display:flex; align-items:center; justify-content:center; }
+  .nav-item { position:relative; }
+
+  /* ─── EDIT PROFILE MODAL ─── */
+  .edit-avatar-ring { width:72px; height:72px; border-radius:22px; background:linear-gradient(135deg,var(--gold-dim),var(--bg3)); border:2px solid rgba(200,169,110,.25); display:flex; align-items:center; justify-content:center; font-size:36px; margin:0 auto 20px; cursor:pointer; transition:all var(--transition); }
+  .edit-avatar-ring:hover { border-color:var(--gold); }
+
+  /* ─── LIVE DOT ─── */
+  .live-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 8px rgba(52,211,153,.6); margin-right:5px; animation:pulse 2s ease infinite; vertical-align:middle; }
+
+  /* ─── TODAY DONE COUNTER ─── */
+  .today-done-chip { display:inline-flex; align-items:center; gap:5px; font-size:9px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--green); background:rgba(52,211,153,.08); border:1px solid rgba(52,211,153,.2); padding:4px 10px; border-radius:99px; }
+
+  /* ─── CLEAR DONE BUTTON ─── */
+  .clear-done-btn { font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); opacity:.5; padding:2px 6px; border-radius:6px; border:1px solid transparent; transition:all var(--transition); }
+  .clear-done-btn:hover { opacity:1; color:var(--red); border-color:rgba(248,113,113,.2); background:rgba(248,113,113,.06); }
+</style>
+
+<!-- ─── FIREBASE INIT ─── -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot, updateDoc, where, getDocs, addDoc, serverTimestamp, arrayUnion, arrayRemove }
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDP6rz3z9UahkhQm-wS7CO-QsGNT2QMUbQ",
+    authDomain: "dincharryaa.firebaseapp.com",
+    projectId: "dincharryaa",
+    storageBucket: "dincharryaa.firebasestorage.app",
+    messagingSenderId: "967791343919",
+    appId: "1:967791343919:web:f795208c273df031c849da",
+    measurementId: "G-T67T0VNSGC"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  window.db   = getFirestore(app);
+  window.auth = getAuth(app);
+  window.fb   = {
+    doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot,
+    updateDoc, where, getDocs, addDoc, serverTimestamp, arrayUnion, arrayRemove,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut
+  };
+  // Signal that Firebase is ready
+  window._fbReadyResolve && window._fbReadyResolve();
+</script>
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect, useMemo } = React;
-        
-        const BADGES = [
-            { name: "Iron", min: 0, icon: "🌑", color: "#94a3b8" },
-            { name: "Bronze", min: 500, icon: "🥉", color: "#cd7f32" },
-            { name: "Silver", min: 1500, icon: "🥈", color: "#e2e8f0" },
-            { name: "Gold", min: 4000, icon: "👑", color: "#e2b871" },
-            { name: "Immortal", min: 10000, icon: "🧿", color: "#a855f7" }
-        ];
+<!-- LOADING -->
+<div id="loading-screen">
+  <div style="width:52px;height:52px;background:var(--gold);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px var(--gold-glow);margin-bottom:8px;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;">
+      <path d="M8 5V19C8 19 16 19 16 12C16 5 8 5 8 5Z"/>
+    </svg>
+  </div>
+  <div class="loader-ring"></div>
+  <div class="loader-text">Initialising</div>
+</div>
 
-        const MOTIVATIONAL_QUOTES = [
-            "Discipline equals freedom.",
-            "Do it today, or regret it tomorrow.",
-            "Excuses don't burn calories.",
-            "Pain is temporary, quitting lasts forever.",
-            "Your future is created by what you do today.",
-            "Embrace the grind.",
-            "Small steps, every day.",
-            "Success is the sum of small efforts.",
-            "Focus on the step, not the staircase.",
-            "Conquer yourself, conquer the world."
-        ];
+<!-- CONFETTI CANVAS -->
+<canvas id="confetti-canvas"></canvas>
 
-        function App() {
-            const [user, setUser] = useState(null);
-            const [data, setData] = useState(null);
-            const [tab, setTab] = useState("grind");
-            const [confirm, setConfirm] = useState(null);
-            const [viewVault, setViewVault] = useState(false);
-            const [inspectedUser, setInspectedUser] = useState(null);
-            const [posts, setPosts] = useState([]);
-            const [leaderboard, setLeaderboard] = useState([]);
-            const [squad, setSquad] = useState(null);
-            const [thought, setThought] = useState("");
-            const [viewMode, setViewMode] = useState("month");
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
 
-            const play = (type) => window.playSFX(type);
+<!-- ═══════════════════════════════════════ AUTH SCREEN ═══ -->
+<div id="auth-screen" style="display:none;">
+  <div class="auth-logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M8 5V19C8 19 16 19 16 12C16 5 8 5 8 5Z"/>
+    </svg>
+  </div>
+  <div class="auth-title serif">Dincharryaa</div>
+  <div class="auth-tagline">Daily Ops Terminal · Grind Protocol</div>
+  <div class="auth-card card card-pad">
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Register</div>
+    </div>
+    <div id="signup-fields" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Callsign</label>
+        <input type="text" id="auth-name" placeholder="Enter your name" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">DC Identifier (optional)</label>
+        <input type="text" id="auth-dcid" placeholder="Leave blank for auto-assign" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" id="auth-email" placeholder="operative@domain.com" onkeydown="if(event.key==='Enter')handleAuth()" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="auth-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')handleAuth()" />
+        <button class="pw-toggle" type="button" onclick="togglePw()" tabindex="-1" title="Show/hide password">
+          <svg id="pw-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="auth-error hidden" id="auth-error"></div>
+    <div class="mt-16">
+      <button class="btn btn-gold w-full" id="auth-btn" onclick="handleAuth()">
+        <span id="auth-btn-text">Establish Link</span>
+      </button>
+    </div>
+    <div style="text-align:center; margin-top:12px;">
+      <button class="btn btn-ghost" style="width:100%; font-size:10px;" id="demo-btn" onclick="demoLogin()">
+        ⚡ Demo Mode (No account needed)
+      </button>
+    </div>
+  </div>
+</div>
 
-            const dailyQuote = useMemo(() => {
-                const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 1000 / 60 / 60 / 24);
-                return MOTIVATIONAL_QUOTES[dayOfYear % MOTIVATIONAL_QUOTES.length];
-            }, []);
+<!-- ═══════════════════════════════════════ MAIN APP ═══ -->
+<div id="main-app" style="display:none;">
+  <div id="app">
 
-            useEffect(() => {
-                const unsub = window.fb.onAuthStateChanged(window.auth, (u) => {
-                    if (u) {
-                        setUser(u);
-                        window.fb.onSnapshot(window.fb.doc(window.db, "users", u.uid), (snap) => {
-                            if (snap.exists()) setData(snap.data());
-                        });
-                    } else setUser(null);
-                });
-                return () => unsub();
-            }, []);
+    <!-- ── GRIND TAB ── -->
+    <div id="tab-grind" class="tab-content">
+      <div class="brand-header anim-fade-up">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M8 5V19C8 19 16 19 16 12C16 5 8 5 8 5Z"/>
+          </svg>
+        </div>
+        <div class="brand-title serif">Dincharryaa</div>
+        <div class="brand-divider"></div>
+        <div class="brand-quote" id="daily-quote"></div>
+      </div>
 
-            // DAILY REFRESH LOGIC (Ensures tasks uncheck at midnight)
-            useEffect(() => {
-                if (data && user) {
-                    const today = new Date().toISOString().slice(0, 10);
-                    if (data.lastReset !== today) {
-                        const refreshedLists = (data.lists || []).map(list => ({
-                            ...list,
-                            tasks: list.tasks.map(task => ({ ...task, done: false }))
-                        }));
-                        window.fb.updateDoc(window.fb.doc(window.db, "users", user.uid), {
-                            lists: refreshedLists,
-                            lastReset: today,
-                            sqLastDone: ""
-                        });
-                    }
-                }
-            }, [data, user]);
+      <!-- Stats -->
+      <div class="stat-grid mb-20">
+        <div class="stat-card anim-fade-up d1">
+          <div class="stat-icon" style="color:var(--red);">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.66 11.2C17.43 10.9 17.15 10.64 16.89 10.38C16.22 9.78 15.46 9.35 14.82 8.72C13.33 7.26 13 4.85 13.95 3C13 3.23 12.17 3.75 11.46 4.32C8.87 6.4 7.85 10.07 9.07 13.22C9.11 13.32 9.15 13.42 9.15 13.55C9.15 13.77 9 13.97 8.8 14.05C8.57 14.15 8.33 14.09 8.14 13.93C8.08 13.88 8.04 13.83 8 13.76C6.87 12.33 6.69 10.28 7.45 8.64C5.78 10 4.87 12.3 5 14.47C5.06 14.97 5.12 15.47 5.29 15.97C5.43 16.57 5.7 17.17 6 17.7C7.08 19.43 8.95 20.67 10.96 20.92C13.1 21.19 15.39 20.8 17.03 19.32C18.86 17.66 19.5 15 18.56 12.72L18.43 12.46C18.22 12 17.66 11.2 17.66 11.2Z"/></svg>
+          </div>
+          <div class="stat-value" id="stat-streak" style="color:var(--red);">0</div>
+          <div class="stat-label">Day Streak</div>
+        </div>
+        <div class="stat-card anim-fade-up d2">
+          <div class="stat-icon" style="color:var(--gold);">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.11 2.5L12 4.5L13.89 2.5L14.78 4.5L16.67 2.5L17.56 4.5L19.44 2.5L20.33 4.5C20.33 4.5 22 6.17 22 9C22 12 20 14 17.5 14.67V19C17.5 20.1 16.6 21 15.5 21H8.5C7.4 21 6.5 20.1 6.5 19V14.67C4 14 2 12 2 9C2 6.17 3.67 4.5 3.67 4.5L4.56 2.5L6.44 4.5L7.33 2.5L9.22 4.5L10.11 2.5L11.11 2.5Z"/></svg>
+          </div>
+          <div class="stat-value" id="stat-xp" style="color:var(--gold);">0</div>
+          <div class="stat-label">Total XP</div>
+        </div>
+        <div class="stat-card anim-fade-up d3">
+          <div class="stat-icon" style="color:var(--blue);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+          </div>
+          <div class="stat-value" id="stat-wins" style="color:var(--blue);">0</div>
+          <div class="stat-label">First Wins</div>
+        </div>
+      </div>
 
-            useEffect(() => {
-                if (data?.squadId) {
-                    return window.fb.onSnapshot(window.fb.doc(window.db, "squads", data.squadId), s => setSquad(s.data()));
-                }
-            }, [data?.squadId]);
+      <!-- Today's completions chip -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;" id="today-stats-row">
+        <div class="today-done-chip" id="today-done-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:11px;height:11px;"><polyline points="20 6 9 17 4 12"/></svg>
+          <span id="today-done-label">0 tasks today</span>
+        </div>
+        <div id="streak-bonus-area"></div>
+      </div>
 
-            useEffect(() => {
-                if (tab === "ranking") {
-                    const q = window.fb.query(window.fb.collection(window.db, "users"), window.fb.orderBy("pts", "desc"), window.fb.limit(25));
-                    return window.fb.onSnapshot(q, s => setLeaderboard(s.docs.map(d => d.data())));
-                }
-                if (tab === "social") {
-                    const q = window.fb.query(window.fb.collection(window.db, "feed"), window.fb.orderBy("time", "desc"), window.fb.limit(30));
-                    return window.fb.onSnapshot(q, s => setPosts(s.docs.map(d => d.data())));
-                }
-            }, [tab]);
+      <!-- Rank Banner -->
+      <div class="card card-pad mb-20 anim-fade-up d4" id="rank-banner" style="background:linear-gradient(135deg, rgba(200,169,110,.06), rgba(17,17,19,.7));">
+        <div class="flex items-center gap-16">
+          <div style="font-size:32px;" id="rank-emoji"></div>
+          <div class="flex-1">
+            <div class="label label-gold mb-8" id="rank-name">LOADING...</div>
+            <div class="progress-track">
+              <div class="progress-fill" id="rank-progress" style="width:0%"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:6px;">
+              <span style="font-size:8px;color:var(--muted);" id="rank-pts-label"></span>
+              <span style="font-size:8px;color:var(--muted);" id="rank-next-label"></span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            // Analytics - Safely accessing points
-            const getRankObj = (pts) => [...BADGES].reverse().find(b => (pts || 0) >= b.min) || BADGES[0];
-            const getRankData = (pts) => {
-                const p = pts || 0;
-                let currentIdx = 0;
-                for (let i = 0; i < BADGES.length; i++) {
-                    if (p >= BADGES[i].min) currentIdx = i;
-                }
-                const nextBadge = BADGES[currentIdx + 1];
-                const prevBadge = BADGES[currentIdx];
-                const req = nextBadge ? nextBadge.min : prevBadge.min;
-                const name = nextBadge ? nextBadge.name : 'Max';
-                let progress = 100;
-                if (nextBadge) {
-                    const range = nextBadge.min - prevBadge.min;
-                    const gained = p - prevBadge.min;
-                    progress = Math.min(100, Math.max(0, (gained / range) * 100));
-                }
-                return { currentBadge: prevBadge, nextReq: req, nextName: name, progress };
-            };
+      <!-- Task Lists -->
+      <div class="flex items-center justify-between mb-16 anim-fade-up d5">
+        <div class="section-title serif" style="margin:0;">Mission Protocols</div>
+        <button class="btn btn-ghost" style="padding:8px 16px;font-size:9px;" onclick="promptNewList()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Sector
+        </button>
+      </div>
 
-            const isLocked = () => data?.lockDate && (Date.now() - new Date(data.lockDate).getTime() < 7 * 86400000);
-            const level = Math.floor((data?.pts || 0) / 100) + 1;
+      <div class="task-toolbar anim-fade-up d5">
+        <div class="toolbar-select">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <select id="filter-select" onchange="renderTasks()">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="completed">Done</option>
+          </select>
+        </div>
+        <div class="toolbar-select">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+          <select id="sort-select" onchange="renderTasks()">
+            <option value="createdAt">Date</option>
+            <option value="priority">Priority</option>
+            <option value="alpha">Alphabetical</option>
+            <option value="status">Status</option>
+          </select>
+        </div>
+      </div>
 
-            // BULLETPROOF STREAK CALCULATION
-            const currentStreak = useMemo(() => {
-                const history = data?.history || [];
-                if (history.length === 0) return 0;
-                let s = 0;
-                let checkDate = new Date();
-                const todayStr = checkDate.toISOString().slice(0, 10);
-                checkDate.setDate(checkDate.getDate() - 1);
-                const yestStr = checkDate.toISOString().slice(0, 10);
-                
-                if (!history.includes(todayStr) && !history.includes(yestStr)) return 0;
-                
-                checkDate = new Date();
-                if (!history.includes(todayStr)) checkDate.setDate(checkDate.getDate() - 1); 
+      <div id="tasks-container" class="anim-fade-up d6"></div>
 
-                for(let i=0; i<365; i++) {
-                    const ds = checkDate.toISOString().slice(0, 10);
-                    if (history.includes(ds)) s++;
-                    else break;
-                    checkDate.setDate(checkDate.getDate() - 1);
-                }
-                return s;
-            }, [data?.history]);
+      <div class="new-list-card mt-12 anim-fade-up" style="animation-delay:.35s;" onclick="promptNewList()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline;margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Protocol Sector
+      </div>
+    </div>
 
-            // BULLETPROOF CALENDAR RENDERER
-            const renderCalendar = (historyArr = [], mode) => {
-                const safeHistory = historyArr || [];
-                const now = new Date();
-                const nodes = [];
-                const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    <!-- ── PERFORMANCE TAB ── -->
+    <div id="tab-performance" class="tab-content hidden">
+      <div style="padding:28px 0 20px;">
+        <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Performance <span style="color:var(--muted);font-style:italic;">Labs</span></div>
+        <div class="label">Neural Trace Dashboard</div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+        <button class="btn btn-ghost" style="font-size:9px;" onclick="showAddReportModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Init Hub
+        </button>
+        <button class="btn btn-gold" style="font-size:9px;" id="add-log-btn" onclick="showAddLogModal()" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Log Simulation
+        </button>
+      </div>
+      <div class="perf-tabs" id="perf-tabs"></div>
+      <div id="perf-content"></div>
+    </div>
 
-                if (mode === "month") {
-                    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
-                    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-                    
-                    daysOfWeek.forEach(d => nodes.push(<div key={d+Math.random()} className="day-label">{d}</div>));
-                    for (let i = 0; i < firstDay; i++) nodes.push(<div key={`empty-${i}`} className="day-node dim" />);
-                    for (let d = 1; d <= daysInMonth; d++) {
-                        const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                        const isDone = safeHistory.includes(dateStr);
-                        nodes.push(<div key={d} className={`day-node ${isDone ? 'active' : ''}`}>{d}</div>);
-                    }
-                } else {
-                    const daysToScroll = mode === "3m" ? 90 : mode === "6m" ? 180 : mode === "1y" ? 365 : 
-                                         Math.ceil((Date.now() - new Date(data?.joinDate || Date.now()).getTime()) / 86400000) + 1;
-                    for (let i = daysToScroll - 1; i >= 0; i--) {
-                        const target = new Date(); target.setDate(now.getDate() - i);
-                        const ds = target.toISOString().slice(0, 10);
-                        nodes.push(<div key={ds} className={`day-node ${safeHistory.includes(ds) ? 'active' : ''}`} />);
-                    }
-                }
-                return nodes;
-            };
+    <!-- ── STRATEGY TAB ── -->
+    <div id="tab-lock" class="tab-content hidden">
+      <div style="padding:28px 0 20px;">
+        <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Strategy <span style="color:var(--muted);font-style:italic;">Terminal</span></div>
+        <div class="label">Squad Protocols & Mission Lock</div>
+      </div>
+      <div class="card strategy-empty">
+        <div class="strategy-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="serif" style="font-size:20px;margin-bottom:6px;">Protocol Lockdown</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:20px;max-width:280px;line-height:1.6;">
+          Operational protocols established by mission leads only. Create a new sector to begin.
+        </div>
+        <button class="btn btn-ghost" onclick="promptNewList()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Sector Protocol
+        </button>
+      </div>
+      <div style="margin-top:12px;" id="strategy-lists"></div>
+    </div>
 
-            const handleAction = async () => {
-                play('success');
-                const today = new Date().toISOString().slice(0, 10);
-                let update = { pts: (data?.pts || 0) + 10 }; // Always grant XP per task
-                
-                const safeLists = data?.lists || [];
-                let updatedLists = safeLists;
-                
-                if (confirm.type === "personal") {
-                    updatedLists = safeLists.map(l => l.id === confirm.lid ? {...l, tasks: l.tasks.map(t => t.id === confirm.tid ? {...t, done: true} : t)} : l);
-                    update.lists = updatedLists;
-                } else {
-                    update.sqLastDone = today;
-                }
+    <!-- ── SOCIAL TAB ── -->
+    <div id="tab-social" class="tab-content hidden">
+      <div style="padding:28px 0 20px;">
+        <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Network <span style="color:var(--muted);font-style:italic;">Feed</span></div>
+        <div class="label">Operational Intel Sync</div>
+      </div>
 
-                // CHECK: Only update History/Streak if ALL personal tasks are done
-                let hist = data?.history || []; 
-                const hasTasks = updatedLists.some(l => l.tasks.length > 0);
-                const allPersonalDone = hasTasks && updatedLists.every(l => l.tasks.every(t => t.done));
+      <div class="card card-pad mb-12" style="background:linear-gradient(135deg,rgba(200,169,110,.04),rgba(17,17,19,.8));">
+        <textarea id="post-text" rows="3" placeholder="Sync operational findings to the network..." style="margin-bottom:16px;"></textarea>
+        <div style="display:flex;justify-content:flex-end;">
+          <button class="btn btn-gold" style="font-size:10px;" onclick="submitPost()">
+            Transmit
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
 
-                if (allPersonalDone && !hist.includes(today)) {
-                    hist.push(today);
-                    update.history = hist;
-                }
+      <div class="card card-pad mb-12" style="padding:10px 16px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;color:var(--gold);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="feed-search" placeholder="Search feed..." style="border:none;background:transparent;padding:4px 0;" oninput="renderFeed()" />
+        </div>
+      </div>
 
-                await window.fb.updateDoc(window.fb.doc(window.db, "users", user.uid), update);
-                await window.fb.addDoc(window.fb.collection(window.db, "feed"), { name: data?.name || 'Agent', dcId: data?.dcId || 'ID', text: `Protocol Cleared: ${confirm.text}`, time: window.fb.serverTimestamp() });
-                setConfirm(null);
-                
-                // Only fire huge confetti if EVERYTHING is done, otherwise small confetti
-                if (allPersonalDone) {
-                    confetti({ particleCount: 250, spread: 100, origin: { y: 0.6 }, colors: ['#e2b871', '#ffffff', '#a855f7', '#2ecc71'] });
-                } else {
-                    confetti({ particleCount: 50, spread: 40, origin: { y: 0.8 }, colors: ['#e2b871', '#ffffff'] });
-                }
-            };
+      <div class="card" id="feed-container" style="overflow:hidden;"></div>
+    </div>
 
-            // Loading screen while user exists but data hasn't arrived
-            if (user && !data) return (
-                <div className="container animate" style={{justifyContent:'center', minHeight:'100vh', alignItems:'center'}}>
-                    <div className="rank-pulse" style={{fontSize: 50}}>⚡</div>
-                    <p style={{marginTop: 20, color:'var(--gold)', letterSpacing: 4, fontSize: 10, fontWeight: 800}}>SYNCING DATA...</p>
-                </div>
-            );
+    <!-- ── RANKING TAB ── -->
+    <div id="tab-ranking" class="tab-content hidden">
+      <div style="padding:28px 0 20px;">
+        <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Global <span style="color:var(--muted);font-style:italic;">Rankings</span></div>
+        <div class="label">Operative Leaderboard</div>
+      </div>
 
-            if (!user) return (
-                <div className="container animate" style={{justifyContent:'center', minHeight:'100vh', paddingBottom: 20}}>
-                    <div className="brand-header">
-                        <div className="brand-logo">D</div>
-                        <h1>Dincharryaa</h1>
-                        <p>ULTRA HD • PRIME</p>
-                        <p style={{fontSize: 12, color:'var(--text-muted)', fontStyle:'italic', marginTop: 14, fontWeight: 500}}>"{dailyQuote}"</p>
-                    </div>
-                    <div className="glass" style={{maxWidth: 420, margin: '0 auto'}}>
-                        <form onSubmit={async (e) => {
-                            e.preventDefault(); play('click');
-                            const em = e.target.email.value; const pw = e.target.password.value; const nm = e.target.username?.value;
-                            try {
-                                if(nm) {
-                                    const res = await window.fb.createUserWithEmailAndPassword(window.auth, em, pw);
-                                    await window.fb.setDoc(window.fb.doc(window.db, "users", res.user.uid), { 
-                                        name: nm, dcId: "DC-"+Math.floor(1000+Math.random()*9000), pts: 0, lists: [], history: [], lockDate: null, joinDate: new Date().toISOString(), squadId: null, lastReset: new Date().toISOString().slice(0, 10)
-                                    });
-                                } else await window.fb.signInWithEmailAndPassword(window.auth, em, pw);
-                            } catch(err) { alert(err.message); }
-                        }}>
-                            {!data && <input name="username" placeholder="Full Name" required />}
-                            <input name="email" type="email" placeholder="Access ID (Email)" required />
-                            <input name="password" type="password" placeholder="Passcode" required />
-                            <button className="btn-prime btn-gold" type="submit" style={{marginTop: 15, padding: 22, fontSize: 14}}>{data ? 'ENTER VAULT' : 'INITIALIZE LINK'}</button>
-                        </form>
-                    </div>
-                </div>
-            );
+      <div class="card card-pad mb-12" style="padding:10px 16px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;color:var(--gold);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="rank-search" placeholder="Search operative..." style="border:none;background:transparent;padding:4px 0;" oninput="renderRanking()" />
+        </div>
+      </div>
 
-            const safeData = data || {};
-            const rankData = getRankData(safeData.pts || 0);
-            const safeLists = safeData.lists || [];
-            const safeHistory = safeData.history || [];
+      <div class="card" id="rank-container" style="overflow:hidden;"></div>
+    </div>
 
-            return (
-                <div className="container">
-                    <div className="brand-header">
-                        <div className="brand-logo">D</div>
-                        <h1>Dincharryaa</h1>
-                        <p>DAILY PRODUCTIVITY • PRIME</p>
-                        <p style={{fontSize: 12, color:'var(--text-muted)', fontStyle:'italic', marginTop: 14, fontWeight: 500}}>"{dailyQuote}"</p>
-                    </div>
+    <!-- ── PROFILE TAB ── -->
+    <div id="tab-profile" class="tab-content hidden">
+      <div style="padding:28px 0 20px;">
+        <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Operative <span style="color:var(--muted);font-style:italic;">Profile</span></div>
+      </div>
 
-                    {/* GRIND TAB */}
-                    {tab === "grind" && <div className="animate" style={{width:'100%'}}>
-                        <div className="glass" style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'22px'}}>
-                            <div style={{display:'flex', alignItems:'center', gap: 18}}>
-                                <div style={{width: 60, height: 60, borderRadius: 18, background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.1)', display:'flex', alignItems:'center', justifyContent:'center', fontSize: 28, fontFamily:'Playfair Display', color:'var(--gold)', boxShadow: 'inset 0 0 20px rgba(226,184,113,0.1)'}}>
-                                    {(safeData.name || 'A').charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                    <h3 style={{fontSize: 22, fontWeight: 700, letterSpacing: 0.5}}>{safeData.name || 'Agent'}</h3>
-                                    <div style={{display:'flex', alignItems:'center', gap: 8, fontSize: 10, fontWeight: 800, marginTop: 6, color:'var(--gold)', letterSpacing: 1.5, textTransform:'uppercase'}}>
-                                        <div style={{width: 6, height: 6, borderRadius: '50%', background:'var(--gold)', boxShadow:'0 0 10px var(--gold)'}}></div>
-                                        {rankData.currentBadge.name} RANK
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{background:'rgba(0,0,0,0.5)', border:'1px solid rgba(255,255,255,0.05)', padding: '12px 18px', borderRadius: 25, fontSize: 11, fontWeight: 800, color: 'var(--text-main)', boxShadow: '0 5px 15px rgba(0,0,0,0.5)'}}>
-                                🔥 {currentStreak} <span style={{color:'var(--text-muted)'}}>STREAK</span>
-                            </div>
-                        </div>
+      <div class="card card-pad mb-12 anim-scale-in" style="text-align:center;background:linear-gradient(135deg,rgba(200,169,110,.04),rgba(17,17,19,.8));">
+        <div class="profile-avatar" id="profile-avatar">🌑</div>
+        <div class="serif" style="font-size:26px;margin-bottom:4px;" id="profile-name">—</div>
+        <div class="label" id="profile-dcid" style="margin-bottom:20px;">DC-0000</div>
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <button class="btn btn-ghost" style="font-size:9px;padding:8px 16px;" onclick="openVault()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Achievement Archive
+          </button>
+        </div>
+      </div>
 
-                        <div className="glass" style={{padding: '28px 24px'}}>
-                            <div style={{display:'flex', justifyContent:'space-between', marginBottom: 15}}>
-                                <span className="text-muted" style={{fontSize: 10, fontWeight: 800, letterSpacing: 2}}>EXPERIENCE POINTS</span>
-                                <span className="text-gold" style={{fontWeight: 800, fontSize: 15, letterSpacing: 1}}>{safeData.pts || 0} XP</span>
-                            </div>
-                            <div style={{display:'flex', justifyContent:'space-between', alignItems:'flex-end', marginBottom: 20}}>
-                                <h2 style={{fontSize: 32, fontWeight: 800, letterSpacing: -0.5}}>Level {level} <span style={{color:'var(--text-muted)', fontWeight: 500}}>— {rankData.currentBadge.name}</span></h2>
-                            </div>
-                            <div className="xp-bar">
-                                <div className="xp-fill" style={{width: `${rankData.progress}%`}}></div>
-                            </div>
-                            <p style={{fontSize: 11, textAlign:'right', color:'var(--text-muted)', fontWeight:700}}>
-                                {rankData.nextName !== 'Max' ? `${rankData.nextReq - (safeData.pts || 0)} XP to ${rankData.nextName}` : 'Max Level Reached'}
-                            </p>
-                        </div>
+      <!-- Calendar -->
+      <div class="card card-pad mb-12">
+        <div class="flex items-center justify-between mb-16">
+          <div class="label">Activity History</div>
+          <div style="display:flex;gap:6px;" id="cal-modes">
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:8px;" onclick="setCalMode('month')" data-mode="month">Month</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:8px;" onclick="setCalMode('3m')" data-mode="3m">3M</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:8px;" onclick="setCalMode('6m')" data-mode="6m">6M</button>
+            <button class="btn btn-ghost" style="padding:5px 10px;font-size:8px;" onclick="setCalMode('1y')" data-mode="1y">1Y</button>
+          </div>
+        </div>
+        <div id="calendar-container"></div>
+      </div>
 
-                        <div className="stat-grid">
-                            <div className="stat-card">
-                                <span className="stat-val" style={{color: '#ff6b6b'}}>🔥 {currentStreak}</span>
-                                <span className="stat-lbl">Day Streak</span>
-                            </div>
-                            <div className="stat-card">
-                                <span className="stat-val" style={{color: 'var(--gold)'}}>⚡ {safeData.pts || 0}</span>
-                                <span className="stat-lbl">Total XP</span>
-                            </div>
-                            <div className="stat-card">
-                                <span className="stat-val" style={{color: '#4db8ff'}}>🎯 {safeHistory.length > 0 ? 1 : 0}</span>
-                                <span className="stat-lbl">First Win</span>
-                            </div>
-                        </div>
+      <!-- Settings -->
+      <div class="card mb-12" style="overflow:hidden;">
+        <div style="padding:20px;border-bottom:1px solid var(--border);">
+          <div class="label">Configuration</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;opacity:.5;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            Notifications
+          </div>
+          <span style="font-size:10px;color:var(--muted);">On ›</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;opacity:.5;"><circle cx="12" cy="12" r="3"/><path d="M12 1v4m0 14v4m11-11h-4M5 12H1m16.95-6.95-2.83 2.83M4.88 19.12l2.83-2.83m0-11.41L4.88 4.88M19.12 19.12l-2.83-2.83"/></svg>
+            Theme
+          </div>
+          <span style="font-size:10px;color:var(--muted);">Elegant Dark ›</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;opacity:.5;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Haptics
+          </div>
+          <span style="font-size:10px;color:var(--muted);">Enabled ›</span>
+        </div>
+      </div>
 
-                        <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 20, padding: '0 8px'}}>
-                            <h3 className="text-muted" style={{fontSize: 11, fontWeight: 800, letterSpacing: 2}}>TODAY'S MISSIONS</h3>
-                            <button style={{background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'var(--gold)', padding:'8px 18px', borderRadius: 20, fontSize: 10, fontWeight: 800, cursor:'pointer', transition:'0.3s'}} onClick={() => { play('click'); alert('Add function to be implemented'); }} onMouseOver={e=>e.currentTarget.style.background='rgba(255,255,255,0.1)'} onMouseOut={e=>e.currentTarget.style.background='rgba(255,255,255,0.05)'}>+ Add</button>
-                        </div>
+      <button class="btn btn-danger w-full" style="justify-content:center;" onclick="handleLogout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Terminate Connection
+      </button>
+    </div>
 
-                        {squad && squad.mission && (
-                            <div className="glass" style={{border: '1px solid var(--gold)', cursor: 'pointer', background: 'linear-gradient(to right, rgba(226, 184, 113, 0.08), rgba(0,0,0,0.6))'}} onClick={() => { if(safeData.sqLastDone !== new Date().toISOString().slice(0,10)) { play('modal'); setConfirm({type:'squad', text: squad.mission}); } }}>
-                                <p style={{fontSize: 10, color: 'var(--gold)', fontWeight: 800, marginBottom: 15, letterSpacing: 1.5}}>SQUAD OBJECTIVE</p>
-                                <div style={{display:'flex', alignItems:'center', gap: 18, opacity: safeData.sqLastDone === new Date().toISOString().slice(0,10) ? 0.3 : 1}}>
-                                    <div style={{minWidth: 24, height: 24, border: '2px solid rgba(255,255,255,0.2)', borderRadius: 8, background: safeData.sqLastDone === new Date().toISOString().slice(0,10) ? 'var(--gold)' : 'transparent'}} />
-                                    <h3 style={{fontSize: 18, fontWeight: 600}}>{squad.mission}</h3>
-                                </div>
-                            </div>
-                        )}
+  </div><!-- /app -->
 
-                        {safeLists.length === 0 ? (
-                            <div className="glass" style={{textAlign:'center', padding: '40px 20px', border: '1px dashed rgba(255,255,255,0.1)'}}>
-                                <p className="text-muted" style={{fontSize: 13, fontWeight:600}}>No personal protocols active.</p>
-                                <p className="text-muted" style={{fontSize: 11, marginTop: 8}}>Head to LOCK to establish a 7-day focus.</p>
-                            </div>
-                        ) : (
-                            safeLists.map(l => (
-                                <div key={l.id} className="glass">
-                                    <p className="text-muted" style={{fontSize: 10, fontWeight: 800, marginBottom: 18, textTransform: 'uppercase', letterSpacing: 1.5}}>{l.name}</p>
-                                    {l.tasks.map(t => (
-                                        <div key={t.id} onClick={() => { if(!t.done) { play('modal'); setConfirm({type:'personal', lid: l.id, tid: t.id, text: t.text}); } }} style={{display:'flex', alignItems:'center', gap: 18, padding: '16px 0', cursor: 'pointer', opacity: t.done ? 0.3 : 1, transition: '0.3s', borderBottom: '1px solid rgba(255,255,255,0.03)'}}>
-                                            <div style={{minWidth: 24, height: 24, border: '2px solid rgba(255,255,255,0.15)', borderRadius: 8, background: t.done ? 'var(--gold)' : 'rgba(0,0,0,0.5)', transition: '0.2s', boxShadow: t.done ? '0 0 10px var(--gold-glow)' : 'none'}} />
-                                            <span style={{fontSize: 16, fontWeight: 500, textDecoration: t.done ? 'line-through' : 'none', color: t.done ? 'var(--text-muted)' : 'var(--text-main)'}}>{t.text}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            ))
-                        )}
-                    </div>}
+  <!-- ─── BOTTOM NAV ─── -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" data-tab="grind" onclick="switchTab('grind')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Grind</span>
+    </div>
+    <div class="nav-item" data-tab="performance" onclick="switchTab('performance')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>Stats</span>
+    </div>
+    <div class="nav-item" data-tab="lock" onclick="switchTab('lock')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>Strategy</span>
+    </div>
+    <div class="nav-item" data-tab="social" onclick="switchTab('social')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Network</span>
+    </div>
+    <div class="nav-item" data-tab="ranking" onclick="switchTab('ranking')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h3m10 8h3a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-3M12 3v18m-4-6h8"/></svg>
+      <span>Rank</span>
+    </div>
+    <div class="nav-item" data-tab="profile" onclick="switchTab('profile')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </div>
+  </nav>
+</div><!-- /main-app -->
 
-                    {/* LOCK TAB */}
-                    {tab === "lock" && <div className="animate" style={{width:'100%'}}>
-                        {isLocked() ? <div className="glass" style={{textAlign:'center', padding: '70px 20px'}}>
-                            <div style={{fontSize: 50, marginBottom: 20}}>🔒</div>
-                            <h2 style={{fontFamily:'Playfair Display', color:'var(--gold)', fontSize: 36}}>LOCKED</h2>
-                            <p style={{color:'var(--text-muted)', marginTop: 12, fontSize: 12, fontWeight: 700, letterSpacing: 2}}>PROTOCOL IN PROGRESS</p>
-                        </div> : 
-                        <div className="glass">
-                            <h2 style={{fontFamily:'Playfair Display', marginBottom: 30, fontSize: 34, color:'var(--gold)'}}>7-Day Focus</h2>
-                            <input id="m_name" placeholder="Protocol Designation" style={{padding: 20}}/>
-                            <textarea id="m_tasks" rows="6" placeholder="Define 7-Day Objectives (one per line)..." style={{lineHeight: 1.6, resize:'none', padding: 20}} />
-                            <button className="btn-prime btn-gold" style={{padding: 22, fontSize: 14}} onClick={async () => {
-                                play('click');
-                                const tks = document.getElementById('m_tasks').value.split('\n').filter(x => x.trim());
-                                if(tks.length) {
-                                    await window.fb.updateDoc(window.fb.doc(window.db, "users", user.uid), { lists: [{id: Date.now(), name: document.getElementById('m_name').value, tasks: tks.map(x => ({id: Math.random(), text: x, done: false}))}], lockDate: new Date().toISOString() });
-                                    setTab("grind");
-                                }
-                            }}>INITIATE PROTOCOL</button>
-                        </div>}
-                    </div>}
+<!-- ═══════════════════ MODALS & OVERLAYS ═══════════════════ -->
 
-                    {/* SQUAD TAB */}
-                    {tab === "squad" && <div className="animate" style={{width:'100%'}}>
-                        {!safeData.squadId ? (
-                            <div className="glass">
-                                <h2 style={{fontFamily:'Playfair Display', fontSize: 34, color:'var(--gold)'}}>Squad Command</h2>
-                                <p style={{fontSize: 12, color:'var(--text-muted)', marginTop: 8, marginBottom: 30, fontWeight: 500}}>Form or join an elite accountability unit.</p>
-                                
-                                <input id="sq_name" placeholder="Unit Designation" style={{padding: 20}}/>
-                                <select id="sq_limit" style={{padding: 20}}>
-                                    {[5,10,20,50,100].map(n => <option key={n} value={n}>{n} Member Cap</option>)}
-                                </select>
-                                <button className="btn-prime btn-gold" style={{padding: 22, fontSize: 14}} onClick={async () => {
-                                    play('click');
-                                    const id = "SQ-" + Math.floor(1000+Math.random()*9000);
-                                    await window.fb.setDoc(window.fb.doc(window.db, "squads", id), { name: document.getElementById('sq_name').value, limit: parseInt(document.getElementById('sq_limit').value), owner: user.uid, members: [user.uid], requests: [], mission: null });
-                                    await window.fb.updateDoc(window.fb.doc(window.db, "users", user.uid), { squadId: id });
-                                }}>CREATE SQUAD</button>
-                                
-                                <div style={{display:'flex', alignItems:'center', margin:'40px 0'}}>
-                                    <div style={{flex: 1, height: 1, background:'rgba(255,255,255,0.05)'}}></div>
-                                    <span style={{margin: '0 20px', color:'var(--text-muted)', fontSize: 11, fontWeight: 800}}>OR</span>
-                                    <div style={{flex: 1, height: 1, background:'rgba(255,255,255,0.05)'}}></div>
-                                </div>
-                                
-                                <input id="sq_join" placeholder="Enter Invite Code" style={{padding: 20}}/>
-                                <button className="btn-prime" style={{padding: 22, fontSize: 14, background:'rgba(255,255,255,0.1)'}} onClick={async () => {
-                                    play('click');
-                                    const sid = document.getElementById('sq_join').value;
-                                    await window.fb.updateDoc(window.fb.doc(window.db, "squads", sid), { requests: window.fb.arrayUnion({uid: user.uid, name: safeData.name}) });
-                                    alert("Entry request broadcasted.");
-                                }}>JOIN SQUAD</button>
-                            </div>
-                        ) : (
-                            <div className="glass">
-                                <h2 style={{fontFamily:'Playfair Display', fontSize: 34, color:'var(--gold)'}}>{squad?.name}</h2>
-                                <p style={{fontSize: 11, color: 'var(--text-muted)', marginBottom: 30, fontWeight: 800, letterSpacing: 1.5}}>ID: {safeData.squadId} &nbsp;•&nbsp; {squad?.members?.length}/{squad?.limit} ROSTER</p>
-                                
-                                {squad?.owner === user.uid && (
-                                    <div style={{borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 30}}>
-                                        <h4 style={{fontSize: 11, color:'var(--text-muted)', marginBottom: 15, letterSpacing: 1.5, fontWeight:800}}>COMMANDER CONTROLS</h4>
-                                        <input id="sq_m" placeholder="Assign Global Objective" style={{padding: 20}}/>
-                                        <button className="btn-prime btn-gold" style={{padding: 18}} onClick={async () => {
-                                            play('success');
-                                            await window.fb.updateDoc(window.fb.doc(window.db, "squads", safeData.squadId), { mission: document.getElementById('sq_m').value });
-                                            alert("Squad Mission Updated.");
-                                        }}>ISSUE DIRECTIVE</button>
-                                        
-                                        {squad?.requests?.length > 0 && <h4 style={{marginTop: 40, fontSize: 11, color:'var(--text-muted)', letterSpacing: 1.5, fontWeight:800}}>PENDING ADMISSIONS</h4>}
-                                        {squad?.requests?.map(r => (
-                                            <div key={r.uid} style={{padding: '20px 0', borderBottom: '1px solid rgba(255,255,255,0.05)', display:'flex', justifyContent:'space-between', alignItems: 'center'}}>
-                                                <span style={{fontWeight: 600, fontSize: 16}}>{r.name}</span>
-                                                <button style={{padding: '10px 20px', background: 'var(--gold-dim)', color: 'var(--gold)', border: '1px solid var(--gold)', borderRadius: '14px', cursor: 'pointer', fontWeight: 800, fontSize: 11}} onClick={async () => {
-                                                    play('success');
-                                                    await window.fb.updateDoc(window.fb.doc(window.db, "squads", safeData.squadId), { members: window.fb.arrayUnion(r.uid), requests: window.fb.arrayRemove(r) });
-                                                    await window.fb.updateDoc(window.fb.doc(window.db, "users", r.uid), { squadId: safeData.squadId });
-                                                }}>APPROVE</button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </div>}
+<!-- Confirm Complete Modal -->
+<div class="overlay" id="confirm-modal">
+  <div class="overlay-content card card-pad">
+    <div class="confirm-box">
+      <div class="confirm-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="confirm-title serif" id="confirm-task-name">Complete Task?</div>
+      <div class="confirm-sub">This will award XP and mark the task as complete.<br>Log it to the network feed.</div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-ghost flex-1" onclick="closeModal('confirm-modal')">Cancel</button>
+        <button class="btn btn-gold flex-1" onclick="executeComplete()">Confirm Sync</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-                    {/* SOCIAL TAB */}
-                    {tab === "social" && <div className="animate" style={{width:'100%'}}>
-                        <div className="glass" style={{padding: 28}}>
-                            <textarea value={thought} onChange={e => setThought(e.target.value)} rows="3" placeholder="Broadcast to the network..." style={{marginBottom: 15, resize:'none', padding:20}} />
-                            <button className="btn-prime btn-gold" style={{padding: 18}} onClick={async () => {
-                                if(!thought.trim()) return;
-                                play('success');
-                                await window.fb.addDoc(window.fb.collection(window.db, "feed"), { name: safeData.name || 'Agent', dcId: safeData.dcId || 'ID', text: thought, time: window.fb.serverTimestamp() });
-                                setThought("");
-                            }}>TRANSMIT</button>
-                        </div>
-                        {posts.map((p, i) => (
-                            <div key={i} className="glass" style={{padding: '28px', marginBottom: 18}}>
-                                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 15}}>
-                                    <div style={{display:'flex', alignItems:'center', gap: 14}}>
-                                        <div style={{width:36, height:36, borderRadius:12, background:'rgba(0,0,0,0.6)', border:'1px solid rgba(255,255,255,0.1)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, color:'var(--gold)', fontFamily:'Playfair Display'}}>{(p.name||'A').charAt(0)}</div>
-                                        <b style={{fontSize: 16, fontWeight: 700}}>{p.name}</b>
-                                    </div>
-                                    <span style={{fontSize: 10, color:'var(--text-muted)', fontWeight: 800, letterSpacing:1.5}}>{p.dcId}</span>
-                                </div>
-                                <p style={{fontSize: 16, color: '#e2e8f0', lineHeight: 1.7, fontWeight: 400}}>{p.text}</p>
-                            </div>
-                        ))}
-                    </div>}
+<!-- New List Modal -->
+<div class="overlay" id="new-list-modal">
+  <div class="overlay-content card card-pad">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="serif" style="font-size:20px;">New Sector Protocol</div>
+      <button class="inspect-close" onclick="closeModal('new-list-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Sector Name</label>
+      <input type="text" id="new-list-name" placeholder="e.g. Morning Protocols, Study Block..." />
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-ghost flex-1" onclick="closeModal('new-list-modal')">Cancel</button>
+      <button class="btn btn-gold flex-1" onclick="createList()">Initialize</button>
+    </div>
+  </div>
+</div>
 
-                    {/* RANKING TAB */}
-                    {tab === "ranking" && <div className="animate" style={{width:'100%'}}>
-                        <div className="glass" style={{padding: 0, overflow: 'hidden'}}>
-                            <div style={{padding: '28px', borderBottom: '1px solid rgba(255,255,255,0.05)', background:'rgba(0,0,0,0.4)'}}>
-                                <h3 style={{fontFamily:'Playfair Display', fontSize: 28, color:'var(--gold)'}}>Global Network</h3>
-                                <p style={{fontSize: 11, color:'var(--text-muted)', letterSpacing: 1.5, marginTop:6, fontWeight: 700}}>Top 25 Operatives</p>
-                            </div>
-                            {leaderboard.map((u, i) => (
-                                <div key={i} onClick={() => { play('modal'); setInspectedUser(u); }} style={{padding: '22px 28px', borderBottom: '1px solid rgba(255,255,255,0.03)', display:'flex', justifyContent:'space-between', alignItems:'center', cursor:'pointer', transition: 'background 0.3s'}} onMouseOver={e => e.currentTarget.style.background='rgba(255,255,255,0.03)'} onMouseOut={e => e.currentTarget.style.background='transparent'}>
-                                    <div style={{display:'flex', alignItems:'center', gap: 18}}>
-                                        <span style={{color: i < 3 ? 'var(--gold)' : 'var(--text-muted)', fontWeight: 800, width: 24, fontSize: 14}}>{i+1}.</span>
-                                        <span style={{fontSize: 24}}>{getRankObj(u.pts).icon}</span>
-                                        <span style={{fontWeight: 700, fontSize: 16}}>{u.name}</span>
-                                    </div>
-                                    <b style={{color: 'var(--purple)', fontSize: 15, letterSpacing: 1}}>{u.pts} <span style={{fontSize: 10, color:'var(--text-muted)'}}>XP</span></b>
-                                </div>
-                            ))}
-                        </div>
-                    </div>}
+<!-- Add Report Modal -->
+<div class="overlay" id="add-report-modal">
+  <div class="overlay-content card card-pad">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="serif" style="font-size:20px;">Initialize Hub</div>
+      <button class="inspect-close" onclick="closeModal('add-report-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-group"><label class="form-label">Hub Name</label><input type="text" id="report-name" placeholder="e.g. JEE Mains 2025" /></div>
+    <div class="form-group"><label class="form-label">Platform / Source</label><input type="text" id="report-platform" placeholder="e.g. PW, Unacademy, Vedantu" /></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-ghost flex-1" onclick="closeModal('add-report-modal')">Cancel</button>
+      <button class="btn btn-gold flex-1" onclick="createReport()">Create Hub</button>
+    </div>
+  </div>
+</div>
 
-                    {/* PROFILE (ME) TAB */}
-                    {tab === "profile" && <div className="animate" style={{width:'100%'}}>
-                        <div className="glass" style={{textAlign:'center', paddingBottom: 45}}>
-                            <div className="rank-pulse" style={{fontSize: 80, marginBottom: 20}}>{rankData.currentBadge.icon}</div>
-                            <h2 style={{fontFamily:'Playfair Display', fontSize: 36, marginBottom: 8}}>{safeData.name || 'Agent'}</h2>
-                            <p style={{fontSize: 11, color: 'var(--text-muted)', fontWeight: 800, letterSpacing: 2.5, marginBottom: 30}}>{safeData.dcId || 'ID'}</p>
-                            
-                            <button className="btn-prime btn-gold" style={{padding: '16px 32px', fontSize: 12, width: 'auto', margin: '0 auto'}} onClick={() => { play('modal'); setViewVault(true); }}>ACCESS BADGE VAULT</button>
-                        </div>
+<!-- Add Log Modal -->
+<div class="overlay" id="add-log-modal">
+  <div class="overlay-content card card-pad">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="serif" style="font-size:20px;">Log Simulation</div>
+      <button class="inspect-close" onclick="closeModal('add-log-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-group"><label class="form-label">Test Name</label><input type="text" id="log-name" placeholder="e.g. Full Mock #14" /></div>
+    <div class="form-group"><label class="form-label">Score</label><input type="number" id="log-score" placeholder="0–360" /></div>
+    <div class="form-group"><label class="form-label">Date</label><input type="date" id="log-date" /></div>
+    <div class="form-group"><label class="form-label">Notes (optional)</label><textarea id="log-note" rows="2" placeholder="Key observations..."></textarea></div>
+    <div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-ghost flex-1" onclick="closeModal('add-log-modal')">Cancel</button>
+      <button class="btn btn-gold flex-1" onclick="saveLog()">Sync Log</button>
+    </div>
+  </div>
+</div>
 
-                        <div className="glass" style={{padding: '30px 24px'}}>
-                            <p style={{fontSize: 11, fontWeight: 800, marginBottom: 22, letterSpacing: 2, color:'var(--text-muted)', textAlign:'center'}}>CALENDAR LOG</p>
-                            <div style={{display:'flex', justifyContent:'center', gap: 10, marginBottom: 25, flexWrap:'wrap'}}>
-                                {['month', '3m', '6m', '1y'].map(m => (
-                                    <div key={m} className={`filter-chip ${viewMode === m ? 'active' : ''}`} onClick={() => { play('click'); setViewMode(m); }}>{m.toUpperCase()}</div>
-                                ))}
-                            </div>
-                            <div className="cal-grid" style={{maxHeight: 250, overflowY: 'auto', paddingRight: 5}}>
-                                {renderCalendar(safeHistory, viewMode)}
-                            </div>
-                        </div>
+<!-- Task Inspect Panel -->
+<div class="inspect-panel" id="inspect-panel">
+  <div class="inspect-header">
+    <div>
+      <div class="label label-gold mb-8">Objective Intelligence</div>
+      <div class="serif" style="font-size:16px;">Task Details</div>
+    </div>
+    <button class="inspect-close" onclick="closeInspect()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="inspect-inner" id="inspect-inner"></div>
+  <div style="padding:16px 20px;border-top:1px solid var(--border);max-width:640px;margin:0 auto;width:100%;background:var(--bg);">
+    <button class="btn btn-gold w-full" onclick="saveInspect(); closeInspect();">Confirm Sync</button>
+  </div>
+</div>
 
-                        <div style={{marginBottom: 30}}>
-                            <p style={{fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', marginBottom: 18, letterSpacing: 2.5, marginLeft: 8}}>SYSTEM SETTINGS</p>
-                            <div className="setting-item" onClick={() => play('click')}>
-                                <div className="setting-label"><span>🔔</span> Notifications</div>
-                                <span className="setting-val">On ›</span>
-                            </div>
-                            <div className="setting-item" onClick={() => play('click')}>
-                                <div className="setting-label"><span>🎨</span> Theme</div>
-                                <span className="setting-val" style={{color:'var(--gold)'}}>Ultra HD v2 ›</span>
-                            </div>
-                            <div className="setting-item" onClick={() => play('click')}>
-                                <div className="setting-label"><span>📳</span> Haptics/Audio</div>
-                                <span className="setting-val">Enabled ›</span>
-                            </div>
-                            <div className="setting-item" onClick={() => play('click')}>
-                                <div className="setting-label"><span>🌐</span> Language</div>
-                                <span className="setting-val">English ›</span>
-                            </div>
-                        </div>
+<!-- Vault Modal -->
+<div class="overlay" id="vault-modal">
+  <div class="overlay-content card" style="overflow:hidden;">
+    <div style="padding:24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <div class="serif" style="font-size:20px;color:var(--gold);">Achievement Archive</div>
+      <button class="inspect-close" onclick="closeModal('vault-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="vault-content" style="padding:20px;display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow-y:auto;"></div>
+  </div>
+</div>
 
-                        <button onClick={() => { play('click'); window.fb.signOut(window.auth); }} className="setting-item" style={{width:'100%', color:'#ff4444', justifyContent:'center', border:'1px solid rgba(255,68,68,0.2)', background:'rgba(255,0,0,0.05)', padding: 22, fontWeight: 800}}>
-                            DISCONNECT SESSION
-                        </button>
-                    </div>}
+<!-- User Inspect Modal -->
+<div class="overlay" id="user-inspect-modal">
+  <div class="overlay-content card card-pad" style="text-align:center;">
+    <div id="user-inspect-content"></div>
+    <button class="btn btn-ghost w-full mt-16" onclick="closeModal('user-inspect-modal')">Close</button>
+  </div>
+</div>
 
-                    {/* MAIN NAVIGATION */}
-                    <nav className="nav">
-                        <div onClick={() => { play('click'); setTab("grind"); }} className={`nav-btn ${tab === "grind" ? 'active' : ''}`}><span>🎯</span><span className="nav-label">Grind</span></div>
-                        <div onClick={() => { play('click'); setTab("lock"); }} className={`nav-btn ${tab === "lock" ? 'active' : ''}`}><span>🔒</span><span className="nav-label">Lock</span></div>
-                        <div onClick={() => { play('click'); setTab("squad"); }} className={`nav-btn ${tab === "squad" ? 'active' : ''}`}><span>🛡️</span><span className="nav-label">Squad</span></div>
-                        <div onClick={() => { play('click'); setTab("social"); }} className={`nav-btn ${tab === "social" ? 'active' : ''}`}><span>🔘</span><span className="nav-label">Feed</span></div>
-                        <div onClick={() => { play('click'); setTab("ranking"); }} className={`nav-btn ${tab === "ranking" ? 'active' : ''}`}><span>🏆</span><span className="nav-label">Rank</span></div>
-                        <div onClick={() => { play('click'); setTab("profile"); }} className={`nav-btn ${tab === "profile" ? 'active' : ''}`}><span>💠</span><span className="nav-label">Me</span></div>
-                    </nav>
+<script>
+// ════════════════════════════════════════════════════════════════
+//  DINCHARRYAA — FIREBASE EDITION
+//  Auth via Firebase Authentication. Data in Firestore.
+// ════════════════════════════════════════════════════════════════
 
-                    {/* MODALS */}
-                    {viewVault && <div className="modal animate">
-                        <div className="glass" style={{maxWidth: 440, padding: 35}}>
-                            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom: 35}}>
-                                <h3 style={{fontFamily:'Playfair Display', fontSize: 30, color:'var(--gold)'}}>Badge Vault</h3>
-                                <button style={{background:'none', border:'none', color:'var(--text-muted)', fontSize:28, cursor:'pointer', padding:10}} onClick={() => { play('click'); setViewVault(false); }}>×</button>
-                            </div>
-                            
-                            {BADGES.map(b => (
-                                <div key={b.name} style={{display:'flex', gap: 20, padding: '20px', background: 'rgba(0,0,0,0.5)', borderRadius: 22, marginBottom: 15, border: '1px solid rgba(255,255,255,0.05)', opacity: (safeData?.pts||0) >= b.min ? 1 : 0.4, transition:'0.3s'}}>
-                                    <span style={{fontSize: 36}}>{b.icon}</span>
-                                    <div style={{flex: 1, display:'flex', flexDirection:'column', justifyContent:'center'}}>
-                                        <b style={{fontSize: 16, color: b.color, letterSpacing: 0.5}}>{b.name}</b>
-                                        <p style={{fontSize: 11, color:'var(--text-muted)', fontWeight: 800, marginTop: 5}}>{b.min} XP REQ</p>
-                                    </div>
-                                    <div style={{display:'flex', alignItems:'center', fontSize: 12, fontWeight: 800, color: (safeData?.pts||0) >= b.min ? 'var(--green)' : 'var(--text-muted)'}}>
-                                        {(safeData?.pts||0) >= b.min ? 'UNLOCKED' : `${b.min - (safeData?.pts||0)} LEFT`}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>}
+// Promise that resolves once the Firebase module has fully loaded.
+// The module script calls window._fbReadyResolve() when done.
+window._fbReady = new Promise(resolve => { window._fbReadyResolve = resolve; });
 
-                    {inspectedUser && <div className="modal animate">
-                        <div className="glass" style={{maxWidth: 420, textAlign:'center', padding:'45px 30px'}}>
-                            <div style={{fontSize: 70, marginBottom: 25}}>{getRankObj(inspectedUser.pts).icon}</div>
-                            <h3 style={{fontFamily: 'Playfair Display', fontSize: 34, color: 'var(--gold)'}}>{inspectedUser.name}</h3>
-                            <p style={{color: 'var(--purple)', fontSize: 15, fontWeight: 800, marginTop: 10, letterSpacing: 1.5}}>{inspectedUser.pts} XP</p>
-                            <div style={{height: 1, background: 'rgba(255,255,255,0.05)', margin: '30px 0'}}></div>
-                            <p style={{fontSize: 11, fontWeight: 800, color: 'var(--text-muted)', marginBottom: 20, letterSpacing: 2}}>RECENT ACTIVITY</p>
-                            <div className="cal-grid" style={{justifyContent:'center'}}>
-                                {renderCalendar(inspectedUser.history, 'month')}
-                            </div>
-                            <button className="btn-prime" style={{marginTop: 35, padding: 20, background:'rgba(0,0,0,0.6)', color:'var(--text-muted)', border:'1px solid rgba(255,255,255,0.1)'}} onClick={() => { play('click'); setInspectedUser(null); }}>CLOSE TERMINAL</button>
-                        </div>
-                    </div>}
+// ─── CONSTANTS ───────────────────────────────────────────────────
+const BADGES = [
+  { name:"The Rookie",     min:0,     icon:"🌑", color:"#94a3b8" },
+  { name:"Grind Lord",     min:300,   icon:"🔥", color:"#60a5fa" },
+  { name:"Mock Monster",   min:900,   icon:"🎯", color:"#cd7f32" },
+  { name:"Elite Aspirant", min:2000,  icon:"⚔️",  color:"#e2e8f0" },
+  { name:"AIR Prospect",   min:5000,  icon:"🏆", color:"#e2b871" },
+  { name:"The GOAT",       min:12000, icon:"🧿", color:"#a855f7" },
+];
+const QUOTES = [
+  "Discipline equals freedom.", "Do it today, or regret it tomorrow.",
+  "Excuses don't burn calories.", "Pain is temporary, quitting lasts forever.",
+  "Your future is created by what you do today.", "Embrace the grind.",
+  "Small steps, every day.", "Success is the sum of small efforts.",
+  "Focus on the step, not the staircase.", "Conquer yourself, conquer the world.",
+  "One day or day one — you decide.", "The grind is the goal.",
+  "Comfort zones are where dreams go to die.", "Fall seven times, rise eight.",
+];
+const PRI_COLORS = { high:'badge-high', medium:'badge-medium', low:'badge-low' };
 
-                    {confirm && <div className="modal animate">
-                        <div className="glass" style={{maxWidth: 400, textAlign:'center', padding: '40px 30px'}}>
-                            <div style={{fontSize: 45, marginBottom: 25}}>⚡</div>
-                            <h3 style={{lineHeight: 1.5, fontSize: 22, fontWeight: 600}}>{confirm.text}</h3>
-                            <p style={{fontSize: 12, color:'var(--text-muted)', marginTop: 15, fontWeight:500}}>Confirm completion to broadcast to network.</p>
-                            
-                            <div style={{display:'flex', gap: 15, marginTop: 40}}>
-                                <button className="btn-prime" style={{background:'rgba(0,0,0,0.6)', border:'1px solid rgba(255,255,255,0.1)', color:'var(--text-muted)'}} onClick={() => { play('click'); setConfirm(null); }}>CANCEL</button>
-                                <button className="btn-prime btn-gold" onClick={handleAction}>CONFIRM</button>
-                            </div>
-                        </div>
-                    </div>}
-                </div>
-            );
+// ─── STATE ───────────────────────────────────────────────────────
+let currentUser  = null; // { uid, email }
+let userData     = null; // UserData object
+let currentTab   = 'grind';
+let calMode      = 'month';
+let confirmState = null; // { lid, tid, text }
+let inspectState = null; // { lid, tid }
+let activePerfId = null;
+let allUsers     = [];   // for leaderboard (in-memory from Firestore)
+let posts        = [];   // social feed (in-memory from Firestore)
+
+// ─── FIRESTORE HELPERS ───────────────────────────────────────────
+async function persistUserData() {
+  if (!currentUser || !userData) return;
+  try {
+    await window.fb.setDoc(window.fb.doc(window.db, 'users', currentUser.uid), userData);
+    // keep in-memory allUsers up to date
+    const idx = allUsers.findIndex(u => u._uid === currentUser.uid);
+    const entry = { ...userData, _uid: currentUser.uid };
+    if (idx >= 0) allUsers[idx] = entry; else allUsers.push(entry);
+    allUsers.sort((a,b) => (b.pts||0) - (a.pts||0));
+  } catch (e) {
+    console.error('persistUserData error:', e);
+  }
+}
+
+function getDefaultUser(name, dcId) {
+  return {
+    name: name || 'Operative',
+    dcId: dcId || 'DC-' + Math.floor(1000 + Math.random() * 9000),
+    pts: 0,
+    lists: [],
+    history: [],
+    lastReset: new Date().toISOString().slice(0,10),
+    joinDate: new Date().toISOString().slice(0,10),
+    squadId: null,
+    mockTests: [],
+    performanceReports: [],
+    taskHistory: {},
+  };
+}
+
+// ─── FIRESTORE FEED HELPERS ──────────────────────────────────────
+async function loadPostsFromFirestore() {
+  try {
+    const snap = await window.fb.getDocs(
+      window.fb.query(window.fb.collection(window.db, 'feed'), window.fb.orderBy('time', 'desc'), window.fb.limit(50))
+    );
+    posts = snap.docs.map(d => {
+      const data = d.data();
+      return { ...data, id: d.id, time: data.time?.toMillis?.() || data.time || Date.now() };
+    });
+  } catch (e) {
+    console.error('loadPostsFromFirestore error:', e);
+    posts = [];
+  }
+}
+
+async function loadUsersFromFirestore() {
+  try {
+    const snap = await window.fb.getDocs(
+      window.fb.query(window.fb.collection(window.db, 'users'), window.fb.orderBy('pts', 'desc'), window.fb.limit(100))
+    );
+    allUsers = snap.docs.map(d => ({ ...d.data(), _uid: d.id }));
+  } catch (e) {
+    console.error('loadUsersFromFirestore error:', e);
+    allUsers = [];
+  }
+}
+
+// ─── RANK HELPERS ────────────────────────────────────────────────
+function getRankObj(pts) {
+  return [...BADGES].reverse().find(b => pts >= b.min) || BADGES[0];
+}
+function getRankData(pts) {
+  pts = pts || 0;
+  let ci = 0;
+  for (let i=0; i<BADGES.length; i++) if (pts >= BADGES[i].min) ci = i;
+  const next = BADGES[ci+1];
+  const curr = BADGES[ci];
+  let progress = 100;
+  if (next) {
+    const range = next.min - curr.min;
+    progress = Math.min(100, Math.max(0, ((pts - curr.min) / range) * 100));
+  }
+  return { curr, next, progress };
+}
+function streak(history) {
+  if (!history || !history.length) return 0;
+  let s = 0; const now = new Date();
+  for (let i=0; i<365; i++) {
+    const ds = new Date(now - i*86400000).toISOString().slice(0,10);
+    if (history.includes(ds)) s++; else if (i > 0) break;
+  }
+  return s;
+}
+const todayStr = () => new Date().toISOString().slice(0,10);
+
+// ─── AUTH ────────────────────────────────────────────────────────
+let authMode = 'login';
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+  document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
+  document.getElementById('signup-fields').style.display = mode === 'signup' ? 'block' : 'none';
+  document.getElementById('auth-btn-text').textContent = mode === 'signup' ? 'Register Operative' : 'Establish Link';
+}
+
+async function handleAuth() {
+  await window._fbReady;
+  const email = document.getElementById('auth-email').value.trim();
+  const pw    = document.getElementById('auth-password').value;
+  const errEl = document.getElementById('auth-error');
+  errEl.classList.add('hidden'); errEl.textContent = '';
+
+  if (!email || !pw) { showError('Access key and protocol hash required.'); return; }
+
+  try {
+    if (authMode === 'signup') {
+      const name = document.getElementById('auth-name').value.trim();
+      const dcId = document.getElementById('auth-dcid').value.trim();
+      if (!name) { showError('Callsign required for registration.'); return; }
+      const cred = await window.fb.createUserWithEmailAndPassword(window.auth, email, pw);
+      const uid  = cred.user.uid;
+      const newUser = getDefaultUser(name, dcId || ('DC-' + Math.floor(1000 + Math.random() * 9000)));
+      await window.fb.setDoc(window.fb.doc(window.db, 'users', uid), newUser);
+      userData    = newUser;
+      currentUser = { uid, email };
+      launchApp();
+    } else {
+      const cred = await window.fb.signInWithEmailAndPassword(window.auth, email, pw);
+      const uid  = cred.user.uid;
+      const snap = await window.fb.getDoc(window.fb.doc(window.db, 'users', uid));
+      if (!snap.exists()) { showError('No operative record found. Please re-register.'); return; }
+      userData    = snap.data();
+      currentUser = { uid, email };
+      launchApp();
+    }
+  } catch (err) {
+    const msg = err.code === 'auth/user-not-found'   ? 'No operative found with this access key.' :
+                err.code === 'auth/wrong-password'   ? 'Incorrect protocol hash.' :
+                err.code === 'auth/email-already-in-use' ? 'Operative already registered with this access key.' :
+                err.code === 'auth/invalid-email'    ? 'Invalid email format.' :
+                err.code === 'auth/weak-password'    ? 'Password must be at least 6 characters.' :
+                (err.message || 'Authentication failed.');
+    showError(msg);
+  }
+}
+
+async function demoLogin() {
+  await window._fbReady;
+  const DEMO_EMAIL = 'demo@dincharryaa.app';
+  const DEMO_PASS  = 'DemoPass2024!';
+  try {
+    // Try sign in first
+    const cred = await window.fb.signInWithEmailAndPassword(window.auth, DEMO_EMAIL, DEMO_PASS);
+    const uid  = cred.user.uid;
+    const snap = await window.fb.getDoc(window.fb.doc(window.db, 'users', uid));
+    if (snap.exists()) {
+      userData = snap.data();
+    } else {
+      userData = { ...getDefaultUser('Demo Operative', 'DC-0000'), pts: 1540, history: [todayStr()] };
+      await window.fb.setDoc(window.fb.doc(window.db, 'users', uid), userData);
+    }
+    currentUser = { uid, email: DEMO_EMAIL };
+    launchApp();
+  } catch (signInErr) {
+    // Account doesn't exist yet — create it
+    try {
+      const cred = await window.fb.createUserWithEmailAndPassword(window.auth, DEMO_EMAIL, DEMO_PASS);
+      const uid  = cred.user.uid;
+      userData = { ...getDefaultUser('Demo Operative', 'DC-0000'), pts: 1540, history: [todayStr()] };
+      await window.fb.setDoc(window.fb.doc(window.db, 'users', uid), userData);
+      currentUser = { uid, email: DEMO_EMAIL };
+      launchApp();
+    } catch (createErr) {
+      showError('Demo unavailable: ' + (createErr.message || 'Unknown error'));
+    }
+  }
+}
+
+function showError(msg) {
+  const e = document.getElementById('auth-error');
+  e.textContent = msg; e.classList.remove('hidden');
+}
+
+async function loginAs(uid, email) {
+  currentUser = { uid, email };
+  const snap = await window.fb.getDoc(window.fb.doc(window.db, 'users', uid));
+  if (snap.exists()) {
+    userData = snap.data();
+    launchApp();
+  } else {
+    showError('No operative record found. Please re-register.');
+    handleLogout();
+  }
+}
+
+async function handleLogout() {
+  try { await window.fb.signOut(window.auth); } catch(e) {}
+  currentUser = null; userData = null;
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  switchAuthTab('login');
+}
+
+// ─── APP BOOTSTRAP ───────────────────────────────────────────────
+async function launchApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  // Load feed and leaderboard from Firestore
+  await Promise.all([loadPostsFromFirestore(), loadUsersFromFirestore()]);
+  updateGrindTab();
+  updateProfileTab();
+}
+
+window.addEventListener('load', () => {
+  setTimeout(async () => {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('log-date').value = todayStr();
+
+    // Wait for Firebase module to finish loading
+    await window._fbReady;
+
+    // Firebase auto-session restore via onAuthStateChanged
+    window.fb.onAuthStateChanged(window.auth, async (user) => {
+      if (user) {
+        try {
+          const snap = await window.fb.getDoc(window.fb.doc(window.db, 'users', user.uid));
+          if (snap.exists()) {
+            currentUser = { uid: user.uid, email: user.email };
+            userData    = snap.data();
+            launchApp();
+            return;
+          }
+        } catch (e) {
+          console.error('Session restore error:', e);
         }
+      }
+      // No session or user doc missing — show auth screen
+      document.getElementById('auth-screen').style.display = 'flex';
+    });
+  }, 700);
+});
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+// ─── TAB SWITCHING ───────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.remove('hidden');
+  document.querySelector(`.nav-item[data-tab="${tab}"]`).classList.add('active');
+  currentTab = tab;
+  if (tab === 'grind')       updateGrindTab();
+  if (tab === 'performance') updatePerfTab();
+  if (tab === 'social')      renderFeed();
+  if (tab === 'ranking')     renderRanking();
+  if (tab === 'profile')     updateProfileTab();
+  if (tab === 'lock')        renderStrategyLists();
+}
+
+// ─── GRIND TAB ───────────────────────────────────────────────────
+function updateGrindTab() {
+  if (!userData) return;
+  const s = streak(userData.history);
+  document.getElementById('stat-streak').textContent = s;
+  document.getElementById('stat-xp').textContent = userData.pts || 0;
+  document.getElementById('stat-wins').textContent = userData.history ? userData.history.length : 0;
+  // quote
+  const qi = Math.floor(Date.now()/1000/60/60/24) % QUOTES.length;
+  document.getElementById('daily-quote').textContent = '"' + QUOTES[qi] + '"';
+  // rank banner
+  const rd = getRankData(userData.pts);
+  document.getElementById('rank-emoji').textContent = rd.curr.icon;
+  document.getElementById('rank-name').textContent = rd.curr.name;
+  document.getElementById('rank-progress').style.width = rd.progress + '%';
+  document.getElementById('rank-pts-label').textContent = (userData.pts||0) + ' XP';
+  document.getElementById('rank-next-label').textContent = rd.next ? rd.next.min + ' → ' + rd.next.name : 'MAX RANK';
+  renderTasks();
+}
+
+function renderTasks() {
+  if (!userData) return;
+  const container = document.getElementById('tasks-container');
+  const filter = document.getElementById('filter-select').value;
+  const sort   = document.getElementById('sort-select').value;
+  if (!userData.lists || !userData.lists.length) {
+    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:12px;">No protocols yet. Create your first sector below.</div>';
+    return;
+  }
+  container.innerHTML = '';
+  userData.lists.forEach(list => {
+    let tasks = [...(list.tasks || [])];
+    if (filter === 'active')    tasks = tasks.filter(t => !t.done);
+    if (filter === 'completed') tasks = tasks.filter(t => t.done);
+    if (sort === 'priority') { const pm={high:3,medium:2,low:1}; tasks.sort((a,b)=>(pm[b.priority]||0)-(pm[a.priority]||0)); }
+    if (sort === 'alpha')    tasks.sort((a,b)=>a.text.localeCompare(b.text));
+    if (sort === 'status')   tasks.sort((a,b)=>a.done===b.done?0:a.done?1:-1);
+    if (sort === 'createdAt') tasks.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+
+    const bucket = document.createElement('div');
+    bucket.className = 'task-bucket card card-pad';
+    const done = tasks.filter(t=>t.done).length;
+    bucket.innerHTML = `
+      <div class="task-bucket-header">
+        <div class="task-bucket-name">${escHtml(list.name)}</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <div class="task-bucket-count">${done}/${tasks.length}</div>
+          <button onclick="deleteList(${list.id})" style="width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--muted);opacity:.4;transition:opacity .2s;" onmouseover="this.style.opacity=1;this.style.color='var(--red)';" onmouseout="this.style.opacity=.4;this.style.color='var(--muted)';">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="divider" style="margin-bottom:4px;"></div>
+    `;
+    const rowsContainer = document.createElement('div');
+    tasks.forEach(task => {
+      const row = createTaskRow(list.id, task);
+      rowsContainer.appendChild(row);
+    });
+    // Add task row
+    const addRow = document.createElement('div');
+    addRow.className = 'add-task-row';
+    addRow.innerHTML = `
+      <input class="add-task-input" id="add-task-${list.id}" placeholder="+ Add task to ${escHtml(list.name)}..." onkeydown="if(event.key==='Enter') addTaskToList(${list.id})" />
+      <button class="add-task-btn" onclick="addTaskToList(${list.id})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    `;
+    bucket.appendChild(rowsContainer);
+    bucket.appendChild(addRow);
+    container.appendChild(bucket);
+  });
+}
+
+function createTaskRow(lid, task) {
+  const row = document.createElement('div');
+  row.className = 'task-row';
+  const priBadge = task.priority && !task.done
+    ? `<span class="badge ${PRI_COLORS[task.priority]}">${task.priority}</span>` : '';
+  const doneCls = task.done ? 'done' : '';
+  const subtaskCount = (task.subtasks||[]).length;
+  const subDone      = (task.subtasks||[]).filter(s=>s.done).length;
+  const subLabel = subtaskCount > 0 ? `<span style="font-size:9px;color:var(--muted);font-weight:600;">${subDone}/${subtaskCount}</span>` : '';
+
+  row.innerHTML = `
+    <div class="task-check ${doneCls}" onclick="event.stopPropagation(); handleTaskCheck(${lid}, ${task.id}, ${task.done})">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="flex-1" style="min-width:0;" onclick="openInspect(${lid}, ${task.id})">
+      <div class="task-text ${doneCls}">${escHtml(task.text)}</div>
+      <div class="task-meta" style="margin-top:3px;">${priBadge}${subLabel}${task.dueDate?`<span style="font-size:9px;color:var(--muted);">${task.dueDate}</span>`:''}</div>
+    </div>
+    <svg class="task-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  `;
+  return row;
+}
+
+function handleTaskCheck(lid, tid, isDone) {
+  if (isDone) return; // already done
+  const list = userData.lists.find(l => l.id === lid);
+  if (!list) return;
+  const task = list.tasks.find(t => t.id === tid);
+  if (!task) return;
+  confirmState = { lid, tid, text: task.text };
+  document.getElementById('confirm-task-name').textContent = task.text;
+  openModal('confirm-modal');
+}
+
+async function executeComplete() {
+  if (!confirmState) return;
+  const { lid, tid, text } = confirmState;
+  const today = todayStr();
+  userData.pts = (userData.pts || 0) + 10;
+  userData.lists = userData.lists.map(l => l.id === lid
+    ? { ...l, tasks: l.tasks.map(t => t.id === tid ? { ...t, done: true } : t) }
+    : l
+  );
+  if (!userData.history.includes(today)) userData.history.push(today);
+  // Post to Firestore feed
+  try {
+    await window.fb.addDoc(window.fb.collection(window.db, 'feed'), {
+      uid: currentUser.uid, name: userData.name, dcId: userData.dcId,
+      text: `✅ Cleared: ${text}`, time: window.fb.serverTimestamp()
+    });
+  } catch (e) { console.error('Feed post error:', e); }
+  await persistUserData();
+  closeModal('confirm-modal');
+  updateGrindTab();
+  fireConfetti();
+  confirmState = null;
+}
+
+function addTaskToList(lid) {
+  const inp = document.getElementById('add-task-' + lid);
+  const text = inp.value.trim();
+  if (!text) return;
+  const list = userData.lists.find(l => l.id === lid);
+  if (!list) return;
+  list.tasks.push({ id: Date.now(), text, done: false, createdAt: Date.now(), priority: null, subtasks: [], notes: '', attachments: [] });
+  inp.value = '';
+  persistUserData();
+  renderTasks();
+}
+
+function promptNewList() {
+  document.getElementById('new-list-name').value = '';
+  openModal('new-list-modal');
+  setTimeout(() => document.getElementById('new-list-name').focus(), 100);
+}
+
+function createList() {
+  const name = document.getElementById('new-list-name').value.trim();
+  if (!name) return;
+  userData.lists = [...(userData.lists||[]), { id: Date.now(), name, tasks: [] }];
+  persistUserData();
+  closeModal('new-list-modal');
+  if (currentTab === 'grind') renderTasks();
+  if (currentTab === 'lock')  renderStrategyLists();
+}
+
+function deleteList(lid) {
+  if (!confirm('Delete this protocol sector?')) return;
+  userData.lists = userData.lists.filter(l => l.id !== lid);
+  persistUserData();
+  renderTasks();
+}
+
+// ─── TASK INSPECT ────────────────────────────────────────────────
+let inspectData = null; // working copy
+
+function openInspect(lid, tid) {
+  const list = userData.lists.find(l => l.id === lid);
+  if (!list) return;
+  const task = list.tasks.find(t => t.id === tid);
+  if (!task) return;
+  inspectData = { lid, task: JSON.parse(JSON.stringify(task)) };
+  renderInspect();
+  document.getElementById('inspect-panel').classList.add('open');
+}
+
+function closeInspect() {
+  document.getElementById('inspect-panel').classList.remove('open');
+  inspectData = null;
+}
+
+function renderInspect() {
+  if (!inspectData) return;
+  const { task } = inspectData;
+  const inner = document.getElementById('inspect-inner');
+  inner.innerHTML = `
+    <!-- Designation -->
+    <div class="inspect-section">
+      <div class="inspect-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Designation
+      </div>
+      <input type="text" value="${escHtml(task.text)}" id="inspect-text"
+        style="font-size:18px;font-family:'Instrument Serif',serif;background:transparent;border:none;border-bottom:1px solid var(--border2);border-radius:0;padding:8px 0;font-weight:400;"
+        oninput="inspectData.task.text=this.value" />
+    </div>
+
+    <!-- Priority -->
+    <div class="inspect-section">
+      <div class="inspect-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+        Priority Level
+      </div>
+      <div class="pri-btns">
+        <button class="pri-btn ${task.priority==='low'?'active-low':''}" onclick="setInspectPri('low')">Low</button>
+        <button class="pri-btn ${task.priority==='medium'?'active-medium':''}" onclick="setInspectPri('medium')">Medium</button>
+        <button class="pri-btn ${task.priority==='high'?'active-high':''}" onclick="setInspectPri('high')">High</button>
+      </div>
+    </div>
+
+    <!-- Due Date -->
+    <div class="inspect-section">
+      <div class="inspect-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Due Date
+      </div>
+      <input type="date" value="${task.dueDate||''}" id="inspect-due"
+        style="max-width:200px;" oninput="inspectData.task.dueDate=this.value" />
+    </div>
+
+    <!-- Subtasks -->
+    <div class="inspect-section">
+      <div class="inspect-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Sub-Protocols
+      </div>
+      <div id="subtasks-list">
+        ${(task.subtasks||[]).map((s,i) => `
+          <div class="subtask-row">
+            <div class="subtask-check ${s.done?'done':''}" onclick="toggleSubtask(${i})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <input class="subtask-text ${s.done?'done':''}" value="${escHtml(s.text)}"
+              placeholder="Sub-protocol instruction..."
+              oninput="inspectData.task.subtasks[${i}].text=this.value" />
+            <button class="subtask-del" onclick="removeSubtask(${i})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        `).join('')}
+      </div>
+      <button style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-top:12px;padding:4px 0;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7" onclick="addSubtask()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Sub-Protocol
+      </button>
+    </div>
+
+    <!-- Notes -->
+    <div class="inspect-section">
+      <div class="inspect-section-label">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
+        Strategic Notes
+      </div>
+      <textarea id="inspect-notes" rows="4" placeholder="Document operational context or tactical findings..."
+        oninput="inspectData.task.notes=this.value">${task.notes||''}</textarea>
+    </div>
+  `;
+}
+
+function setInspectPri(p) {
+  if (!inspectData) return;
+  inspectData.task.priority = inspectData.task.priority === p ? null : p;
+  renderInspect();
+}
+
+function toggleSubtask(i) {
+  if (!inspectData) return;
+  inspectData.task.subtasks[i].done = !inspectData.task.subtasks[i].done;
+  renderInspect();
+}
+
+function removeSubtask(i) {
+  if (!inspectData) return;
+  inspectData.task.subtasks.splice(i, 1);
+  renderInspect();
+}
+
+function addSubtask() {
+  if (!inspectData) return;
+  if (!inspectData.task.subtasks) inspectData.task.subtasks = [];
+  inspectData.task.subtasks.push({ id: Date.now(), text: '', done: false });
+  renderInspect();
+  // Focus last input
+  setTimeout(() => {
+    const inputs = document.querySelectorAll('.subtask-text');
+    if (inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function saveInspect() {
+  if (!inspectData) return;
+  const { lid, task } = inspectData;
+  userData.lists = userData.lists.map(l => l.id === lid
+    ? { ...l, tasks: l.tasks.map(t => t.id === task.id ? { ...t, ...task } : t) }
+    : l
+  );
+  persistUserData();
+  if (currentTab === 'grind') renderTasks();
+}
+
+// ─── PERFORMANCE TAB ─────────────────────────────────────────────
+function updatePerfTab() {
+  if (!userData) return;
+  const reports = userData.performanceReports || [];
+  if (reports.length && !activePerfId) activePerfId = reports[0].id;
+  // Tabs
+  const tabsEl = document.getElementById('perf-tabs');
+  tabsEl.innerHTML = reports.map(r => `
+    <div class="perf-tab ${activePerfId === r.id ? 'active' : ''}" onclick="selectPerfReport('${r.id}')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      <span>${escHtml(r.name)}</span>
+      <button onclick="event.stopPropagation();deletePerfReport('${r.id}')" style="width:18px;height:18px;display:flex;align-items:center;justify-content:center;color:var(--muted);margin-left:4px;" onmouseover="this.style.color='var(--red)';" onmouseout="this.style.color='var(--muted)';">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  `).join('');
+  const addLogBtn = document.getElementById('add-log-btn');
+  if (addLogBtn) addLogBtn.disabled = !activePerfId;
+  renderPerfContent();
+}
+
+function selectPerfReport(id) {
+  activePerfId = id;
+  updatePerfTab();
+}
+
+function renderPerfContent() {
+  const container = document.getElementById('perf-content');
+  if (!activePerfId) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:12px;">Initialize a hub to start tracking your performance.</div>';
+    return;
+  }
+  const tests = (userData.mockTests||[]).filter(t => t.reportId === activePerfId)
+    .sort((a,b) => new Date(a.date) - new Date(b.date));
+  const report = (userData.performanceReports||[]).find(r => r.id === activePerfId);
+
+  // Build SVG chart
+  const chartHTML = tests.length >= 2 ? buildChart(tests) : '<div style="text-align:center;padding:32px;color:var(--muted);font-size:11px;">Log at least 2 simulations to see your neural trace.</div>';
+
+  const logsHTML = [...tests].reverse().map(t => `
+    <div class="score-log-item">
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:3px;">${escHtml(t.name)}</div>
+        <div style="font-size:9px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);">${new Date(t.date+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+        ${t.note ? `<div style="font-size:11px;color:var(--text2);margin-top:4px;">${escHtml(t.note)}</div>` : ''}
+      </div>
+      <div class="score-value">${t.score}</div>
+    </div>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="card card-pad mb-12" style="background:linear-gradient(135deg,rgba(200,169,110,.04),rgba(17,17,19,.8));">
+      <div class="flex items-center gap-12 mb-16">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--gold);"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <div>
+          <div class="label label-gold">Neural Trace — ${escHtml(report?.name || 'Hub')}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:3px;">${report?.platform ? escHtml(report.platform) : ''}</div>
+        </div>
+      </div>
+      <div class="chart-wrap">${chartHTML}</div>
+    </div>
+    <div class="card" style="overflow:hidden;">
+      <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
+        <div class="label">Mission Logs (${tests.length})</div>
+      </div>
+      <div style="padding:0 20px;">${logsHTML || '<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:11px;">No logs yet. Hit Log Simulation above.</div>'}</div>
+    </div>
+  `;
+}
+
+function buildChart(tests) {
+  const W = 600, H = 160, PAD = { t:16, r:16, b:30, l:40 };
+  const innerW = W - PAD.l - PAD.r;
+  const innerH = H - PAD.t - PAD.b;
+  const scores = tests.map(t => t.score);
+  const minS = Math.min(...scores) * 0.9;
+  const maxS = Math.max(...scores) * 1.05;
+  const px = (i) => PAD.l + (i / (tests.length-1)) * innerW;
+  const py = (s) => PAD.t + innerH - ((s - minS) / (maxS - minS)) * innerH;
+
+  const points = tests.map((t,i) => `${px(i).toFixed(1)},${py(t.score).toFixed(1)}`).join(' ');
+  const areaPoints = `${PAD.l},${PAD.t+innerH} ` + tests.map((t,i)=>`${px(i).toFixed(1)},${py(t.score).toFixed(1)}`).join(' ') + ` ${PAD.l+innerW},${PAD.t+innerH}`;
+
+  // Tick labels
+  const xLabels = tests.map((t,i) => {
+    const d = new Date(t.date+'T00:00:00');
+    const label = d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    return `<text x="${px(i).toFixed(1)}" y="${H-8}" text-anchor="middle" fill="rgba(161,161,170,.5)" font-size="8" font-family="DM Mono,monospace">${label}</text>`;
+  }).join('');
+
+  // Dots
+  const dots = tests.map((t,i) => `
+    <circle cx="${px(i).toFixed(1)}" cy="${py(t.score).toFixed(1)}" r="4" fill="var(--gold)" />
+    <circle cx="${px(i).toFixed(1)}" cy="${py(t.score).toFixed(1)}" r="8" fill="var(--gold)" opacity="0.15" />
+  `).join('');
+
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#C8A96E" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#C8A96E" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+    <polygon points="${areaPoints}" fill="url(#cg)" />
+    <polyline points="${points}" fill="none" stroke="#C8A96E" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}
+    ${xLabels}
+  </svg>`;
+}
+
+function showAddReportModal() {
+  document.getElementById('report-name').value = '';
+  document.getElementById('report-platform').value = '';
+  openModal('add-report-modal');
+  setTimeout(() => document.getElementById('report-name').focus(), 100);
+}
+
+function createReport() {
+  const name = document.getElementById('report-name').value.trim();
+  const platform = document.getElementById('report-platform').value.trim();
+  if (!name) return;
+  const r = { id: 'r' + Date.now(), name, platform, color: '#C8A96E' };
+  userData.performanceReports = [...(userData.performanceReports||[]), r];
+  activePerfId = r.id;
+  persistUserData();
+  closeModal('add-report-modal');
+  updatePerfTab();
+}
+
+function deletePerfReport(id) {
+  if (!confirm('Delete this hub and all its logs?')) return;
+  userData.performanceReports = (userData.performanceReports||[]).filter(r => r.id !== id);
+  userData.mockTests = (userData.mockTests||[]).filter(t => t.reportId !== id);
+  if (activePerfId === id) activePerfId = null;
+  persistUserData();
+  updatePerfTab();
+}
+
+function showAddLogModal() {
+  document.getElementById('log-name').value = '';
+  document.getElementById('log-score').value = '';
+  document.getElementById('log-date').value = todayStr();
+  document.getElementById('log-note').value = '';
+  openModal('add-log-modal');
+  setTimeout(() => document.getElementById('log-name').focus(), 100);
+}
+
+function saveLog() {
+  const name  = document.getElementById('log-name').value.trim();
+  const score = parseFloat(document.getElementById('log-score').value);
+  const date  = document.getElementById('log-date').value;
+  if (!name || isNaN(score) || !date || !activePerfId) return;
+  const log = { id: 't' + Date.now(), reportId: activePerfId, name, score, date, note: document.getElementById('log-note').value.trim() };
+  userData.mockTests = [...(userData.mockTests||[]), log];
+  userData.pts = (userData.pts||0) + 5;
+  persistUserData();
+  closeModal('add-log-modal');
+  updatePerfTab();
+}
+
+// ─── STRATEGY LISTS ───────────────────────────────────────────────
+function renderStrategyLists() {
+  const el = document.getElementById('strategy-lists');
+  if (!userData || !userData.lists || !userData.lists.length) { el.innerHTML = ''; return; }
+  el.innerHTML = userData.lists.map(list => `
+    <div class="card card-pad mb-12">
+      <div class="flex items-center justify-between mb-12">
+        <div class="label">${escHtml(list.name)}</div>
+        <div class="task-bucket-count">${list.tasks.length} tasks</div>
+      </div>
+      <div class="divider"></div>
+      ${list.tasks.slice(0,3).map(t => `
+        <div class="flex items-center gap-10" style="padding:10px 0;border-bottom:1px solid var(--border);">
+          <div class="p-dot ${t.priority ? 'p-dot-'+t.priority : ''}" style="background:${!t.priority?'var(--muted)':''}"></div>
+          <span style="font-size:12px;${t.done?'text-decoration:line-through;color:var(--muted)':''};">${escHtml(t.text)}</span>
+        </div>
+      `).join('')}
+      ${list.tasks.length > 3 ? `<div style="padding:10px 0;font-size:10px;color:var(--muted);text-align:center;">+${list.tasks.length-3} more tasks</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ─── SOCIAL FEED ─────────────────────────────────────────────────
+async function renderFeed() {
+  await loadPostsFromFirestore();
+  const search = (document.getElementById('feed-search')?.value || '').toLowerCase().trim();
+  const filtered = search ? posts.filter(p => p.text?.toLowerCase().includes(search) || p.name?.toLowerCase().includes(search)) : posts;
+  const container = document.getElementById('feed-container');
+  if (!filtered.length) {
+    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:12px;">No transmissions yet. Be the first.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map(p => `
+    <div class="post-card">
+      <div class="flex items-center gap-12" style="margin-bottom:12px;">
+        <div class="post-avatar">${(p.name||'A').charAt(0).toUpperCase()}</div>
+        <div>
+          <div style="font-size:13px;font-weight:600;">${escHtml(p.name)}</div>
+          <div style="font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);">ID: ${escHtml(p.dcId||'—')}</div>
+        </div>
+        <div style="margin-left:auto;font-size:9px;color:var(--muted);">${timeAgo(p.time)}</div>
+      </div>
+      <div style="font-size:13px;color:var(--text);line-height:1.6;padding-left:48px;">${escHtml(p.text)}</div>
+    </div>
+  `).join('');
+}
+
+async function submitPost() {
+  const text = document.getElementById('post-text').value.trim();
+  if (!text || !userData) return;
+  try {
+    await window.fb.addDoc(window.fb.collection(window.db, 'feed'), {
+      uid: currentUser.uid, name: userData.name, dcId: userData.dcId,
+      text, time: window.fb.serverTimestamp()
+    });
+    document.getElementById('post-text').value = '';
+    renderFeed();
+  } catch (e) {
+    console.error('submitPost error:', e);
+  }
+}
+
+function timeAgo(ts) {
+  if (!ts) return '';
+  // Handle Firestore Timestamp objects
+  const ms = (ts && typeof ts.toMillis === 'function') ? ts.toMillis() : ts;
+  const diff = Date.now() - ms;
+  if (diff < 60000)  return 'just now';
+  if (diff < 3600000) return Math.floor(diff/60000) + 'm ago';
+  if (diff < 86400000) return Math.floor(diff/3600000) + 'h ago';
+  return Math.floor(diff/86400000) + 'd ago';
+}
+
+// ─── RANKING ─────────────────────────────────────────────────────
+async function renderRanking() {
+  await loadUsersFromFirestore();
+  const search = (document.getElementById('rank-search')?.value || '').toLowerCase().trim();
+  const filtered = search ? allUsers.filter(u => u.name.toLowerCase().includes(search)) : allUsers;
+  const container = document.getElementById('rank-container');
+  if (!filtered.length) {
+    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:12px;">No operatives on record.</div>';
+    return;
+  }
+  container.innerHTML = filtered.map((u, i) => {
+    const badge = getRankObj(u.pts||0);
+    return `
+      <div class="rank-row" onclick="showUserInspect('${escHtml(u._uid||'')}')">
+        <div class="rank-num">${i+1}</div>
+        <div class="rank-emoji">${badge.icon}</div>
+        <div class="flex-1">
+          <div class="rank-name">${escHtml(u.name)}</div>
+          <div class="rank-pts">${u.pts||0} XP · <span class="rank-badge-pill">${badge.name}</span></div>
+        </div>
+        <svg class="rank-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    `;
+  }).join('');
+}
+
+function showUserInspect(uid) {
+  const u = allUsers.find(u => u._uid === uid);
+  if (!u) return;
+  const badge = getRankObj(u.pts||0);
+  const rd = getRankData(u.pts||0);
+  const calHTML = buildCalendar(u.history||[], 'month');
+  document.getElementById('user-inspect-content').innerHTML = `
+    <div style="font-size:48px;margin-bottom:12px;">${badge.icon}</div>
+    <div class="serif" style="font-size:24px;margin-bottom:4px;">${escHtml(u.name)}</div>
+    <div class="label" style="margin-bottom:16px;">ID: ${escHtml(u.dcId||'—')}</div>
+    <div class="flex items-center gap-12" style="justify-content:center;margin-bottom:20px;">
+      <div style="text-align:center;">
+        <div class="serif" style="font-size:28px;color:var(--gold);">${u.pts||0}</div>
+        <div class="label">XP</div>
+      </div>
+      <div style="width:1px;height:36px;background:var(--border);"></div>
+      <div style="text-align:center;">
+        <div class="serif" style="font-size:28px;">${streak(u.history||[])}</div>
+        <div class="label">Streak</div>
+      </div>
+    </div>
+    <div class="rank-badge-pill" style="display:inline-block;margin-bottom:20px;">${badge.name}</div>
+    <div class="progress-track" style="margin-bottom:8px;"><div class="progress-fill" style="width:${rd.progress}%;"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:8px;color:var(--muted);margin-bottom:20px;">
+      <span>${u.pts||0} XP</span>
+      <span>${rd.next ? rd.next.min+' → '+rd.next.name : 'MAX'}</span>
+    </div>
+    <div class="cal-grid">${calHTML}</div>
+  `;
+  openModal('user-inspect-modal');
+}
+
+// ─── PROFILE ─────────────────────────────────────────────────────
+function updateProfileTab() {
+  if (!userData) return;
+  const badge = getRankObj(userData.pts||0);
+  document.getElementById('profile-avatar').textContent = badge.icon;
+  document.getElementById('profile-name').textContent = userData.name;
+  document.getElementById('profile-dcid').textContent = 'ID: ' + (userData.dcId||'—');
+  setCalMode(calMode);
+}
+
+function setCalMode(mode) {
+  calMode = mode;
+  document.querySelectorAll('#cal-modes button').forEach(b => {
+    b.classList.toggle('btn-gold', b.dataset.mode === mode);
+    b.classList.toggle('btn-ghost', b.dataset.mode !== mode);
+  });
+  document.getElementById('calendar-container').innerHTML = buildCalendar(userData?.history||[], mode);
+}
+
+function buildCalendar(history, mode) {
+  const now = new Date();
+  const today = todayStr();
+  if (mode === 'month') {
+    const first = new Date(now.getFullYear(), now.getMonth(), 1).getDay();
+    const days  = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+    let html = '<div class="cal-grid">';
+    for (let i=0; i<first; i++) html += '<div></div>';
+    for (let d=1; d<=days; d++) {
+      const ds = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const done = history.includes(ds);
+      const isToday = ds === today;
+      html += `<div class="cal-cell ${done?'done':''} ${isToday?'today':''}">${d}</div>`;
+    }
+    return html + '</div>';
+  } else {
+    const count = mode==='3m'?90:mode==='6m'?180:365;
+    let html = '<div class="heatmap">';
+    for (let i=count; i>=0; i--) {
+      const ds = new Date(now - i*86400000).toISOString().slice(0,10);
+      html += `<div class="heatmap-cell ${history.includes(ds)?'done':''}" title="${ds}"></div>`;
+    }
+    return html + '</div>';
+  }
+}
+
+// ─── VAULT ───────────────────────────────────────────────────────
+function openVault() {
+  const pts = userData?.pts || 0;
+  document.getElementById('vault-content').innerHTML = BADGES.map(b => `
+    <div class="vault-badge-row ${pts >= b.min ? 'unlocked' : 'locked'}">
+      <div class="vault-badge-emoji">${b.icon}</div>
+      <div class="vault-badge-info">
+        <h4 style="color:${b.color};">${b.name}</h4>
+        <p>${b.min.toLocaleString()} XP Required ${pts >= b.min ? '· Unlocked ✓' : ''}</p>
+      </div>
+    </div>
+  `).join('');
+  openModal('vault-modal');
+}
+
+// ─── MODAL HELPERS ───────────────────────────────────────────────
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+// Close overlay on background click
+document.querySelectorAll('.overlay').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id);
+  });
+});
+
+// ─── CONFETTI ────────────────────────────────────────────────────
+function fireConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = Array.from({length:80}, () => ({
+    x: Math.random()*canvas.width, y: -10,
+    vx: (Math.random()-0.5)*4, vy: Math.random()*4+2,
+    size: Math.random()*8+4, rot: Math.random()*360,
+    rotV: (Math.random()-0.5)*6,
+    color: ['#C8A96E','#E2C98A','#60A5FA','#34D399','#FBBF24'][Math.floor(Math.random()*5)],
+    alpha: 1,
+  }));
+  let frame;
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive = false;
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.08;
+      p.rot += p.rotV; p.alpha -= 0.012;
+      if (p.alpha > 0) { alive = true; }
+      ctx.save(); ctx.globalAlpha = Math.max(0,p.alpha);
+      ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size/2);
+      ctx.restore();
+    });
+    if (alive) frame = requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  if (frame) cancelAnimationFrame(frame);
+  draw();
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────
+function escHtml(str) {
+  if (!str && str !== 0) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ESC key closes panels
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeInspect();
+    document.querySelectorAll('.overlay.open').forEach(el => el.classList.remove('open'));
+  }
+});
+</script>
 </body>
 </html>
