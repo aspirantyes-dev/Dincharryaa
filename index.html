@@ -2,8 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Dincharryaa — Daily Ops Terminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0" />
+<meta name="theme-color" content="#0A0A0B" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Dincharryaa — Daily Task Tracker</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -129,11 +132,11 @@
 
   /* ─── INPUTS ─── */
   input, textarea, select {
-    font-family: inherit; font-size: 13px; width: 100%;
+    font-family: inherit; font-size: 16px; width: 100%;
     background: var(--bg3); border: 1px solid var(--border2); color: var(--text);
     border-radius: var(--r2); padding: 12px 16px; outline: none;
     transition: border-color var(--transition), background var(--transition);
-    resize: none;
+    resize: none; -webkit-appearance: none; appearance: none;
   }
   input:focus, textarea:focus, select:focus {
     border-color: rgba(200,169,110,.35);
@@ -521,16 +524,16 @@
   }
 
   /* ─── VAULT ─── */
-  .vault-badge-row {
+  .badges-badge-row {
     display: flex; align-items: center; gap: 16px; padding: 16px;
     border-radius: var(--r2); border: 1px solid var(--border); background: var(--bg3);
     transition: all var(--transition);
   }
-  .vault-badge-row.unlocked { border-color: rgba(200,169,110,.15); }
-  .vault-badge-row.locked   { opacity: .3; filter: grayscale(1); }
-  .vault-badge-emoji { font-size: 32px; }
-  .vault-badge-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
-  .vault-badge-info p  { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .badges-badge-row.unlocked { border-color: rgba(200,169,110,.15); }
+  .badges-badge-row.locked   { opacity: .3; filter: grayscale(1); }
+  .badges-badge-emoji { font-size: 32px; }
+  .badges-badge-info h4 { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .badges-badge-info p  { font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 
   /* ─── STRATEGY TAB ─── */
   .strategy-empty {
@@ -645,6 +648,642 @@
   /* ─── CLEAR DONE BUTTON ─── */
   .clear-done-btn { font-size:8px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); opacity:.5; padding:2px 6px; border-radius:6px; border:1px solid transparent; transition:all var(--transition); }
   .clear-done-btn:hover { opacity:1; color:var(--red); border-color:rgba(248,113,113,.2); background:rgba(248,113,113,.06); }
+
+  /* ══════════════════════════════════════════
+     PREMIUM UPGRADE LAYER
+     Safe overrides — no stacking context changes
+     ══════════════════════════════════════════ */
+
+  /* Richer colour palette */
+  :root {
+    --bg:        #080809;
+    --bg2:       #0E0E11;
+    --bg3:       #151519;
+    --bg4:       #1C1C22;
+    --gold:      #C8A96E;
+    --gold2:     #E2C98A;
+    --gold3:     #F0DBA8;
+    --gold-dim:  rgba(200,169,110,.10);
+    --gold-glow: rgba(200,169,110,.22);
+    --border:    rgba(255,255,255,.065);
+    --border2:   rgba(255,255,255,.11);
+    --r: 18px; --r2: 14px; --r3: 10px;
+  }
+
+  /* Touch improvements */
+  button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  a      { -webkit-tap-highlight-color: transparent; }
+  body   { -webkit-tap-highlight-color: transparent; touch-action: pan-y; }
+
+  /* Gradient gold button */
+  .btn-gold {
+    background: linear-gradient(135deg, #BF9D5E 0%, #E8CC88 55%, #BF9D5E 100%);
+    background-size: 200% 100%;
+    color: #080809;
+    box-shadow: 0 0 22px rgba(200,169,110,.28), 0 2px 10px rgba(0,0,0,.45);
+  }
+  .btn-gold:hover {
+    background-position: right center;
+    filter: brightness(1.07);
+    box-shadow: 0 0 38px rgba(200,169,110,.42), 0 4px 18px rgba(0,0,0,.55);
+  }
+  .btn { min-height: 44px; touch-action: manipulation; }
+  .btn:active { transform: scale(.95); }
+
+  /* Richer card border on hover */
+  .card:hover { border-color: rgba(200,169,110,.18); box-shadow: 0 4px 32px rgba(0,0,0,.5); }
+
+  /* Progress bar glow */
+  .progress-track { height: 4px; }
+  .progress-fill  {
+    background: linear-gradient(90deg, #C8A96E, #F0DBA8);
+    box-shadow: 0 0 8px rgba(200,169,110,.45);
+  }
+
+  /* Stat card hover glow */
+  .stat-card:hover {
+    border-color: rgba(200,169,110,.2);
+    box-shadow: 0 6px 28px rgba(0,0,0,.45), 0 0 18px rgba(200,169,110,.07);
+    transform: translateY(-3px);
+  }
+  .stat-value { font-size: clamp(26px, 6vw, 36px); }
+
+  /* Auth logo: gradient */
+  .auth-logo {
+    background: linear-gradient(135deg, #C8A96E, #F0DBA8);
+    box-shadow: 0 0 48px rgba(200,169,110,.32), 0 0 90px rgba(200,169,110,.09), 0 8px 28px rgba(0,0,0,.6);
+    width: 80px; height: 80px; border-radius: 26px;
+  }
+  .auth-logo svg { color: #080809; width: 38px; height: 38px; }
+  #auth-screen { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+
+  /* Brand logo: gradient */
+  .brand-logo {
+    background: linear-gradient(135deg, #C8A96E, #F0DBA8);
+    box-shadow: 0 0 34px rgba(200,169,110,.3), 0 4px 18px rgba(0,0,0,.5);
+    width: 62px; height: 62px; border-radius: 20px;
+  }
+  .brand-logo svg { color: #080809; }
+  .brand-divider { background: linear-gradient(90deg, transparent, var(--gold), transparent); width: 48px; height: 1.5px; }
+
+  /* Loading screen richer bg */
+  #loading-screen { background: #080809; }
+  .loader-ring { width: 44px; height: 44px; box-shadow: 0 0 14px rgba(200,169,110,.2); }
+
+  /* Task check done: gradient + glow */
+  .task-check.done {
+    background: linear-gradient(135deg, #C8A96E, #E2C98A);
+    border-color: #C8A96E;
+    box-shadow: 0 0 10px rgba(200,169,110,.4);
+  }
+  .task-row { padding: 15px 0; }
+
+  /* Bottom nav: upgraded */
+  .bottom-nav {
+    width: calc(100% - 20px);
+    max-width: 500px;
+    bottom: 14px;
+    background: rgba(8,8,10,.97);
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 26px;
+    padding: 8px 6px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    box-shadow:
+      0 8px 40px rgba(0,0,0,.8),
+      0 0 0 1px rgba(200,169,110,.05),
+      inset 0 1px 0 rgba(255,255,255,.07);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+  }
+  .nav-item {
+    min-height: 52px;
+    padding: 6px 8px;
+    border-radius: 18px;
+    touch-action: manipulation;
+  }
+  .nav-item.active {
+    background: linear-gradient(160deg, rgba(200,169,110,.18), rgba(200,169,110,.07));
+    border: 1px solid rgba(200,169,110,.24);
+  }
+  .nav-item.active svg {
+    color: var(--gold);
+    filter: drop-shadow(0 0 4px rgba(200,169,110,.55));
+  }
+  .nav-item.active span { color: var(--gold); }
+
+  /* Overlay: bottom sheet on mobile */
+  .overlay {
+    align-items: flex-end;
+    padding: 0;
+    background: rgba(8,8,9,.88);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+  }
+  .overlay-content {
+    border-radius: 22px 22px 0 0;
+    max-height: 91vh;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    animation: sheetUp .3s cubic-bezier(.34,1.1,.64,1);
+  }
+  @keyframes sheetUp {
+    from { transform: translateY(55px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  @media (min-width: 580px) {
+    .overlay { align-items: center; padding: 20px; }
+    .overlay-content {
+      border-radius: var(--r);
+      max-height: 88vh;
+      padding-bottom: 0;
+      animation: scaleIn .28s cubic-bezier(.4,0,.2,1);
+    }
+  }
+
+  /* Rank row: touch */
+  .rank-row { touch-action: pan-y; min-height: 62px; }
+  .rank-row:active { background: rgba(200,169,110,.05); }
+
+  /* Post card hover */
+  .post-card { transition: background .2s ease; }
+  .post-card:hover { background: rgba(200,169,110,.03); }
+
+  /* Profile avatar glow */
+  .profile-avatar {
+    border: 1px solid rgba(200,169,110,.28);
+    box-shadow: 0 0 22px rgba(200,169,110,.1);
+  }
+
+  /* Inspect header safe area */
+  .inspect-header {
+    padding-top: calc(16px + env(safe-area-inset-top, 0px));
+  }
+  .inspect-inner {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Smooth scrolling in overlays */
+  .overlay-content {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Glow pulse: more dramatic */
+  @keyframes glow-pulse {
+    0%,100% { box-shadow: 0 0 22px rgba(200,169,110,.22); }
+    50%      { box-shadow: 0 0 50px rgba(200,169,110,.48), 0 0 90px rgba(200,169,110,.12); }
+  }
+
+  /* ── Mobile responsive ── */
+  @media (max-width: 480px) {
+    #app { padding: 0 12px 130px; }
+    .card-pad { padding: 18px 16px; }
+    .card-pad-lg { padding: 20px 16px; }
+    .stat-grid { gap: 8px; }
+    .stat-card { padding: 16px 10px; }
+    .stat-icon { width: 28px; height: 28px; margin-bottom: 10px; }
+    .stat-label { font-size: 6.5px; }
+    .stat-value { font-size: clamp(22px, 5.5vw, 30px); }
+    .brand-header { padding: 22px 0 16px; }
+    .btn { padding: 12px 16px; font-size: 10px; }
+    .section-title { font-size: 20px; }
+    .perf-tab { padding: 9px 12px; font-size: 9px; }
+    .rank-row { padding: 14px 14px; }
+    .profile-avatar { width: 72px; height: 72px; font-size: 36px; border-radius: 20px; }
+    .inspect-inner { padding: 16px; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)); }
+    .heatmap-cell { width: 8px; height: 8px; }
+    input, textarea, select { font-size: 16px; }
+    .add-task-input { font-size: 16px; }
+    .auth-title { font-size: clamp(36px, 9vw, 52px); }
+    .auth-tagline { margin-bottom: 28px; }
+  }
+
+
+  /* ── 7-DAY LOCK FEATURE ── */
+  .list-lock-btn {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border2); background: var(--bg3);
+    color: var(--muted); transition: all var(--transition);
+    cursor: pointer; touch-action: manipulation; flex-shrink: 0;
+  }
+  .list-lock-btn:hover { border-color: rgba(200,169,110,.35); color: var(--gold); background: var(--gold-dim); }
+  .list-lock-btn svg { width: 12px; height: 12px; }
+
+  .task-bucket.is-locked {
+    border-color: rgba(200,169,110,.22) !important;
+    background: rgba(13,13,16,.9);
+  }
+  .task-bucket.is-locked::after {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(135deg, rgba(200,169,110,.04), transparent 60%);
+    border-radius: inherit;
+  }
+  .task-bucket { position: relative; }
+
+  .lock-header-bar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0 14px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 6px;
+  }
+  .lock-icon-badge {
+    width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(200,169,110,.15), rgba(200,169,110,.06));
+    border: 1px solid rgba(200,169,110,.25);
+    display: flex; align-items: center; justify-content: center;
+    animation: glow-pulse 3s ease infinite;
+  }
+  .lock-icon-badge svg { width: 14px; height: 14px; color: var(--gold); }
+
+  .lock-day-badge {
+    font-size: 8px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--gold); background: rgba(200,169,110,.1);
+    border: 1px solid rgba(200,169,110,.22);
+    padding: 3px 9px; border-radius: 99px;
+  }
+  .lock-unlock-date {
+    font-size: 9px; color: var(--muted); margin-left: auto; flex-shrink: 0;
+  }
+
+  .lock-progress-track {
+    height: 3px; background: rgba(255,255,255,.06); border-radius: 99px;
+    overflow: hidden; margin-bottom: 6px;
+  }
+  .lock-progress-fill {
+    height: 100%; border-radius: 99px;
+    background: linear-gradient(90deg, var(--gold), var(--gold3));
+    box-shadow: 0 0 6px rgba(200,169,110,.4);
+    transition: width .8s cubic-bezier(.4,0,.2,1);
+  }
+  .lock-streak-pips { display: flex; gap: 4px; margin-bottom: 14px; }
+  .lock-pip {
+    flex: 1; height: 4px; border-radius: 99px; background: rgba(255,255,255,.07);
+    transition: all .4s;
+  }
+  .lock-pip.done { background: var(--gold); box-shadow: 0 0 5px rgba(200,169,110,.4); }
+  .lock-pip.today { background: var(--gold3); animation: pulse 1.5s ease infinite; }
+
+  .locked-task-row { opacity: 1; }
+  .locked-task-row .task-arrow { display: none !important; }
+  .locked-task-row .task-text { cursor: default; }
+
+  .lock-modal-days {
+    display: flex; gap: 6px; justify-content: center; margin: 18px 0;
+  }
+  .lock-modal-day {
+    width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--border2);
+    background: var(--bg3); display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 700; color: var(--muted); letter-spacing: .05em;
+  }
+
+  .unlock-banner {
+    display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+    background: rgba(52,211,153,.06); border: 1px solid rgba(52,211,153,.2);
+    border-radius: var(--r2); margin-bottom: 12px;
+    font-size: 11px; color: var(--green);
+  }
+
+  /* locked add-task row hidden */
+  .is-locked .add-task-row { display: none !important; }
+
+
+  /* ── TIME-BASED GREETING ── */
+  .greeting-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0 4px; margin-bottom: 4px;
+  }
+  .greeting-text { font-size: 13px; color: var(--text2); font-weight: 500; }
+  .greeting-name { color: var(--text); font-weight: 700; }
+  .greeting-time {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: .06em;
+  }
+
+  /* ── IMPROVED LOADING SCREEN ── */
+  .loading-steps { display: flex; flex-direction: column; gap: 6px; margin-top: 20px; align-items: center; }
+  .loading-step  { font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--muted); opacity: 0; transition: opacity .4s; }
+  .loading-step.active { opacity: 1; color: var(--gold); }
+
+  /* ── AUTH SCREEN PARTICLES ── */
+  #auth-particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .particle {
+    position: absolute; border-radius: 50%;
+    background: rgba(200,169,110,.35);
+    animation: particleFloat linear infinite;
+  }
+  #auth-screen > *:not(#auth-particles) { position: relative; z-index: 1; }
+
+  @keyframes particleFloat {
+    0%   { transform: translateY(100vh) scale(0);   opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: .6; }
+    100% { transform: translateY(-20vh) scale(1.5); opacity: 0; }
+  }
+
+  /* ── IMPROVED STAT CARDS ── */
+  .stat-card { cursor: default; }
+  .stat-card:active { transform: scale(.97); }
+
+  /* ── DAILY INTENTIONS ── */
+  .intention-card { margin-bottom: 16px; }
+  .intention-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+  .intention-chip {
+    font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    padding: 6px 12px; border-radius: 99px; border: 1px solid var(--border2);
+    background: var(--bg3); color: var(--text2); cursor: pointer;
+    transition: all .2s; touch-action: manipulation;
+  }
+  .intention-chip.selected {
+    background: var(--gold-dim); border-color: rgba(200,169,110,.35); color: var(--gold);
+  }
+  .intention-chip:active { transform: scale(.94); }
+
+  /* ── IMPROVED RANK BANNER ── */
+  #rank-banner {
+    background: linear-gradient(135deg, rgba(200,169,110,.08) 0%, rgba(13,13,16,.9) 100%) !important;
+    border-color: rgba(200,169,110,.18) !important;
+    overflow: hidden; position: relative;
+  }
+  #rank-banner::after {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,169,110,.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  #rank-emoji { font-size: 38px; filter: drop-shadow(0 0 8px rgba(200,169,110,.3)); transition: transform .3s; }
+  #rank-banner:hover #rank-emoji { transform: scale(1.1) rotate(-5deg); }
+
+  /* ── SWIPE DOWN TO CLOSE HINT ── */
+  .sheet-handle { 
+    width: 40px; height: 4px; background: rgba(255,255,255,.13); 
+    border-radius: 99px; margin: 0 auto 18px; cursor: grab;
+  }
+
+  /* ── KEYBOARD SHORTCUTS BADGE ── */
+  .kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--bg4); border: 1px solid var(--border2);
+    border-radius: 5px; padding: 1px 6px; font-family: 'DM Mono', monospace;
+    font-size: 9px; color: var(--muted); margin: 0 2px;
+  }
+
+  /* ── IMPROVED TASK BUCKET ── */
+  .task-bucket { transition: box-shadow .25s, border-color .25s; }
+  .task-bucket:hover:not(.is-locked) { box-shadow: 0 4px 24px rgba(0,0,0,.35); }
+  .task-bucket-count {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    background: var(--bg4); border: 1px solid var(--border2);
+    border-radius: 6px; padding: 2px 7px; color: var(--text2);
+  }
+
+  /* ── IMPROVED EMPTY STATE ── */
+  .empty-state {
+    text-align: center; padding: 48px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .empty-state-icon {
+    width: 56px; height: 56px; border-radius: 18px;
+    background: var(--bg3); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted);
+  }
+  .empty-state-icon svg { width: 24px; height: 24px; }
+  .empty-state-title { font-family: 'Instrument Serif', serif; font-size: 20px; }
+  .empty-state-sub   { font-size: 12px; color: var(--text2); max-width: 220px; line-height: 1.6; }
+
+  /* ── PAGE TRANSITIONS ── */
+  .tab-content { animation: tabIn .25s cubic-bezier(.4,0,.2,1); }
+  @keyframes tabIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  /* ── IMPROVED POST CARD ── */
+  .post-card { padding: 16px 20px; }
+  .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .post-avatar { 
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold3));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #080809; flex-shrink: 0;
+  }
+  .post-meta { flex: 1; min-width: 0; }
+  .post-name { font-size: 12px; font-weight: 700; color: var(--text); }
+  .post-time { font-size: 9px; color: var(--muted); margin-top: 1px; }
+  .post-body { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .post-like-btn {
+    display: flex; align-items: center; gap: 5px; margin-top: 10px;
+    font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); padding: 5px 10px; border-radius: 8px;
+    border: 1px solid transparent; transition: all .2s; cursor: pointer; touch-action: manipulation;
+  }
+  .post-like-btn:hover { color: var(--red); border-color: rgba(248,113,113,.2); background: rgba(248,113,113,.06); }
+  .post-like-btn.liked { color: var(--red); }
+  .post-like-btn svg { width: 12px; height: 12px; }
+
+  /* ── IMPROVED RANK ROW ── */
+  .rank-medal { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; flex-shrink: 0; }
+  .rank-medal-1 { background: linear-gradient(135deg,#FFD700,#FFA500); color:#080809; box-shadow: 0 0 12px rgba(255,215,0,.4); }
+  .rank-medal-2 { background: linear-gradient(135deg,#C0C0C0,#909090); color:#080809; }
+  .rank-medal-3 { background: linear-gradient(135deg,#CD7F32,#8B4513); color:#fff; }
+  .rank-medal-n { background: var(--bg4); color: var(--muted); font-size: 10px; }
+
+  /* ── OFFLINE BANNER ── */
+  #offline-banner {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9995;
+    background: rgba(251,191,36,.95); color: #080809;
+    font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    text-align: center; padding: 8px; display: none;
+    backdrop-filter: blur(10px);
+  }
+
+  /* ── IMPROVED QUICK NOTE ── */
+  .quick-note-card { position: relative; }
+  .quick-note-save { 
+    position: absolute; bottom: 14px; right: 14px;
+    font-size: 8px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); opacity: 0; transition: opacity .3s;
+    pointer-events: none;
+  }
+  .quick-note-card:focus-within .quick-note-save { opacity: 1; }
+
+  /* ── IMPROVED FOCUS TIMER ── */
+  .focus-timer-card { position: relative; }
+  .timer-center-text {
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    text-align: center; pointer-events: none;
+    /* sits inside the SVG ring visually */
+  }
+
+  /* ── SCROLL TO TOP BTN ── */
+  #scroll-top {
+    position: fixed; bottom: 100px; right: 16px; z-index: 850;
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(13,13,16,.95); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); cursor: pointer; transition: all .3s;
+    opacity: 0; pointer-events: none; backdrop-filter: blur(20px);
+    touch-action: manipulation;
+  }
+  #scroll-top.visible { opacity: 1; pointer-events: auto; }
+  #scroll-top:hover { border-color: rgba(200,169,110,.3); color: var(--gold); }
+  #scroll-top svg { width: 16px; height: 16px; }
+
+  /* ── IMPROVED BRAND HEADER ── */
+  .brand-header { padding: 28px 0 20px; }
+  .brand-subtitle { font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+
+  /* ── SHIMMER SKELETON ── */
+  .skeleton {
+    background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s infinite;
+    border-radius: 6px;
+  }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  /* ── MOBILE FINAL TWEAKS ── */
+  @media (max-width: 480px) {
+    .timer-ring-svg { width: 120px; height: 120px; }
+    .timer-display { font-size: clamp(32px, 8vw, 44px); }
+    .greeting-bar { padding-top: 8px; }
+    .post-card { padding: 14px 16px; }
+  }
+
+  @media (max-width: 360px) {
+    .stat-card { padding: 12px 8px; }
+    .stat-value { font-size: 20px; }
+    .stat-label { font-size: 6px; }
+    .stat-grid { gap: 6px; }
+  }
+
+  /* ── RIPPLE EFFECT ── */
+  .ripple-host { position: relative; overflow: hidden; }
+  .ripple-circle {
+    position: absolute; border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    transform: scale(0); animation: ripple-anim .55s linear;
+    pointer-events: none;
+  }
+  @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
+
+  /* ── SOUND TOGGLE ── */
+  .sound-toggle {
+    position: fixed; top: 16px; right: 16px; z-index: 990;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(15,15,17,.9); border: 1px solid rgba(255,255,255,.09);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all .2s; backdrop-filter: blur(20px);
+    color: var(--muted); touch-action: manipulation;
+  }
+  .sound-toggle:hover { border-color: rgba(200,169,110,.3); color: var(--gold); }
+  .sound-toggle.muted { opacity: .45; }
+  .sound-toggle svg { width: 15px; height: 15px; }
+
+  /* ── FOCUS TIMER ── */
+  .focus-timer-card {
+    background: rgba(13,13,16,.85);
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: var(--r); padding: 22px 20px;
+    margin-bottom: 16px; position: relative; overflow: hidden;
+  }
+  .focus-timer-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200,169,110,.2), transparent);
+  }
+  .timer-display {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(38px, 9vw, 52px);
+    letter-spacing: .06em; color: var(--text);
+    text-align: center; margin: 12px 0;
+    transition: color .3s;
+  }
+  .timer-display.break { color: var(--green); }
+  .timer-display.warning { color: var(--red); animation: pulse .8s ease infinite; }
+  .timer-ring-wrap { display: flex; justify-content: center; margin-bottom: 4px; }
+  .timer-ring-svg { width: 140px; height: 140px; transform: rotate(-90deg); }
+  .timer-ring-bg { fill: none; stroke: rgba(255,255,255,.06); stroke-width: 6; }
+  .timer-ring-fill { fill: none; stroke: var(--gold); stroke-width: 6; stroke-linecap: round;
+    transition: stroke-dashoffset .9s linear, stroke .3s; }
+  .timer-ring-fill.break { stroke: var(--green); }
+  .timer-mode-row { display: flex; gap: 6px; margin-bottom: 14px; }
+  .timer-mode-btn {
+    flex: 1; padding: 7px 0; border-radius: var(--r3); font-size: 9px;
+    font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+    border: 1px solid var(--border2); background: var(--bg3); color: var(--text2);
+    cursor: pointer; transition: all .2s; touch-action: manipulation;
+  }
+  .timer-mode-btn.active { background: var(--gold-dim); border-color: rgba(200,169,110,.3); color: var(--gold); }
+  .timer-ctrl-row { display: flex; gap: 8px; }
+  .timer-session-count {
+    font-size: 9px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); text-align: center; margin-top: 10px;
+  }
+  .timer-sessions { display: flex; gap: 4px; justify-content: center; margin-top: 6px; }
+  .timer-pip { width: 7px; height: 7px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border2); transition: all .3s; }
+  .timer-pip.done { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 6px rgba(200,169,110,.4); }
+
+  /* ── QUICK NOTE ── */
+  .quick-note-card { margin-bottom: 16px; }
+  .quick-note-area {
+    font-size: 13px; color: var(--text2); background: transparent;
+    border: none; resize: none; width: 100%; line-height: 1.7;
+    font-family: 'Syne', sans-serif; border-radius: 0;
+    padding: 0;
+  }
+  .quick-note-area:focus { color: var(--text); outline: none; }
+
+  /* ── STAT COUNTER ANIMATION ── */
+  .stat-value { transition: transform .2s cubic-bezier(.34,1.56,.64,1); }
+  .stat-value.bump { transform: scale(1.25); }
+
+  /* ── FEED SHARE TOGGLE ── */
+  .share-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--border); margin-top: 12px; }
+  .toggle-switch { position: relative; width: 38px; height: 22px; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-knob {
+    position: absolute; inset: 0; background: var(--bg4); border-radius: 99px;
+    cursor: pointer; transition: .25s; border: 1px solid var(--border2);
+  }
+  .toggle-knob::before {
+    content: ''; position: absolute; width: 16px; height: 16px;
+    left: 2px; top: 2px; background: var(--muted); border-radius: 50%; transition: .25s;
+  }
+  .toggle-switch input:checked + .toggle-knob { background: var(--gold-dim); border-color: rgba(200,169,110,.4); }
+  .toggle-switch input:checked + .toggle-knob::before { transform: translateX(16px); background: var(--gold); }
+
+  /* ── TOAST UPGRADE ── */
+  #toast-container { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); z-index:9998; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none; width:100%; max-width:340px; padding:0 16px; }
+  .toast {
+    background: rgba(15,15,18,.97); border: 1px solid rgba(255,255,255,.09);
+    border-radius: 14px; padding: 11px 18px; font-size: 12px;
+    backdrop-filter: blur(24px); box-shadow: 0 8px 32px rgba(0,0,0,.6);
+    display: flex; align-items: center; gap: 10px;
+    animation: toastIn .35s cubic-bezier(.34,1.2,.64,1);
+    pointer-events: auto; white-space: nowrap; max-width: 100%;
+  }
+  .toast.removing { animation: toastOut .25s ease forwards; }
+  .toast-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .toast-gold  { border-left: 2px solid var(--gold); }
+  .toast-green { border-left: 2px solid var(--green); }
+  .toast-red   { border-left: 2px solid var(--red); }
+  .toast-blue  { border-left: 2px solid var(--blue); }
+  @keyframes toastIn  { from { transform:translateY(20px) scale(.9); opacity:0; } to { transform:translateY(0) scale(1); opacity:1; } }
+  @keyframes toastOut { to   { transform:translateY(-10px) scale(.9); opacity:0; } }
+
+  /* ── XP FLOATING LABEL ── */
+  .xp-float {
+    position: fixed; font-family:'DM Mono',monospace; font-size:15px; font-weight:700;
+    color: var(--gold); pointer-events: none; z-index:9997;
+    animation: xpFloat 1.4s cubic-bezier(.4,0,.2,1) forwards;
+    text-shadow: 0 0 12px rgba(200,169,110,.6);
+  }
+  @keyframes xpFloat { 0%{opacity:1;transform:translateY(0) scale(1);} 80%{opacity:1;} 100%{opacity:0;transform:translateY(-80px) scale(1.2);} }
+
+  /* ── CONFIRM MODAL SUB TEXT UPGRADE ── */
+  .confirm-sub { font-size: 12px; color: var(--text2); margin: 8px 0 20px; line-height: 1.6; }
 </style>
 
 <!-- ─── FIREBASE INIT ─── -->
@@ -679,15 +1318,33 @@
 </head>
 <body>
 
+<!-- OFFLINE BANNER -->
+<div id="offline-banner">⚡ No connection — changes will save when online</div>
+
+<!-- SCROLL TO TOP -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- SOUND TOGGLE -->
+<button class="sound-toggle" id="sound-toggle-btn" onclick="toggleSound()" title="Toggle sound">
+  <svg id="sound-icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+  <svg id="sound-icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+</button>
+
 <!-- LOADING -->
 <div id="loading-screen">
-  <div style="width:52px;height:52px;background:var(--gold);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px var(--gold-glow);margin-bottom:8px;">
+  <div style="width:64px;height:64px;background:linear-gradient(135deg,#C8A96E,#F0DBA8);border-radius:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(200,169,110,.3),0 8px 28px rgba(0,0,0,.6);margin-bottom:4px;animation:glow-pulse 2.5s ease infinite,float 6s ease infinite;">
     <svg viewBox="0 0 24 24" fill="none" stroke="#0A0A0B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:26px;height:26px;">
       <path d="M8 5V19C8 19 16 19 16 12C16 5 8 5 8 5Z"/>
     </svg>
   </div>
   <div class="loader-ring"></div>
-  <div class="loader-text">Initialising</div>
+  <div class="loading-steps">
+    <div class="loading-step" id="ls1">Connecting to server</div>
+    <div class="loading-step" id="ls2">Saveing User Data</div>
+    <div class="loading-step" id="ls3">Loading Tasks</div>
+  </div>
 </div>
 
 <!-- CONFETTI CANVAS -->
@@ -698,13 +1355,14 @@
 
 <!-- ═══════════════════════════════════════ AUTH SCREEN ═══ -->
 <div id="auth-screen" style="display:none;">
+  <canvas id="auth-particles" style="position:fixed;inset:0;pointer-events:none;z-index:0;"></canvas>
   <div class="auth-logo">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <path d="M8 5V19C8 19 16 19 16 12C16 5 8 5 8 5Z"/>
     </svg>
   </div>
   <div class="auth-title serif">Dincharryaa</div>
-  <div class="auth-tagline">Daily Ops Terminal · Grind Protocol</div>
+  <div class="auth-tagline">Daily Task Tracker · Daily Tracker</div>
   <div class="auth-card card card-pad">
     <div class="auth-tabs">
       <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
@@ -712,17 +1370,17 @@
     </div>
     <div id="signup-fields" style="display:none;">
       <div class="form-group">
-        <label class="form-label">Callsign</label>
+        <label class="form-label">Your Name</label>
         <input type="text" id="auth-name" placeholder="Enter your name" />
       </div>
       <div class="form-group">
-        <label class="form-label">DC Identifier (optional)</label>
-        <input type="text" id="auth-dcid" placeholder="Leave blank for auto-assign" />
+        <label class="form-label">Username (optional)</label>
+        <input type="text" id="auth-dcid" placeholder="Leave blank to auto-generate" />
       </div>
     </div>
     <div class="form-group">
       <label class="form-label">Email</label>
-      <input type="email" id="auth-email" placeholder="operative@domain.com" onkeydown="if(event.key==='Enter')handleAuth()" />
+      <input type="email" id="auth-email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')handleAuth()" />
     </div>
     <div class="form-group">
       <label class="form-label">Password</label>
@@ -736,12 +1394,12 @@
     <div class="auth-error hidden" id="auth-error"></div>
     <div class="mt-16">
       <button class="btn btn-gold w-full" id="auth-btn" onclick="handleAuth()">
-        <span id="auth-btn-text">Establish Link</span>
+        <span id="auth-btn-text">Sign In</span>
       </button>
     </div>
     <div style="text-align:center; margin-top:12px;">
       <button class="btn btn-ghost" style="width:100%; font-size:10px;" id="demo-btn" onclick="demoLogin()">
-        ⚡ Demo Mode (No account needed)
+        ⚡ Try Demo
       </button>
     </div>
   </div>
@@ -752,7 +1410,11 @@
   <div id="app">
 
     <!-- ── GRIND TAB ── -->
-    <div id="tab-grind" class="tab-content">
+    <div id="tab-streak" class="tab-content">
+      <div class="greeting-bar anim-fade-up">
+        <div class="greeting-text" id="greeting-text">Good morning, <span class="greeting-name" id="greeting-name">User</span></div>
+        <div class="greeting-time" id="greeting-clock">--:--</div>
+      </div>
       <div class="brand-header anim-fade-up">
         <div class="brand-logo">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -762,6 +1424,7 @@
         <div class="brand-title serif">Dincharryaa</div>
         <div class="brand-divider"></div>
         <div class="brand-quote" id="daily-quote"></div>
+        <div class="brand-subtitle" id="todays-date"></div>
       </div>
 
       <!-- Stats -->
@@ -798,6 +1461,50 @@
         <div id="streak-bonus-area"></div>
       </div>
 
+      <!-- Daily Intentions -->
+      <div class="card intention-card card-pad anim-fade-up d2">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+          <div class="label label-gold">Today's Focus</div>
+          <span style="font-size:9px;color:var(--muted);" id="intention-saved-label"></span>
+        </div>
+        <div class="intention-chips" id="intention-chips">
+          <div class="intention-chip" onclick="toggleIntention(this,'🧠 Deep Work')">🧠 Deep Work</div>
+          <div class="intention-chip" onclick="toggleIntention(this,'💪 Physical')">💪 Physical</div>
+          <div class="intention-chip" onclick="toggleIntention(this,'📖 Learning')">📖 Learning</div>
+          <div class="intention-chip" onclick="toggleIntention(this,'🧘 Recovery')">🧘 Recovery</div>
+          <div class="intention-chip" onclick="toggleIntention(this,'🤝 Social')">🤝 Social</div>
+          <div class="intention-chip" onclick="toggleIntention(this,'⚡ Sprint')">⚡ Sprint</div>
+        </div>
+      </div>
+
+      <!-- Focus Timer -->
+      <div class="focus-timer-card anim-fade-up d3" id="focus-timer-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div class="label label-gold">Focus Timer</div>
+          <div class="timer-session-count" id="timer-session-label">0 / 4 sessions</div>
+        </div>
+        <div class="timer-mode-row">
+          <button class="timer-mode-btn active" id="tmode-focus" onclick="setTimerMode('focus')">Focus 25</button>
+          <button class="timer-mode-btn" id="tmode-short" onclick="setTimerMode('short')">Break 5</button>
+          <button class="timer-mode-btn" id="tmode-long" onclick="setTimerMode('long')">Long 15</button>
+        </div>
+        <div class="timer-ring-wrap">
+          <svg class="timer-ring-svg" viewBox="0 0 140 140">
+            <circle class="timer-ring-bg" cx="70" cy="70" r="62"/>
+            <circle class="timer-ring-fill" id="timer-ring-fill" cx="70" cy="70" r="62"
+              stroke-dasharray="389.56" stroke-dashoffset="0"/>
+          </svg>
+        </div>
+        <div class="timer-display" id="timer-display">25:00</div>
+        <div class="timer-ctrl-row">
+          <button class="btn btn-ghost flex-1" style="font-size:10px;" onclick="resetTimer()">Reset</button>
+          <button class="btn btn-gold flex-1" style="font-size:10px;" id="timer-start-btn" onclick="toggleTimer()">Start</button>
+        </div>
+        <div class="timer-sessions" id="timer-pips">
+          <div class="timer-pip"></div><div class="timer-pip"></div><div class="timer-pip"></div><div class="timer-pip"></div>
+        </div>
+      </div>
+
       <!-- Rank Banner -->
       <div class="card card-pad mb-20 anim-fade-up d4" id="rank-banner" style="background:linear-gradient(135deg, rgba(200,169,110,.06), rgba(17,17,19,.7));">
         <div class="flex items-center gap-16">
@@ -817,10 +1524,10 @@
 
       <!-- Task Lists -->
       <div class="flex items-center justify-between mb-16 anim-fade-up d5">
-        <div class="section-title serif" style="margin:0;">Mission Protocols</div>
+        <div class="section-title serif" style="margin:0;">My Tasks</div>
         <button class="btn btn-ghost" style="padding:8px 16px;font-size:9px;" onclick="promptNewList()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New Sector
+          New List
         </button>
       </div>
 
@@ -844,11 +1551,19 @@
         </div>
       </div>
 
+      <div class="card quick-note-card card-pad anim-fade-up d5">
+        <div class="label label-gold mb-8" style="margin-bottom:10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;display:inline;margin-right:4px;"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
+          Quick Note
+        </div>
+        <span class="quick-note-save" id="quick-note-save">✓ Saved</span>
+        <textarea class="quick-note-area" id="quick-note-area" rows="3" placeholder="Notes, ideas, reminders..." oninput="saveQuickNote()" onkeydown="if(event.key==='Tab'){event.preventDefault();this.value+='  \';}"></textarea>
+      </div>
       <div id="tasks-container" class="anim-fade-up d6"></div>
 
       <div class="new-list-card mt-12 anim-fade-up" style="animation-delay:.35s;" onclick="promptNewList()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;display:inline;margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add Protocol Sector
+        Add Task List
       </div>
     </div>
 
@@ -856,16 +1571,16 @@
     <div id="tab-performance" class="tab-content hidden">
       <div style="padding:28px 0 20px;">
         <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Performance <span style="color:var(--muted);font-style:italic;">Labs</span></div>
-        <div class="label">Neural Trace Dashboard</div>
+        <div class="label">Score Tracker</div>
       </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
         <button class="btn btn-ghost" style="font-size:9px;" onclick="showAddReportModal()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-          Init Hub
+          New Hub
         </button>
         <button class="btn btn-gold" style="font-size:9px;" id="add-log-btn" onclick="showAddLogModal()" disabled>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          Log Simulation
+          Log Score
         </button>
       </div>
       <div class="perf-tabs" id="perf-tabs"></div>
@@ -876,19 +1591,19 @@
     <div id="tab-lock" class="tab-content hidden">
       <div style="padding:28px 0 20px;">
         <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Strategy <span style="color:var(--muted);font-style:italic;">Terminal</span></div>
-        <div class="label">Squad Protocols & Mission Lock</div>
+        <div class="label">Task Lists & 7-Day Lock</div>
       </div>
       <div class="card strategy-empty">
         <div class="strategy-empty-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
         </div>
-        <div class="serif" style="font-size:20px;margin-bottom:6px;">Protocol Lockdown</div>
+        <div class="serif" style="font-size:20px;margin-bottom:6px;">Locked Lists</div>
         <div style="font-size:12px;color:var(--text2);margin-bottom:20px;max-width:280px;line-height:1.6;">
-          Operational protocols established by mission leads only. Create a new sector to begin.
+          Lock any list for 7 days to build a daily habit. Create a new list to begin.
         </div>
         <button class="btn btn-ghost" onclick="promptNewList()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-          New Sector Protocol
+          New List
         </button>
       </div>
       <div style="margin-top:12px;" id="strategy-lists"></div>
@@ -898,14 +1613,14 @@
     <div id="tab-social" class="tab-content hidden">
       <div style="padding:28px 0 20px;">
         <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Network <span style="color:var(--muted);font-style:italic;">Feed</span></div>
-        <div class="label">Operational Intel Sync</div>
+        <div class="label">Community Feed</div>
       </div>
 
       <div class="card card-pad mb-12" style="background:linear-gradient(135deg,rgba(200,169,110,.04),rgba(17,17,19,.8));">
-        <textarea id="post-text" rows="3" placeholder="Sync operational findings to the network..." style="margin-bottom:16px;"></textarea>
+        <textarea id="post-text" rows="3" placeholder="Share something with the community..." style="margin-bottom:16px;"></textarea>
         <div style="display:flex;justify-content:flex-end;">
           <button class="btn btn-gold" style="font-size:10px;" onclick="submitPost()">
-            Transmit
+            Post
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
         </div>
@@ -925,13 +1640,13 @@
     <div id="tab-ranking" class="tab-content hidden">
       <div style="padding:28px 0 20px;">
         <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Global <span style="color:var(--muted);font-style:italic;">Rankings</span></div>
-        <div class="label">Operative Leaderboard</div>
+        <div class="label">Leaderboard</div>
       </div>
 
       <div class="card card-pad mb-12" style="padding:10px 16px;">
         <div style="display:flex;align-items:center;gap:10px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;color:var(--gold);flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="text" id="rank-search" placeholder="Search operative..." style="border:none;background:transparent;padding:4px 0;" oninput="renderRanking()" />
+          <input type="text" id="rank-search" placeholder="Search user..." style="border:none;background:transparent;padding:4px 0;" oninput="renderRanking()" />
         </div>
       </div>
 
@@ -941,7 +1656,7 @@
     <!-- ── PROFILE TAB ── -->
     <div id="tab-profile" class="tab-content hidden">
       <div style="padding:28px 0 20px;">
-        <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">Operative <span style="color:var(--muted);font-style:italic;">Profile</span></div>
+        <div class="serif" style="font-size:36px;font-weight:400;letter-spacing:-.02em;margin-bottom:4px;">User <span style="color:var(--muted);font-style:italic;">Profile</span></div>
       </div>
 
       <div class="card card-pad mb-12 anim-scale-in" style="text-align:center;background:linear-gradient(135deg,rgba(200,169,110,.04),rgba(17,17,19,.8));">
@@ -949,7 +1664,7 @@
         <div class="serif" style="font-size:26px;margin-bottom:4px;" id="profile-name">—</div>
         <div class="label" id="profile-dcid" style="margin-bottom:20px;">DC-0000</div>
         <div style="display:flex;gap:8px;justify-content:center;">
-          <button class="btn btn-ghost" style="font-size:9px;padding:8px 16px;" onclick="openVault()">
+          <button class="btn btn-ghost" style="font-size:9px;padding:8px 16px;" onclick="openBadges()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Achievement Archive
           </button>
@@ -1008,9 +1723,9 @@
 
   <!-- ─── BOTTOM NAV ─── -->
   <nav class="bottom-nav">
-    <div class="nav-item active" data-tab="grind" onclick="switchTab('grind')">
+    <div class="nav-item active" data-tab="streak" onclick="switchTab('streak')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>Grind</span>
+      <span>Streak</span>
     </div>
     <div class="nav-item" data-tab="performance" onclick="switchTab('performance')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
@@ -1040,15 +1755,23 @@
 <!-- Confirm Complete Modal -->
 <div class="overlay" id="confirm-modal">
   <div class="overlay-content card card-pad">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,.13);border-radius:99px;margin:0 auto 18px;flex-shrink:0;"></div>
     <div class="confirm-box">
       <div class="confirm-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       </div>
       <div class="confirm-title serif" id="confirm-task-name">Complete Task?</div>
-      <div class="confirm-sub">This will award XP and mark the task as complete.<br>Log it to the network feed.</div>
+      <div class="confirm-sub">This will award <strong style="color:var(--gold);">+10 XP</strong> and mark the task as complete.</div>
+      <div class="share-toggle-row">
+        <span style="font-size:11px;color:var(--text2);">Share to Community Feed</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="confirm-share-toggle">
+          <span class="toggle-knob"></span>
+        </label>
+      </div>
       <div style="display:flex;gap:10px;">
         <button class="btn btn-ghost flex-1" onclick="closeModal('confirm-modal')">Cancel</button>
-        <button class="btn btn-gold flex-1" onclick="executeComplete()">Confirm Sync</button>
+        <button class="btn btn-gold flex-1" onclick="executeComplete()">Complete</button>
       </div>
     </div>
   </div>
@@ -1057,19 +1780,20 @@
 <!-- New List Modal -->
 <div class="overlay" id="new-list-modal">
   <div class="overlay-content card card-pad">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,.13);border-radius:99px;margin:0 auto 18px;flex-shrink:0;"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div class="serif" style="font-size:20px;">New Sector Protocol</div>
+      <div class="serif" style="font-size:20px;">New List</div>
       <button class="inspect-close" onclick="closeModal('new-list-modal')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
     <div class="form-group">
-      <label class="form-label">Sector Name</label>
-      <input type="text" id="new-list-name" placeholder="e.g. Morning Protocols, Study Block..." />
+      <label class="form-label">List Name</label>
+      <input type="text" id="new-list-name" placeholder="e.g. Morning Tasks, Study Block..." />
     </div>
     <div style="display:flex;gap:10px;margin-top:16px;">
       <button class="btn btn-ghost flex-1" onclick="closeModal('new-list-modal')">Cancel</button>
-      <button class="btn btn-gold flex-1" onclick="createList()">Initialize</button>
+      <button class="btn btn-gold flex-1" onclick="createList()">Create</button>
     </div>
   </div>
 </div>
@@ -1077,8 +1801,9 @@
 <!-- Add Report Modal -->
 <div class="overlay" id="add-report-modal">
   <div class="overlay-content card card-pad">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,.13);border-radius:99px;margin:0 auto 18px;flex-shrink:0;"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div class="serif" style="font-size:20px;">Initialize Hub</div>
+      <div class="serif" style="font-size:20px;">Create Hub</div>
       <button class="inspect-close" onclick="closeModal('add-report-modal')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -1095,8 +1820,9 @@
 <!-- Add Log Modal -->
 <div class="overlay" id="add-log-modal">
   <div class="overlay-content card card-pad">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,.13);border-radius:99px;margin:0 auto 18px;flex-shrink:0;"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-      <div class="serif" style="font-size:20px;">Log Simulation</div>
+      <div class="serif" style="font-size:20px;">Log Score</div>
       <button class="inspect-close" onclick="closeModal('add-log-modal')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -1107,7 +1833,7 @@
     <div class="form-group"><label class="form-label">Notes (optional)</label><textarea id="log-note" rows="2" placeholder="Key observations..."></textarea></div>
     <div style="display:flex;gap:10px;margin-top:16px;">
       <button class="btn btn-ghost flex-1" onclick="closeModal('add-log-modal')">Cancel</button>
-      <button class="btn btn-gold flex-1" onclick="saveLog()">Sync Log</button>
+      <button class="btn btn-gold flex-1" onclick="saveLog()">Save Log</button>
     </div>
   </div>
 </div>
@@ -1116,7 +1842,7 @@
 <div class="inspect-panel" id="inspect-panel">
   <div class="inspect-header">
     <div>
-      <div class="label label-gold mb-8">Objective Intelligence</div>
+      <div class="label label-gold mb-8">Objective Infoligence</div>
       <div class="serif" style="font-size:16px;">Task Details</div>
     </div>
     <button class="inspect-close" onclick="closeInspect()">
@@ -1125,20 +1851,20 @@
   </div>
   <div class="inspect-inner" id="inspect-inner"></div>
   <div style="padding:16px 20px;border-top:1px solid var(--border);max-width:640px;margin:0 auto;width:100%;background:var(--bg);">
-    <button class="btn btn-gold w-full" onclick="saveInspect(); closeInspect();">Confirm Sync</button>
+    <button class="btn btn-gold w-full" onclick="saveInspect(); closeInspect();">Complete</button>
   </div>
 </div>
 
-<!-- Vault Modal -->
-<div class="overlay" id="vault-modal">
+<!-- Badges Modal -->
+<div class="overlay" id="badges-modal">
   <div class="overlay-content card" style="overflow:hidden;">
     <div style="padding:24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
       <div class="serif" style="font-size:20px;color:var(--gold);">Achievement Archive</div>
-      <button class="inspect-close" onclick="closeModal('vault-modal')">
+      <button class="inspect-close" onclick="closeModal('badges-modal')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div id="vault-content" style="padding:20px;display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow-y:auto;"></div>
+    <div id="badges-content" style="padding:20px;display:flex;flex-direction:column;gap:10px;max-height:60vh;overflow-y:auto;"></div>
   </div>
 </div>
 
@@ -1163,7 +1889,7 @@ window._fbReady = new Promise(resolve => { window._fbReadyResolve = resolve; });
 // ─── CONSTANTS ───────────────────────────────────────────────────
 const BADGES = [
   { name:"The Rookie",     min:0,     icon:"🌑", color:"#94a3b8" },
-  { name:"Grind Lord",     min:300,   icon:"🔥", color:"#60a5fa" },
+  { name:"Streak Lord",     min:300,   icon:"🔥", color:"#60a5fa" },
   { name:"Mock Monster",   min:900,   icon:"🎯", color:"#cd7f32" },
   { name:"Elite Aspirant", min:2000,  icon:"⚔️",  color:"#e2e8f0" },
   { name:"AIR Prospect",   min:5000,  icon:"🏆", color:"#e2b871" },
@@ -1172,10 +1898,10 @@ const BADGES = [
 const QUOTES = [
   "Discipline equals freedom.", "Do it today, or regret it tomorrow.",
   "Excuses don't burn calories.", "Pain is temporary, quitting lasts forever.",
-  "Your future is created by what you do today.", "Embrace the grind.",
+  "Your future is created by what you do today.", "Embrace the streak.",
   "Small steps, every day.", "Success is the sum of small efforts.",
   "Focus on the step, not the staircase.", "Conquer yourself, conquer the world.",
-  "One day or day one — you decide.", "The grind is the goal.",
+  "One day or day one — you decide.", "The streak is the goal.",
   "Comfort zones are where dreams go to die.", "Fall seven times, rise eight.",
 ];
 const PRI_COLORS = { high:'badge-high', medium:'badge-medium', low:'badge-low' };
@@ -1183,7 +1909,7 @@ const PRI_COLORS = { high:'badge-high', medium:'badge-medium', low:'badge-low' }
 // ─── STATE ───────────────────────────────────────────────────────
 let currentUser  = null; // { uid, email }
 let userData     = null; // UserData object
-let currentTab   = 'grind';
+let currentTab   = 'streak';
 let calMode      = 'month';
 let confirmState = null; // { lid, tid, text }
 let inspectState = null; // { lid, tid }
@@ -1208,14 +1934,14 @@ async function persistUserData() {
 
 function getDefaultUser(name, dcId) {
   return {
-    name: name || 'Operative',
+    name: name || 'User',
     dcId: dcId || 'DC-' + Math.floor(1000 + Math.random() * 9000),
     pts: 0,
     lists: [],
     history: [],
     lastReset: new Date().toISOString().slice(0,10),
     joinDate: new Date().toISOString().slice(0,10),
-    squadId: null,
+    groupId: null,
     mockTests: [],
     performanceReports: [],
     taskHistory: {},
@@ -1286,7 +2012,7 @@ function switchAuthTab(mode) {
   document.getElementById('tab-login').classList.toggle('active', mode === 'login');
   document.getElementById('tab-signup').classList.toggle('active', mode === 'signup');
   document.getElementById('signup-fields').style.display = mode === 'signup' ? 'block' : 'none';
-  document.getElementById('auth-btn-text').textContent = mode === 'signup' ? 'Register Operative' : 'Establish Link';
+  document.getElementById('auth-btn-text').textContent = mode === 'signup' ? 'Register User' : 'Sign In';
 }
 
 async function handleAuth() {
@@ -1296,33 +2022,34 @@ async function handleAuth() {
   const errEl = document.getElementById('auth-error');
   errEl.classList.add('hidden'); errEl.textContent = '';
 
-  if (!email || !pw) { showError('Access key and protocol hash required.'); return; }
+  if (!email || !pw) { showError('Email and task hash required.'); return; }
 
   try {
     if (authMode === 'signup') {
       const name = document.getElementById('auth-name').value.trim();
       const dcId = document.getElementById('auth-dcid').value.trim();
-      if (!name) { showError('Callsign required for registration.'); return; }
+      if (!name) { showError('Your Name required for registration.'); return; }
       const cred = await window.fb.createUserWithEmailAndPassword(window.auth, email, pw);
       const uid  = cred.user.uid;
       const newUser = getDefaultUser(name, dcId || ('DC-' + Math.floor(1000 + Math.random() * 9000)));
       await window.fb.setDoc(window.fb.doc(window.db, 'users', uid), newUser);
       userData    = newUser;
       currentUser = { uid, email };
+      sfx.welcome();
       launchApp();
     } else {
       const cred = await window.fb.signInWithEmailAndPassword(window.auth, email, pw);
       const uid  = cred.user.uid;
       const snap = await window.fb.getDoc(window.fb.doc(window.db, 'users', uid));
-      if (!snap.exists()) { showError('No operative record found. Please re-register.'); return; }
+      if (!snap.exists()) { showError('Account not found. Please register first.'); return; }
       userData    = snap.data();
       currentUser = { uid, email };
       launchApp();
     }
   } catch (err) {
-    const msg = err.code === 'auth/user-not-found'   ? 'No operative found with this access key.' :
-                err.code === 'auth/wrong-password'   ? 'Incorrect protocol hash.' :
-                err.code === 'auth/email-already-in-use' ? 'Operative already registered with this access key.' :
+    const msg = err.code === 'auth/user-not-found'   ? 'No account found with this email.' :
+                err.code === 'auth/wrong-password'   ? 'Incorrect task hash.' :
+                err.code === 'auth/email-already-in-use' ? 'An account already exists with this email.' :
                 err.code === 'auth/invalid-email'    ? 'Invalid email format.' :
                 err.code === 'auth/weak-password'    ? 'Password must be at least 6 characters.' :
                 (err.message || 'Authentication failed.');
@@ -1342,7 +2069,7 @@ async function demoLogin() {
     if (snap.exists()) {
       userData = snap.data();
     } else {
-      userData = { ...getDefaultUser('Demo Operative', 'DC-0000'), pts: 1540, history: [todayStr()] };
+      userData = { ...getDefaultUser('Demo User', 'DC-0000'), pts: 1540, history: [todayStr()] };
       await window.fb.setDoc(window.fb.doc(window.db, 'users', uid), userData);
     }
     currentUser = { uid, email: DEMO_EMAIL };
@@ -1352,7 +2079,7 @@ async function demoLogin() {
     try {
       const cred = await window.fb.createUserWithEmailAndPassword(window.auth, DEMO_EMAIL, DEMO_PASS);
       const uid  = cred.user.uid;
-      userData = { ...getDefaultUser('Demo Operative', 'DC-0000'), pts: 1540, history: [todayStr()] };
+      userData = { ...getDefaultUser('Demo User', 'DC-0000'), pts: 1540, history: [todayStr()] };
       await window.fb.setDoc(window.fb.doc(window.db, 'users', uid), userData);
       currentUser = { uid, email: DEMO_EMAIL };
       launchApp();
@@ -1374,7 +2101,7 @@ async function loginAs(uid, email) {
     userData = snap.data();
     launchApp();
   } else {
-    showError('No operative record found. Please re-register.');
+    showError('Account not found. Please register first.');
     handleLogout();
   }
 }
@@ -1393,7 +2120,7 @@ async function launchApp() {
   document.getElementById('main-app').style.display = 'block';
   // Load feed and leaderboard from Firestore
   await Promise.all([loadPostsFromFirestore(), loadUsersFromFirestore()]);
-  updateGrindTab();
+  updateStreakTab();
   updateProfileTab();
 }
 
@@ -1433,7 +2160,8 @@ function switchTab(tab) {
   document.getElementById('tab-' + tab).classList.remove('hidden');
   document.querySelector(`.nav-item[data-tab="${tab}"]`).classList.add('active');
   currentTab = tab;
-  if (tab === 'grind')       updateGrindTab();
+  sfx.tap();
+  if (tab === 'streak')       updateStreakTab();
   if (tab === 'performance') updatePerfTab();
   if (tab === 'social')      renderFeed();
   if (tab === 'ranking')     renderRanking();
@@ -1442,7 +2170,7 @@ function switchTab(tab) {
 }
 
 // ─── GRIND TAB ───────────────────────────────────────────────────
-function updateGrindTab() {
+function updateStreakTab() {
   if (!userData) return;
   const s = streak(userData.history);
   document.getElementById('stat-streak').textContent = s;
@@ -1467,7 +2195,7 @@ function renderTasks() {
   const filter = document.getElementById('filter-select').value;
   const sort   = document.getElementById('sort-select').value;
   if (!userData.lists || !userData.lists.length) {
-    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:12px;">No protocols yet. Create your first sector below.</div>';
+    container.innerHTML = '<div style="text-align:center;padding:32px;color:var(--muted);font-size:12px;">No tasks yet. Create your first list below.</div>';
     return;
   }
   container.innerHTML = '';
@@ -1481,13 +2209,41 @@ function renderTasks() {
     if (sort === 'createdAt') tasks.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
 
     const bucket = document.createElement('div');
-    bucket.className = 'task-bucket card card-pad';
+    const lockInfo = getLockInfo(list);
+    const isLocked = lockInfo.locked;
+    bucket.className = 'task-bucket card card-pad' + (isLocked ? ' is-locked' : '');
     const done = tasks.filter(t=>t.done).length;
-    bucket.innerHTML = `
+
+    // Build header
+    const headerHTML = isLocked ? `
       <div class="task-bucket-header">
         <div class="task-bucket-name">${escHtml(list.name)}</div>
-        <div style="display:flex;gap:8px;align-items:center;">
+        <div style="display:flex;gap:6px;align-items:center;">
           <div class="task-bucket-count">${done}/${tasks.length}</div>
+          <button class="list-lock-btn" onclick="promptUnlockEarly(${list.id})" title="Locked — tap to break lock">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="lock-header-bar">
+        <div class="lock-icon-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div>
+          <div class="lock-day-badge">Day ${lockInfo.daysDone} of 7</div>
+          <div style="font-size:9px;color:var(--muted);margin-top:3px;">Resets at midnight · ${7 - lockInfo.daysDone} days left</div>
+        </div>
+        <div class="lock-unlock-date">Unlocks ${lockInfo.unlockDate}</div>
+      </div>
+      <div class="lock-streak-pips">${Array.from({length:7},(_,i)=>`<div class="lock-pip${i < lockInfo.daysDone ? ' done' : i === lockInfo.daysDone ? ' today' : ''}"></div>`).join('')}</div>
+    ` : `
+      <div class="task-bucket-header">
+        <div class="task-bucket-name">${escHtml(list.name)}</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <div class="task-bucket-count">${done}/${tasks.length}</div>
+          <button class="list-lock-btn" onclick="promptLockList(${list.id})" title="Lock for 7-day streak">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </button>
           <button onclick="deleteList(${list.id})" style="width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:var(--muted);opacity:.4;transition:opacity .2s;" onmouseover="this.style.opacity=1;this.style.color='var(--red)';" onmouseout="this.style.opacity=.4;this.style.color='var(--muted)';">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
           </button>
@@ -1495,12 +2251,22 @@ function renderTasks() {
       </div>
       <div class="divider" style="margin-bottom:4px;"></div>
     `;
+    bucket.innerHTML = headerHTML;
+
+    // Check if newly unlocked today
+    if (lockInfo.justUnlocked) {
+      const banner = document.createElement('div');
+      banner.className = 'unlock-banner';
+      banner.innerHTML = `<span style="font-size:18px;">🏆</span><span><strong>Task Complete!</strong> 7-day streak finished. You can now edit this list.</span>`;
+      bucket.appendChild(banner);
+    }
+
     const rowsContainer = document.createElement('div');
     tasks.forEach(task => {
-      const row = createTaskRow(list.id, task);
+      const row = createTaskRow(list.id, task, isLocked);
       rowsContainer.appendChild(row);
     });
-    // Add task row
+    // Add task row — hidden when locked (via CSS)
     const addRow = document.createElement('div');
     addRow.className = 'add-task-row';
     addRow.innerHTML = `
@@ -1515,9 +2281,9 @@ function renderTasks() {
   });
 }
 
-function createTaskRow(lid, task) {
+function createTaskRow(lid, task, isLocked) {
   const row = document.createElement('div');
-  row.className = 'task-row';
+  row.className = 'task-row' + (isLocked ? ' locked-task-row' : '');
   const priBadge = task.priority && !task.done
     ? `<span class="badge ${PRI_COLORS[task.priority]}">${task.priority}</span>` : '';
   const doneCls = task.done ? 'done' : '';
@@ -1525,21 +2291,49 @@ function createTaskRow(lid, task) {
   const subDone      = (task.subtasks||[]).filter(s=>s.done).length;
   const subLabel = subtaskCount > 0 ? `<span style="font-size:9px;color:var(--muted);font-weight:600;">${subDone}/${subtaskCount}</span>` : '';
 
+  // Lock icon on task when list is locked
+  const lockPin = isLocked && !task.done
+    ? `<svg viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:10px;height:10px;opacity:.4;flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>` : '';
+
+  const checkClick = isLocked
+    ? `event.stopPropagation(); handleLockedTaskCheck(${lid}, ${task.id}, ${task.done})`
+    : `event.stopPropagation(); handleTaskCheck(${lid}, ${task.id}, ${task.done})`;
+
+  const rowClick = isLocked ? '' : `onclick="openInspect(${lid}, ${task.id})"`;
+
   row.innerHTML = `
-    <div class="task-check ${doneCls}" onclick="event.stopPropagation(); handleTaskCheck(${lid}, ${task.id}, ${task.done})">
+    <div class="task-check ${doneCls}" onclick="${checkClick}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
-    <div class="flex-1" style="min-width:0;" onclick="openInspect(${lid}, ${task.id})">
+    <div class="flex-1" style="min-width:0;cursor:${isLocked?'default':'pointer'};" ${rowClick}>
       <div class="task-text ${doneCls}">${escHtml(task.text)}</div>
       <div class="task-meta" style="margin-top:3px;">${priBadge}${subLabel}${task.dueDate?`<span style="font-size:9px;color:var(--muted);">${task.dueDate}</span>`:''}</div>
     </div>
-    <svg class="task-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+    ${lockPin}
+    ${!isLocked ? '<svg class="task-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' : ''}
   `;
   return row;
 }
 
 function handleTaskCheck(lid, tid, isDone) {
-  if (isDone) return; // already done
+  if (isDone) return;
+  const list = userData.lists.find(l => l.id === lid);
+  if (!list) return;
+  // Block if locked
+  if (getLockInfo(list).locked) {
+    sfx.error();
+    showToast('🔒', 'List is locked for 7-day task', 'red');
+    return;
+  }
+  const task = list.tasks.find(t => t.id === tid);
+  if (!task) return;
+  confirmState = { lid, tid, text: task.text };
+  document.getElementById('confirm-task-name').textContent = task.text;
+  openModal('confirm-modal');
+}
+
+function handleLockedTaskCheck(lid, tid, isDone) {
+  if (isDone) return;
   const list = userData.lists.find(l => l.id === lid);
   if (!list) return;
   const task = list.tasks.find(t => t.id === tid);
@@ -1553,23 +2347,60 @@ async function executeComplete() {
   if (!confirmState) return;
   const { lid, tid, text } = confirmState;
   const today = todayStr();
-  userData.pts = (userData.pts || 0) + 10;
+  const prevPts = userData.pts || 0;
+  userData.pts = prevPts + 10;
   userData.lists = userData.lists.map(l => l.id === lid
     ? { ...l, tasks: l.tasks.map(t => t.id === tid ? { ...t, done: true } : t) }
     : l
   );
   if (!userData.history.includes(today)) userData.history.push(today);
-  // Post to Firestore feed
-  try {
-    await window.fb.addDoc(window.fb.collection(window.db, 'feed'), {
-      uid: currentUser.uid, name: userData.name, dcId: userData.dcId,
-      text: `✅ Cleared: ${text}`, time: window.fb.serverTimestamp()
-    });
-  } catch (e) { console.error('Feed post error:', e); }
+
+  // Only post to feed if user opted in
+  const shareToggle = document.getElementById('confirm-share-toggle');
+  if (shareToggle && shareToggle.checked) {
+    try {
+      await window.fb.addDoc(window.fb.collection(window.db, 'feed'), {
+        uid: currentUser.uid, name: userData.name, dcId: userData.dcId,
+        text: `✅ Done: ${text}`, time: window.fb.serverTimestamp()
+      });
+    } catch (e) { console.error('Feed post error:', e); }
+  }
+
   await persistUserData();
   closeModal('confirm-modal');
-  updateGrindTab();
+  // Reset toggle to off for next time
+  if (shareToggle) shareToggle.checked = false;
+
+  // For locked lists: check if all tasks done today → record day
+  if (confirmState) {
+    const list2 = userData.lists.find(l => l.id === lid);
+    if (list2 && getLockInfo(list2).locked) {
+      const allDone2 = (list2.tasks || []).every(t => t.done || t.id === tid);
+      if (allDone2) {
+        // Record today as a completed lock day
+        if (!list2.lockDays) list2.lockDays = [];
+        const td2 = todayStr();
+        if (!list2.lockDays.includes(td2)) {
+          list2.lockDays.push(td2);
+          userData.pts = (userData.pts || 0) + 25; // bonus XP for completing all tasks
+          showToast('🔒⭐', `All tasks done! +25 bonus XP · Day ${list2.lockDays.length}/7`, 'gold', 4500);
+        }
+      }
+    }
+  }
+
+  updateStreakTab();
   fireConfetti();
+  sfx.complete();
+  showXpFloat(+10);
+  showToast('✅', `+10 XP · "${text.slice(0,28)}${text.length>28?'…':''}" completed`, 'gold');
+
+  // Streak milestone toasts
+  const s = streak(userData.history);
+  if (s === 7)  { showToast('🔥', '7-day streak! Keep burning.', 'gold'); sfx.milestone(); }
+  if (s === 14) { showToast('⚔️',  '14-day streak! Elite streak.', 'gold'); sfx.milestone(); }
+  if (s === 30) { showToast('🏆', '30-day streak! Legendary.', 'gold'); sfx.milestone(); }
+
   confirmState = null;
 }
 
@@ -1579,10 +2410,16 @@ function addTaskToList(lid) {
   if (!text) return;
   const list = userData.lists.find(l => l.id === lid);
   if (!list) return;
+  if (getLockInfo(list).locked) {
+    sfx.error(); showToast('🔒', 'This list is locked — complete all 7 days first', 'red'); inp.value=''; return;
+  }
   list.tasks.push({ id: Date.now(), text, done: false, createdAt: Date.now(), priority: null, subtasks: [], notes: '', attachments: [] });
   inp.value = '';
   persistUserData();
   renderTasks();
+  sfx.tap();
+  showToast('📝', 'Task added to task', 'blue');
+  haptic('light');
 }
 
 function promptNewList() {
@@ -1597,12 +2434,18 @@ function createList() {
   userData.lists = [...(userData.lists||[]), { id: Date.now(), name, tasks: [] }];
   persistUserData();
   closeModal('new-list-modal');
-  if (currentTab === 'grind') renderTasks();
+  sfx.complete();
+  showToast('🗂️', `List "${name}" initialized`, 'gold');
+  if (currentTab === 'streak') renderTasks();
   if (currentTab === 'lock')  renderStrategyLists();
 }
 
 function deleteList(lid) {
-  if (!confirm('Delete this protocol sector?')) return;
+  const list = userData.lists.find(l => l.id === lid);
+  if (list && getLockInfo(list).locked) {
+    sfx.error(); showToast('🔒', 'Cannot delete a locked list', 'red'); return;
+  }
+  if (!confirm('Delete this task list?')) return;
   userData.lists = userData.lists.filter(l => l.id !== lid);
   persistUserData();
   renderTasks();
@@ -1669,7 +2512,7 @@ function renderInspect() {
     <div class="inspect-section">
       <div class="inspect-section-label">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-        Sub-Protocols
+        Sub-Tasks
       </div>
       <div id="subtasks-list">
         ${(task.subtasks||[]).map((s,i) => `
@@ -1678,7 +2521,7 @@ function renderInspect() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <input class="subtask-text ${s.done?'done':''}" value="${escHtml(s.text)}"
-              placeholder="Sub-protocol instruction..."
+              placeholder="Sub-task instruction..."
               oninput="inspectData.task.subtasks[${i}].text=this.value" />
             <button class="subtask-del" onclick="removeSubtask(${i})">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -1688,7 +2531,7 @@ function renderInspect() {
       </div>
       <button style="display:flex;align-items:center;gap:6px;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-top:12px;padding:4px 0;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7" onclick="addSubtask()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:12px;height:12px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add Sub-Protocol
+        Add Sub-Task
       </button>
     </div>
 
@@ -1698,7 +2541,7 @@ function renderInspect() {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="10" x2="7" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="21" y1="18" x2="7" y2="18"/></svg>
         Strategic Notes
       </div>
-      <textarea id="inspect-notes" rows="4" placeholder="Document operational context or tactical findings..."
+      <textarea id="inspect-notes" rows="4" placeholder="Document operational context or quick findings..."
         oninput="inspectData.task.notes=this.value">${task.notes||''}</textarea>
     </div>
   `;
@@ -1742,7 +2585,7 @@ function saveInspect() {
     : l
   );
   persistUserData();
-  if (currentTab === 'grind') renderTasks();
+  if (currentTab === 'streak') renderTasks();
 }
 
 // ─── PERFORMANCE TAB ─────────────────────────────────────────────
@@ -1774,7 +2617,7 @@ function selectPerfReport(id) {
 function renderPerfContent() {
   const container = document.getElementById('perf-content');
   if (!activePerfId) {
-    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:12px;">Initialize a hub to start tracking your performance.</div>';
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:12px;">Create a hub to start tracking your performance.</div>';
     return;
   }
   const tests = (userData.mockTests||[]).filter(t => t.reportId === activePerfId)
@@ -1782,7 +2625,7 @@ function renderPerfContent() {
   const report = (userData.performanceReports||[]).find(r => r.id === activePerfId);
 
   // Build SVG chart
-  const chartHTML = tests.length >= 2 ? buildChart(tests) : '<div style="text-align:center;padding:32px;color:var(--muted);font-size:11px;">Log at least 2 simulations to see your neural trace.</div>';
+  const chartHTML = tests.length >= 2 ? buildChart(tests) : '<div style="text-align:center;padding:32px;color:var(--muted);font-size:11px;">Log at least 2 scores to see your score trace.</div>';
 
   const logsHTML = [...tests].reverse().map(t => `
     <div class="score-log-item">
@@ -1800,7 +2643,7 @@ function renderPerfContent() {
       <div class="flex items-center gap-12 mb-16">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;color:var(--gold);"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         <div>
-          <div class="label label-gold">Neural Trace — ${escHtml(report?.name || 'Hub')}</div>
+          <div class="label label-gold">Score Tracker — ${escHtml(report?.name || 'Hub')}</div>
           <div style="font-size:11px;color:var(--text2);margin-top:3px;">${report?.platform ? escHtml(report.platform) : ''}</div>
         </div>
       </div>
@@ -1808,9 +2651,9 @@ function renderPerfContent() {
     </div>
     <div class="card" style="overflow:hidden;">
       <div style="padding:16px 20px;border-bottom:1px solid var(--border);">
-        <div class="label">Mission Logs (${tests.length})</div>
+        <div class="label">Task Logs (${tests.length})</div>
       </div>
-      <div style="padding:0 20px;">${logsHTML || '<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:11px;">No logs yet. Hit Log Simulation above.</div>'}</div>
+      <div style="padding:0 20px;">${logsHTML || '<div style="padding:24px 0;text-align:center;color:var(--muted);font-size:11px;">No logs yet. Hit Log Score above.</div>'}</div>
     </div>
   `;
 }
@@ -1902,6 +2745,8 @@ function saveLog() {
   userData.pts = (userData.pts||0) + 5;
   persistUserData();
   closeModal('add-log-modal');
+  sfx.complete();
+  showToast('📊', `Score ${score} logged · +5 XP earned`, 'green');
   updatePerfTab();
 }
 
@@ -1934,7 +2779,7 @@ async function renderFeed() {
   const filtered = search ? posts.filter(p => p.text?.toLowerCase().includes(search) || p.name?.toLowerCase().includes(search)) : posts;
   const container = document.getElementById('feed-container');
   if (!filtered.length) {
-    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:12px;">No transmissions yet. Be the first.</div>';
+    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:12px;">No transtasks yet. Be the first.</div>';
     return;
   }
   container.innerHTML = filtered.map(p => `
@@ -1962,6 +2807,8 @@ async function submitPost() {
     });
     document.getElementById('post-text').value = '';
     renderFeed();
+    sfx.send();
+    showToast('📡', 'Transtask posted successfully', 'green');
   } catch (e) {
     console.error('submitPost error:', e);
   }
@@ -1985,7 +2832,7 @@ async function renderRanking() {
   const filtered = search ? allUsers.filter(u => u.name.toLowerCase().includes(search)) : allUsers;
   const container = document.getElementById('rank-container');
   if (!filtered.length) {
-    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:12px;">No operatives on record.</div>';
+    container.innerHTML = '<div style="padding:32px;text-align:center;color:var(--muted);font-size:12px;">No users on record.</div>';
     return;
   }
   container.innerHTML = filtered.map((u, i) => {
@@ -2082,23 +2929,30 @@ function buildCalendar(history, mode) {
 }
 
 // ─── VAULT ───────────────────────────────────────────────────────
-function openVault() {
+function openBadges() {
   const pts = userData?.pts || 0;
-  document.getElementById('vault-content').innerHTML = BADGES.map(b => `
-    <div class="vault-badge-row ${pts >= b.min ? 'unlocked' : 'locked'}">
-      <div class="vault-badge-emoji">${b.icon}</div>
-      <div class="vault-badge-info">
+  document.getElementById('badges-content').innerHTML = BADGES.map(b => `
+    <div class="badges-badge-row ${pts >= b.min ? 'unlocked' : 'locked'}">
+      <div class="badges-badge-emoji">${b.icon}</div>
+      <div class="badges-badge-info">
         <h4 style="color:${b.color};">${b.name}</h4>
-        <p>${b.min.toLocaleString()} XP Required ${pts >= b.min ? '· Unlocked ✓' : ''}</p>
+        <p>${b.min.toLocaleString()} XP to unlock ${pts >= b.min ? '· ✓ Unlocked' : ''}</p>
       </div>
     </div>
   `).join('');
-  openModal('vault-modal');
+  openModal('badges-modal');
 }
 
 // ─── MODAL HELPERS ───────────────────────────────────────────────
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  sfx.modal();
+  haptic('light');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  sfx.tap();
+}
 // Close overlay on background click
 document.querySelectorAll('.overlay').forEach(el => {
   el.addEventListener('click', function(e) {
@@ -2147,6 +3001,757 @@ function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+
+
+// ════════════════════════════════════════════════════════════
+//  SOUND ENGINE (Web Audio API — no external deps)
+// ════════════════════════════════════════════════════════════
+const _ac = new (window.AudioContext || window.webkitAudioContext)();
+let _soundOn = true;
+
+function toggleSound() {
+  _soundOn = !_soundOn;
+  document.getElementById('sound-icon-on').style.display  = _soundOn ? '' : 'none';
+  document.getElementById('sound-icon-off').style.display = _soundOn ? 'none' : '';
+  document.getElementById('sound-toggle-btn').classList.toggle('muted', !_soundOn);
+  localStorage.setItem('dinc_sound', _soundOn ? '1' : '0');
+}
+
+// Resume audio context on first user gesture (Safari/iOS)
+document.addEventListener('touchstart', () => { if (_ac.state === 'suspended') _ac.resume(); }, { once: true });
+document.addEventListener('click',      () => { if (_ac.state === 'suspended') _ac.resume(); }, { once: true });
+
+// Restore sound pref
+if (localStorage.getItem('dinc_sound') === '0') {
+  _soundOn = false;
+  setTimeout(() => {
+    document.getElementById('sound-icon-on').style.display = 'none';
+    document.getElementById('sound-icon-off').style.display = '';
+    document.getElementById('sound-toggle-btn').classList.add('muted');
+  }, 800);
+}
+
+function _playTone(freqs, durations, type='sine', vol=0.18) {
+  if (!_soundOn) return;
+  try {
+    if (_ac.state === 'suspended') _ac.resume();
+    let t = _ac.currentTime;
+    freqs.forEach((f, i) => {
+      const osc = _ac.createOscillator();
+      const gain = _ac.createGain();
+      osc.connect(gain); gain.connect(_ac.destination);
+      osc.type = type; osc.frequency.setValueAtTime(f, t);
+      gain.gain.setValueAtTime(vol, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + durations[i]);
+      osc.start(t); osc.stop(t + durations[i]);
+      t += durations[i] * 0.7;
+    });
+  } catch(e) {}
+}
+
+const sfx = {
+  tap:       () => _playTone([440], [0.08], 'sine', 0.1),
+  modal:     () => _playTone([520, 660], [0.08, 0.12], 'sine', 0.12),
+  complete:  () => _playTone([523, 659, 784, 1047], [0.12, 0.12, 0.12, 0.25], 'sine', 0.18),
+  milestone: () => _playTone([523,659,784,1047,1319], [0.1,0.1,0.1,0.15,0.4], 'triangle', 0.22),
+  error:     () => _playTone([220, 185], [0.12, 0.22], 'square', 0.1),
+  send:      () => _playTone([660, 880], [0.09, 0.18], 'sine', 0.14),
+  welcome:   () => _playTone([392, 494, 587, 784], [0.12, 0.12, 0.12, 0.35], 'sine', 0.18),
+  tick:      () => _playTone([880], [0.04], 'square', 0.08),
+  alarm:     () => {
+    _playTone([880, 880, 880], [0.18, 0.18, 0.18], 'triangle', 0.25);
+    setTimeout(() => _playTone([1047, 1047, 1047], [0.18, 0.18, 0.18], 'triangle', 0.25), 700);
+  },
+};
+
+// ════════════════════════════════════════════════════════════
+//  HAPTIC FEEDBACK
+// ════════════════════════════════════════════════════════════
+function haptic(type='light') {
+  if (!navigator.vibrate) return;
+  const patterns = { light: [8], medium: [20], heavy: [40], success: [15, 60, 15] };
+  navigator.vibrate(patterns[type] || [10]);
+}
+
+// ════════════════════════════════════════════════════════════
+//  RIPPLE EFFECT — attach to all .btn elements dynamically
+// ════════════════════════════════════════════════════════════
+document.addEventListener('pointerdown', function(e) {
+  const btn = e.target.closest('.btn, .nav-item, .task-check, .auth-tab');
+  if (!btn) return;
+  btn.classList.add('ripple-host');
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 2;
+  const circle = document.createElement('span');
+  circle.className = 'ripple-circle';
+  circle.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px;`;
+  btn.appendChild(circle);
+  circle.addEventListener('animationend', () => circle.remove());
+});
+
+// ════════════════════════════════════════════════════════════
+//  TOAST NOTIFICATION SYSTEM
+// ════════════════════════════════════════════════════════════
+function showToast(icon, msg, type='gold', duration=3200) {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.innerHTML = `<span class="toast-icon">${icon}</span><span style="flex:1;overflow:hidden;text-overflow:ellipsis;">${msg}</span>`;
+  t.onclick = () => dismissToast(t);
+  c.appendChild(t);
+  setTimeout(() => dismissToast(t), duration);
+}
+function dismissToast(t) {
+  if (!t.isConnected) return;
+  t.classList.add('removing');
+  t.addEventListener('animationend', () => t.remove(), { once: true });
+}
+
+// ════════════════════════════════════════════════════════════
+//  FLOATING XP LABEL
+// ════════════════════════════════════════════════════════════
+function showXpFloat(pts, x, y) {
+  const el = document.createElement('div');
+  el.className = 'xp-float';
+  el.textContent = `+${pts} XP`;
+  const cx = x || window.innerWidth / 2;
+  const cy = y || window.innerHeight * 0.45;
+  el.style.cssText = `left:${cx - 30}px;top:${cy}px;`;
+  document.body.appendChild(el);
+  el.addEventListener('animationend', () => el.remove());
+}
+
+// ════════════════════════════════════════════════════════════
+//  ANIMATED STAT COUNTER
+// ════════════════════════════════════════════════════════════
+function animateStat(el, from, to, duration=600) {
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(from + (to - from) * ease);
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+  // Bump scale
+  el.classList.add('bump');
+  setTimeout(() => el.classList.remove('bump'), 250);
+}
+
+// ════════════════════════════════════════════════════════════
+//  QUICK NOTE
+// ════════════════════════════════════════════════════════════
+function saveQuickNote() {
+  const val = document.getElementById('quick-note-area')?.value || '';
+  localStorage.setItem('dinc_quick_note', val);
+}
+function loadQuickNote() {
+  const el = document.getElementById('quick-note-area');
+  if (el) el.value = localStorage.getItem('dinc_quick_note') || '';
+}
+
+// ════════════════════════════════════════════════════════════
+//  FOCUS / POMODORO TIMER
+// ════════════════════════════════════════════════════════════
+const TIMER_MODES = { focus: 25*60, short: 5*60, long: 15*60 };
+let timerMode = 'focus';
+let timerRemaining = TIMER_MODES.focus;
+let timerRunning = false;
+let timerInterval = null;
+let timerSessions = 0;
+const TIMER_CIRC = 2 * Math.PI * 62; // ~389.56
+
+function setTimerMode(mode) {
+  if (timerRunning) return;
+  timerMode = mode;
+  timerRemaining = TIMER_MODES[mode];
+  ['focus','short','long'].forEach(m => {
+    document.getElementById('tmode-'+m)?.classList.toggle('active', m === mode);
+  });
+  updateTimerDisplay();
+  sfx.tap();
+}
+
+function toggleTimer() {
+  timerRunning ? pauseTimer() : startTimer();
+}
+
+function startTimer() {
+  if (_ac.state === 'suspended') _ac.resume();
+  timerRunning = true;
+  document.getElementById('timer-start-btn').textContent = 'Pause';
+  sfx.modal();
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    if (timerRemaining % 60 === 0 && timerRemaining > 0) sfx.tick();
+    updateTimerDisplay();
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('timer-start-btn').textContent = 'Start';
+      sfx.alarm();
+      haptic('success');
+      if (timerMode === 'focus') {
+        timerSessions++;
+        updateTimerPips();
+        showToast('🎯', 'Focus session complete! Take a break.', 'gold', 5000);
+        if (timerSessions % 4 === 0) showToast('🏆', '4 sessions done! Long break earned.', 'green', 5000);
+      } else {
+        showToast('⚡', 'Break over — back to the streak!', 'blue', 4000);
+        setTimerMode('focus');
+      }
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('timer-start-btn').textContent = 'Resume';
+  sfx.tap();
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = TIMER_MODES[timerMode];
+  document.getElementById('timer-start-btn').textContent = 'Start';
+  updateTimerDisplay();
+  sfx.tap();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerRemaining / 60);
+  const s = timerRemaining % 60;
+  const disp = document.getElementById('timer-display');
+  const ring  = document.getElementById('timer-ring-fill');
+  if (!disp || !ring) return;
+  disp.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const total = TIMER_MODES[timerMode];
+  const offset = TIMER_CIRC * (1 - timerRemaining / total);
+  ring.style.strokeDashoffset = offset;
+  // Colour state
+  const isBreak = timerMode !== 'focus';
+  disp.className = 'timer-display' + (isBreak ? ' break' : timerRemaining <= 60 ? ' warning' : '');
+  ring.className = 'timer-ring-fill' + (isBreak ? ' break' : '');
+}
+
+function updateTimerPips() {
+  document.querySelectorAll('#timer-pips .timer-pip').forEach((pip, i) => {
+    pip.classList.toggle('done', i < timerSessions % 4 || (timerSessions > 0 && timerSessions % 4 === 0));
+  });
+}
+
+// ════════════════════════════════════════════════════════════
+//  PATCH updateStreakTab TO USE ANIMATED COUNTERS
+// ════════════════════════════════════════════════════════════
+const _origUpdateStreakTab = updateStreakTab;
+updateStreakTab = function() {
+  if (!userData) return;
+  const s   = streak(userData.history);
+  const xp  = userData.pts || 0;
+  const wins = userData.history ? userData.history.length : 0;
+
+  const el_s = document.getElementById('stat-streak');
+  const el_x = document.getElementById('stat-xp');
+  const el_w = document.getElementById('stat-wins');
+
+  const from_s = parseInt(el_s?.textContent) || 0;
+  const from_x = parseInt(el_x?.textContent) || 0;
+  const from_w = parseInt(el_w?.textContent) || 0;
+
+  if (el_s && from_s !== s)   animateStat(el_s, from_s, s);
+  else if (el_s) el_s.textContent = s;
+  if (el_x && from_x !== xp)  animateStat(el_x, from_x, xp);
+  else if (el_x) el_x.textContent = xp;
+  if (el_w && from_w !== wins) animateStat(el_w, from_w, wins);
+  else if (el_w) el_w.textContent = wins;
+
+  // daily quote
+  const qi = Math.floor(Date.now()/1000/60/60/24) % QUOTES.length;
+  document.getElementById('daily-quote').textContent = '"' + QUOTES[qi] + '"';
+  // rank banner
+  const rd = getRankData(userData.pts);
+  document.getElementById('rank-emoji').textContent = rd.curr.icon;
+  document.getElementById('rank-name').textContent = rd.curr.name;
+  document.getElementById('rank-progress').style.width = rd.progress + '%';
+  document.getElementById('rank-pts-label').textContent = (userData.pts||0) + ' XP';
+  document.getElementById('rank-next-label').textContent = rd.next ? rd.next.min + ' → ' + rd.next.name : 'MAX RANK';
+  renderTasks();
+  loadQuickNote();
+};
+
+// ════════════════════════════════════════════════════════════
+//  PATCH launchApp TO LOAD QUICK NOTE + TIMER STATE
+// ════════════════════════════════════════════════════════════
+const _origLaunchApp = launchApp;
+launchApp = async function() {
+  await _origLaunchApp();
+  loadQuickNote();
+  updateTimerDisplay();
+  await runMidnightReset();
+  scheduleMidnightReset();
+};
+
+// Show welcome toast after login
+const _origUpdateStreakTabFirst = updateStreakTab;
+let _firstLoad = true;
+const __patchedStreak = updateStreakTab;
+updateStreakTab = function() {
+  __patchedStreak();
+  if (_firstLoad && userData) {
+    _firstLoad = false;
+    setTimeout(() => showToast('⚡', `Welcome back, ${(userData.name||'User').split(' ')[0]}`, 'gold'), 600);
+  }
+};
+
+
+// ════════════════════════════════════════════════════════════
+//  7-DAY LOCK ENGINE
+// ════════════════════════════════════════════════════════════
+let _lockTargetId = null; // list id pending lock/unlock
+
+/**
+ * Returns lock state info for a list.
+ * list.lockStart  = ISO date string when lock was activated
+ * list.lockDays   = array of ISO date strings where all tasks were completed
+ */
+function getLockInfo(list) {
+  if (!list.lockStart) return { locked: false };
+
+  const start   = new Date(list.lockStart);
+  const today   = new Date(todayStr());
+  const daysDone = (list.lockDays || []).length;
+  const daysElapsed = Math.floor((today - start) / 86400000);
+
+  // 7 days elapsed OR 7 days marked done → unlock
+  if (daysElapsed >= 7 || daysDone >= 7) {
+    const justUnlocked = !list._unlockAcked;
+    return { locked: false, justUnlocked, daysDone, daysElapsed };
+  }
+
+  // Compute unlock date label
+  const unlockD = new Date(start);
+  unlockD.setDate(unlockD.getDate() + 7);
+  const unlockDate = unlockD.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+
+  return {
+    locked: true,
+    daysDone,
+    daysElapsed,
+    unlockDate,
+    justUnlocked: false,
+  };
+}
+
+function promptLockList(lid) {
+  const list = userData.lists.find(l => l.id === lid);
+  if (!list) return;
+  if ((list.tasks || []).length === 0) {
+    sfx.error();
+    showToast('⚠️', 'Add at least one task before locking', 'red');
+    return;
+  }
+  _lockTargetId = lid;
+  openModal('lock-confirm-modal');
+}
+
+async function confirmLockList() {
+  const list = userData.lists.find(l => l.id === _lockTargetId);
+  if (!list) return;
+
+  // Set lock start, clear previous lockDays, reset done states for daily cycle
+  list.lockStart = todayStr();
+  list.lockDays  = [];
+  list._unlockAcked = false;
+  // Reset all task done states (fresh daily cycle)
+  list.tasks = (list.tasks || []).map(t => ({ ...t, done: false }));
+
+  await persistUserData();
+  closeModal('lock-confirm-modal');
+  sfx.complete();
+  haptic('success');
+  showToast('🔒', `"${list.name}" locked — streak starts now! Your streak starts now.`, 'gold', 4000);
+  renderTasks();
+  _lockTargetId = null;
+}
+
+function promptUnlockEarly(lid) {
+  _lockTargetId = lid;
+  openModal('unlock-confirm-modal');
+}
+
+async function confirmUnlockEarly() {
+  const list = userData.lists.find(l => l.id === _lockTargetId);
+  if (!list) return;
+
+  // Break lock — forfeit streak
+  delete list.lockStart;
+  delete list.lockDays;
+  delete list._unlockAcked;
+  // Reset tasks
+  list.tasks = (list.tasks || []).map(t => ({ ...t, done: false }));
+
+  await persistUserData();
+  closeModal('unlock-confirm-modal');
+  sfx.error();
+  showToast('🔓', 'Lock removed. Streak reset.', 'red', 4000);
+  renderTasks();
+  _lockTargetId = null;
+}
+
+/**
+ * Called once per day at midnight (or on app load if date changed).
+ * Resets done states on locked lists so tasks repeat daily.
+ */
+async function runMidnightReset() {
+  if (!userData || !userData.lists) return;
+  const today = todayStr();
+  let changed = false;
+
+  userData.lists.forEach(list => {
+    if (!list.lockStart) return;
+    const info = getLockInfo(list);
+    if (!info.locked) {
+      // Mark as acknowledged so banner shows once
+      if (!list._unlockAcked) { list._unlockAcked = true; changed = true; }
+      return;
+    }
+    // Reset done on tasks if today not yet in lockDays
+    const alreadyReset = (list._lastReset === today);
+    if (!alreadyReset) {
+      list.tasks = (list.tasks || []).map(t => ({ ...t, done: false }));
+      list._lastReset = today;
+      changed = true;
+    }
+  });
+
+  if (changed) {
+    await persistUserData();
+    renderTasks();
+  }
+}
+
+// ── Run on load + schedule for next midnight ──────────────────────
+function scheduleMidnightReset() {
+  const now  = new Date();
+  const next = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5);
+  const ms   = next - now;
+  setTimeout(() => {
+    runMidnightReset();
+    scheduleMidnightReset(); // reschedule
+  }, ms);
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  GREETING + CLOCK
+// ════════════════════════════════════════════════════════════
+function updateGreeting() {
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  const el = document.getElementById('greeting-text');
+  const nameEl = document.getElementById('greeting-name');
+  const clockEl = document.getElementById('greeting-clock');
+  const dateEl = document.getElementById('todays-date');
+  if (el) el.firstChild.textContent = greet + ', ';
+  if (nameEl && userData) nameEl.textContent = (userData.name || 'User').split(' ')[0];
+  if (clockEl) {
+    const now = new Date();
+    clockEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric' });
+  }
+}
+setInterval(updateGreeting, 1000);
+
+// ════════════════════════════════════════════════════════════
+//  LOADING SCREEN STEPS
+// ════════════════════════════════════════════════════════════
+(function animateLoadingSteps() {
+  const steps = ['ls1','ls2','ls3'];
+  let i = 0;
+  const iv = setInterval(() => {
+    if (i < steps.length) {
+      const el = document.getElementById(steps[i]);
+      if (el) el.classList.add('active');
+      i++;
+    } else {
+      clearInterval(iv);
+    }
+  }, 400);
+})();
+
+// ════════════════════════════════════════════════════════════
+//  AUTH SCREEN PARTICLE CANVAS
+// ════════════════════════════════════════════════════════════
+function initAuthParticles() {
+  const canvas = document.getElementById('auth-particles');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles = Array.from({ length: 18 }, () => ({
+    x: Math.random() * canvas.width,
+    y: canvas.height + Math.random() * 200,
+    r: 1 + Math.random() * 2.5,
+    speed: 0.3 + Math.random() * 0.5,
+    alpha: 0,
+    maxAlpha: 0.15 + Math.random() * 0.25,
+    drift: (Math.random() - 0.5) * 0.4,
+  }));
+
+  let authAnimId;
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.y -= p.speed;
+      p.x += p.drift;
+      p.alpha = Math.min(p.maxAlpha, p.alpha + 0.003);
+      if (p.y < -10) {
+        p.y = canvas.height + 10;
+        p.x = Math.random() * canvas.width;
+        p.alpha = 0;
+      }
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200,169,110,${p.alpha})`;
+      ctx.fill();
+    });
+    authAnimId = requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+  // Stop when auth screen hides
+  const obs = new MutationObserver(() => {
+    const authEl = document.getElementById('auth-screen');
+    if (authEl && authEl.style.display === 'none') {
+      cancelAnimationFrame(authAnimId);
+      obs.disconnect();
+    }
+  });
+  const authEl = document.getElementById('auth-screen');
+  if (authEl) obs.observe(authEl, { attributes: true, attributeFilter: ['style'] });
+}
+initAuthParticles();
+
+// ════════════════════════════════════════════════════════════
+//  OFFLINE DETECTION
+// ════════════════════════════════════════════════════════════
+function updateOnlineStatus() {
+  const banner = document.getElementById('offline-banner');
+  if (!banner) return;
+  banner.style.display = navigator.onLine ? 'none' : 'block';
+}
+window.addEventListener('online',  updateOnlineStatus);
+window.addEventListener('offline', updateOnlineStatus);
+updateOnlineStatus();
+
+// ════════════════════════════════════════════════════════════
+//  SCROLL TO TOP BUTTON
+// ════════════════════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('scroll-top');
+  if (btn) btn.classList.toggle('visible', window.scrollY > 300);
+}, { passive: true });
+
+// ════════════════════════════════════════════════════════════
+//  DAILY INTENTIONS
+// ════════════════════════════════════════════════════════════
+function loadIntentions() {
+  const saved = JSON.parse(localStorage.getItem('dinc_intentions_' + todayStr()) || '[]');
+  document.querySelectorAll('.intention-chip').forEach(chip => {
+    if (saved.includes(chip.textContent.trim())) chip.classList.add('selected');
+  });
+  updateIntentionLabel(saved.length);
+}
+
+function toggleIntention(el, label) {
+  el.classList.toggle('selected');
+  sfx.tap(); haptic('light');
+  const selected = [...document.querySelectorAll('.intention-chip.selected')].map(c => c.textContent.trim());
+  localStorage.setItem('dinc_intentions_' + todayStr(), JSON.stringify(selected));
+  updateIntentionLabel(selected.length);
+}
+
+function updateIntentionLabel(count) {
+  const el = document.getElementById('intention-saved-label');
+  if (el) el.textContent = count > 0 ? `${count} set` : '';
+}
+
+// ════════════════════════════════════════════════════════════
+//  QUICK NOTE SAVE INDICATOR
+// ════════════════════════════════════════════════════════════
+const _origSaveQuickNote = saveQuickNote;
+saveQuickNote = function() {
+  _origSaveQuickNote();
+  const label = document.getElementById('quick-note-save');
+  if (label) { label.style.opacity = '1'; setTimeout(() => label.style.opacity = '0', 1800); }
+};
+
+// ════════════════════════════════════════════════════════════
+//  SWIPE DOWN TO CLOSE MODALS
+// ════════════════════════════════════════════════════════════
+(function initSwipeClose() {
+  let startY = 0, dragging = false, activeOverlay = null;
+
+  document.addEventListener('touchstart', e => {
+    const handle = e.target.closest('.sheet-handle');
+    const overlay = e.target.closest('.overlay.open');
+    if (handle && overlay) {
+      startY = e.touches[0].clientY;
+      dragging = true;
+      activeOverlay = overlay;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchmove', e => {
+    if (!dragging || !activeOverlay) return;
+    const dy = e.touches[0].clientY - startY;
+    if (dy > 0) {
+      const content = activeOverlay.querySelector('.overlay-content');
+      if (content) content.style.transform = `translateY(${dy}px)`;
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchend', e => {
+    if (!dragging || !activeOverlay) return;
+    const dy = e.changedTouches[0].clientY - startY;
+    const content = activeOverlay.querySelector('.overlay-content');
+    if (dy > 80) {
+      sfx.tap();
+      activeOverlay.classList.remove('open');
+      if (content) content.style.transform = '';
+    } else {
+      if (content) {
+        content.style.transition = 'transform .3s cubic-bezier(.4,0,.2,1)';
+        content.style.transform = '';
+        setTimeout(() => content.style.transition = '', 300);
+      }
+    }
+    dragging = false; activeOverlay = null;
+  }, { passive: true });
+})();
+
+// ════════════════════════════════════════════════════════════
+//  KEYBOARD SHORTCUTS
+// ════════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === '1') switchTab('streak');
+  if (e.key === '2') switchTab('performance');
+  if (e.key === '3') switchTab('lock');
+  if (e.key === '4') switchTab('social');
+  if (e.key === '5') switchTab('ranking');
+  if (e.key === '6') switchTab('profile');
+  if (e.key === 'n' || e.key === 'N') { e.preventDefault(); promptNewList(); }
+  if (e.key === 't' || e.key === 'T') { e.preventDefault(); toggleTimer(); }
+  if (e.key === 'm' || e.key === 'M') { e.preventDefault(); toggleSound(); }
+});
+
+// ════════════════════════════════════════════════════════════
+//  IMPROVED FEED: LIKE BUTTON
+// ════════════════════════════════════════════════════════════
+function getLikedPosts() {
+  return JSON.parse(localStorage.getItem('dinc_liked_posts') || '[]');
+}
+function toggleLike(postId, btn) {
+  const liked = getLikedPosts();
+  const isLiked = liked.includes(postId);
+  const newLiked = isLiked ? liked.filter(id => id !== postId) : [...liked, postId];
+  localStorage.setItem('dinc_liked_posts', JSON.stringify(newLiked));
+  btn.classList.toggle('liked', !isLiked);
+  const countEl = btn.querySelector('.like-count');
+  if (countEl) {
+    const n = parseInt(countEl.textContent || '0');
+    countEl.textContent = isLiked ? Math.max(0, n - 1) : n + 1;
+  }
+  if (!isLiked) sfx.tap();
+  haptic('light');
+}
+
+// ════════════════════════════════════════════════════════════
+//  IMPROVED RANK ROW RENDERING
+// ════════════════════════════════════════════════════════════
+const _origRenderRanking = renderRanking;
+renderRanking = async function() {
+  await _origRenderRanking();
+  // Re-render rank rows with medal badges
+  const container = document.getElementById('rank-container');
+  if (!container) return;
+  const rows = container.querySelectorAll('.rank-row');
+  rows.forEach((row, i) => {
+    const posEl = row.querySelector('.rank-pos');
+    if (!posEl) return;
+    const pos = i + 1;
+    posEl.className = 'rank-medal ' + (pos === 1 ? 'rank-medal-1' : pos === 2 ? 'rank-medal-2' : pos === 3 ? 'rank-medal-3' : 'rank-medal-n');
+    posEl.textContent = pos <= 3 ? ['🥇','🥈','🥉'][pos-1] : pos;
+  });
+};
+
+// ════════════════════════════════════════════════════════════
+//  PATCH launchApp: run greeting + intentions after load
+// ════════════════════════════════════════════════════════════
+const _origLaunch2 = launchApp;
+launchApp = async function() {
+  await _origLaunch2();
+  updateGreeting();
+  loadIntentions();
+};
+
+// ════════════════════════════════════════════════════════════
+//  PATCH renderFeed: add like buttons to posts
+// ════════════════════════════════════════════════════════════
+const _origRenderFeed = renderFeed;
+renderFeed = async function() {
+  await _origRenderFeed();
+  const liked = getLikedPosts();
+  document.querySelectorAll('.post-card').forEach((card, i) => {
+    if (card.querySelector('.post-like-btn')) return;
+    const postId = card.dataset.postId || ('post_' + i);
+    const isLiked = liked.includes(postId);
+    const likeBtn = document.createElement('button');
+    likeBtn.className = 'post-like-btn' + (isLiked ? ' liked' : '');
+    likeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span class="like-count">0</span>`;
+    likeBtn.onclick = () => toggleLike(postId, likeBtn);
+    card.appendChild(likeBtn);
+  });
+};
+
+// ════════════════════════════════════════════════════════════
+//  PATCH switchTab: play tab sound + run greeting update
+// ════════════════════════════════════════════════════════════
+const _origSwitchTab = switchTab;
+switchTab = function(tab) {
+  _origSwitchTab(tab);
+  if (tab === 'streak') updateGreeting();
+};
+
+// ════════════════════════════════════════════════════════════
+//  EMPTY STATE UPGRADE for task container
+// ════════════════════════════════════════════════════════════
+const _origRenderTasks = renderTasks;
+renderTasks = function() {
+  _origRenderTasks();
+  const container = document.getElementById('tasks-container');
+  if (!container) return;
+  if (!userData || !userData.lists || userData.lists.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="empty-state-title">No tasks yet</div>
+        <div class="empty-state-sub">Create your first list to start tracking your tasks.</div>
+        <button class="btn btn-gold" style="margin-top:4px;font-size:10px;" onclick="promptNewList()">+ New List</button>
+      </div>`;
+  }
+};
+
+// ════════════════════════════════════════════════════════════
+//  DRAG HANDLES: replace existing plain divs with .sheet-handle
+// ════════════════════════════════════════════════════════════
+// (handled via CSS — the existing 40px/4px divs already serve this role)
+
 // ESC key closes panels
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
@@ -2155,5 +3760,55 @@ document.addEventListener('keydown', e => {
   }
 });
 </script>
+
+<!-- Lock Confirm Modal -->
+<div class="overlay" id="lock-confirm-modal">
+  <div class="overlay-content card card-pad">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,.13);border-radius:99px;margin:0 auto 20px;"></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,rgba(200,169,110,.18),rgba(200,169,110,.06));border:1px solid rgba(200,169,110,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;animation:glow-pulse 2.5s ease infinite;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div class="serif" style="font-size:22px;margin-bottom:8px;">Lock Task?</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.65;max-width:280px;margin:0 auto;">
+        This list will be <strong style="color:var(--gold);">locked for 7 days</strong>. Tasks will repeat daily and reset each midnight. You <strong style="color:var(--text);">cannot add, edit or delete</strong> tasks until all 7 days are complete.
+      </div>
+    </div>
+    <div class="lock-modal-days" id="lock-modal-day-preview">
+      <div class="lock-modal-day">D1</div><div class="lock-modal-day">D2</div>
+      <div class="lock-modal-day">D3</div><div class="lock-modal-day">D4</div>
+      <div class="lock-modal-day">D5</div><div class="lock-modal-day">D6</div>
+      <div class="lock-modal-day">D7</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn btn-ghost flex-1" onclick="closeModal('lock-confirm-modal')">Cancel</button>
+      <button class="btn btn-gold flex-1" onclick="confirmLockList()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Lock List
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Unlock Early Modal -->
+<div class="overlay" id="unlock-confirm-modal">
+  <div class="overlay-content card card-pad">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,.13);border-radius:99px;margin:0 auto 20px;"></div>
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="width:56px;height:56px;border-radius:18px;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+      </div>
+      <div class="serif" style="font-size:22px;margin-bottom:8px;">Remove Lock?</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.65;max-width:280px;margin:0 auto;">
+        Unlocking early will <strong style="color:var(--red);">forfeit all streak progress</strong> and reset the 7-day cycle. Are you sure?
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn btn-ghost flex-1" onclick="closeModal('unlock-confirm-modal')">Keep Locked</button>
+      <button class="btn btn-danger flex-1" onclick="confirmUnlockEarly()">Remove Lock</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
